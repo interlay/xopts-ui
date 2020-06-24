@@ -113,7 +113,7 @@ class Confirm extends Component<ConfirmProps> {
               <ListGroupItem>Strike Price: <strong>{this.props.strikePrice.toString()} DAI</strong></ListGroupItem>
               <ListGroupItem>Expiry: <strong>{new Date(this.props.expiry*1000).toLocaleString()}</strong></ListGroupItem>
               <ListGroupItem>Amount: <strong>{this.props.amountDai.toString()} DAI -&gt; {this.props.amountDai.toString()} XOPT</strong></ListGroupItem>
-              <ListGroupItem>Underwrites: <strong>{utils.calculateAvailableBTC(this.props.amountDai, this.props.strikePrice).toString()} BTC</strong></ListGroupItem>
+              <ListGroupItem>Underwrites: <strong>{utils.calculateAvailableBTC(this.props.amountDai, this.props.strikePrice).round(2).toString()} BTC</strong></ListGroupItem>
               <ListGroupItem>BTC Address: <strong>{this.props.btcAddress}</strong></ListGroupItem>
           </ListGroup>
         </FormGroup>

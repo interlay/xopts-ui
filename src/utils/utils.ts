@@ -53,3 +53,7 @@ export function btcPutOptionId(unixTimestamp: number, strikePrice: string) {
     const year = date.getFullYear();
     return "BTC" + day.toString() + month.toUpperCase() + year.toString().slice(2) + "P" + strikePrice;
 }
+
+export function concat(value: string) {
+	return value.substring(0, 6) + "..." + value.substring(value.length-6);
+}

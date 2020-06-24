@@ -6,11 +6,13 @@ import { FaTrash, FaChevronRight } from "react-icons/fa";
 import { SpinButton } from "../SpinButton";
 import blockstreamImg from "../../assets/img/blockstream.png";
 import {AppProps} from "../../types/App";
+import * as utils from '../../utils/utils';
 
-const Item = ( {active, children}: {active: boolean, children: any} ) => (
-    <ListGroup.Item 
+const Item = ( {href, active, children}: {href?: string, active: boolean, children: any} ) => (
+    <ListGroup.Item
+        href={href}
         action
-        disabled
+        disabled={href===undefined}
         className="text-center"
         active={active}
         variant={active ? "success" : undefined}
@@ -74,7 +76,11 @@ class Select extends Component<SelectProps, SelectState> {
                 return (
                     <ListGroup key={txid + recipient} horizontal>
                         <Item active={confirmations >= STABLE_CONFIRMATIONS}>{optionId}</Item>
-                        <Item active={confirmations >= STABLE_CONFIRMATIONS}>{recipient.substring(0, 6)}...{recipient.substring(38)}</Item>
+                        <Item 
+                            href={"https://live.blockcypher.com/btc-testnet/tx/" + txid}
+                            active={confirmations >= STABLE_CONFIRMATIONS}>
+                                {utils.concat(txid)}
+                        </Item>
                         <Item active={confirmations >= STABLE_CONFIRMATIONS}>{amountBtc} BTC</Item>
                         <Item active={confirmations >= STABLE_CONFIRMATIONS}>{confirmations} / {STABLE_CONFIRMATIONS}</Item>
 
