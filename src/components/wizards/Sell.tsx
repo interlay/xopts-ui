@@ -12,6 +12,7 @@ interface EnterAmountProps {
   currentStep: number
   handleChange: (event: React.ChangeEvent<FormControlElement>) => void,
   amountDai: Big
+  balance: Big
 }
 
 interface EnterAmountState {
@@ -47,15 +48,21 @@ class EnterAmount extends Component<EnterAmountProps, EnterAmountState> {
     }
     return(
       <FormGroup>
-        <h5>How much DAI do you want to underwrite (insurance collateral)?</h5>
-        <FormControl
-          id="amountDai"
-          name="amountDai"
-          type="number"
-          value={this.props.amountDai.toString()}
-          isInvalid={this.state.amountDai <= 0}
-          onChange={this.handleChange}
-        />
+        <FormGroup>
+          <Form.Label>How much DAI do you want to underwrite (insurance collateral)?</Form.Label>
+          <FormControl
+            id="amountDai"
+            name="amountDai"
+            type="number"
+            value={this.props.amountDai.toString()}
+            isInvalid={this.state.amountDai <= 0}
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Form.Label>Current Balance</Form.Label>
+          <FormControl type="text" placeholder={this.props.balance.toString() + " DAI"} readOnly disabled/>
+        </FormGroup>
       </FormGroup>
     )
   }
@@ -139,6 +146,7 @@ interface SellWizardState {
   spinner: boolean
   expiry: number
   strikePrice: Big
+  balance: Big
 }
 
 export default class SellWizard extends Component<SellWizardProps> {
@@ -150,6 +158,7 @@ export default class SellWizard extends Component<SellWizardProps> {
     spinner: false,
     expiry: 0,
     strikePrice: utils.newBig(0),
+    balance: utils.newBig(0),
   }
 
   constructor(props: SellWizardProps) {
@@ -158,6 +167,15 @@ export default class SellWizard extends Component<SellWizardProps> {
     this._prev = this._prev.bind(this)
 
     this.handleChange = this.handleChange.bind(this)
+  }
+
+  async componentDidMount() {
+    if (this.props.contracts) {
+      let balance = await this.props.contracts.balanceOf();
+      this.setState({
+        balance: utils.weiDaiToDai(utils.newBig(balance.toString())),
+      });
+    }
   }
 
   async componentDidUpdate() {
@@ -316,6 +334,7 @@ export default class SellWizard extends Component<SellWizardProps> {
               currentStep={this.state.currentStep}
               handleChange={this.handleChange}
               amountDai={this.state.amountDai}
+              balance={this.state.balance}
             />
             <EnterAddress
               currentStep={this.state.currentStep}
