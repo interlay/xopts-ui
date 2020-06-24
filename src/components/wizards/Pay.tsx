@@ -383,10 +383,10 @@ export default class PayWizard extends Component<PayWizardProps, PayWizardState>
         }
         // store txid to local storage
         // store a mapping of the option to the txid
-        const { seller, amountBtc, txid, expiry, strikePrice } = this.state;
+        const { recipient, amountBtc, txid, expiry, strikePrice } = this.state;
         const optionId = utils.btcPutOptionId(expiry, strikePrice.toString());
         try {
-            this.props.storage.setPendingOption(this.props.contract, txid, amountBtc.toString(), seller, optionId, 0);
+            this.props.storage.setPendingOption(this.props.contract, txid, amountBtc.toString(), recipient, optionId, 0);
             showSuccessToast(this.props.toast, 'Awaiting verification!', 3000);
             this.props.hide();
             this.forceUpdate();
