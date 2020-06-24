@@ -1,0 +1,30 @@
+image: node:13
+
+stages:
+  - build
+  - deploy
+
+# build dapp
+build:
+  stage: build
+  script:
+    - yarn install
+    - CI=false yarn build
+  artifacts:
+    expire_in: 1 day
+    paths:
+    - build
+  only:
+  - master
+
+# deploy dapp
+pages:
+  stage: deploy
+  script:
+    - mv build/ public/
+    - cp public/index.html public/404.html
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
