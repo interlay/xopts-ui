@@ -43,10 +43,11 @@ class SelectSeller extends Component<SelectSellerProps, SelectSellerState> {
       let address = seller[0].toString();
       // one option == one dai wei
       let amount = utils.weiDaiToDai(utils.newBig(seller[1].toString()));
-      let amountBtc = amount.div(this.props.strikePrice);
+      let amountBtc = amount.div(this.props.strikePrice).round(5, 0);
       let addressShow = address.substr(0,10) + '...';
+      if (amountBtc.eq(0)) return null;
       return (
-        <option key={address} value={address} onClick={() => this.props.updateAmountOptions(amount)}> {amountBtc.round(5, 0).toString()} BTC (Seller: {addressShow})</option>
+        <option key={address} value={address} onClick={() => this.props.updateAmountOptions(amount)}> {amountBtc.toString()} BTC (Seller: {addressShow})</option>
       );
     })
   }
