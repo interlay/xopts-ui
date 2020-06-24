@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, ListGroup, ListGroupItem, Form, FormGroup, FormControl, Modal } from "react-bootstrap";
+import { ListGroup, ListGroupItem, Form, FormGroup, FormControl, Modal, Button } from "react-bootstrap";
 import * as utils from '../../utils/utils'; 
 import { showSuccessToast, showFailureToast } from '../../controllers/toast';
 import { SpinButton } from '../SpinButton';
@@ -136,10 +136,12 @@ class Confirm extends Component<ConfirmProps> {
 interface BuyWizardProps extends AppProps {
   contract: string
   toast: any
-  hide: () => void
+  hideModal: () => void
+  showModal: boolean
 }
 
 interface BuyWizardState {
+  contractAddress: string
   currentStep: number
   seller: string
   amountOptions: Big
@@ -152,6 +154,7 @@ interface BuyWizardState {
 
 export default class BuyWizard extends Component<BuyWizardProps> {
   state: BuyWizardState = {
+    contractAddress: this.props.contract,
     currentStep: 1,
     seller: '',
     amountOptions: utils.newBig(0),
@@ -170,19 +173,23 @@ export default class BuyWizard extends Component<BuyWizardProps> {
     this.updateAmountOptions = this.updateAmountOptions.bind(this)
   }
 
-  async componentDidMount() {
-    const contract = this.props.contract;
+  async componentDidUpdate() {
+    if (this.state.contractAddress != this.props.contract) {
+      const contract = this.props.contract;
+  
+      let contracts = this.props.contracts;
+      let optionContract = contracts.attachOption(contract);
+      let {expiry, premium, strikePrice} = await optionContract.getDetails();
+  
+      this.setState({
+        contractAddress: contract,
+        optionContract: optionContract,
+        expiry: expiry,
+        premium: utils.weiDaiToBtc(utils.newBig(premium.toString())),
+        strikePrice: utils.weiDaiToBtc(utils.newBig(strikePrice.toString())),
+      });
 
-    let contracts = this.props.contracts;
-    let optionContract = contracts.attachOption(contract);
-    let {expiry, premium, strikePrice} = await optionContract.getDetails();
-
-    this.setState({
-      optionContract: optionContract,
-      expiry: expiry,
-      premium: utils.weiDaiToBtc(utils.newBig(premium.toString())),
-      strikePrice: utils.weiDaiToBtc(utils.newBig(strikePrice.toString())),
-    });
+    }
   }
 
   // Use the submitted data to set the state
@@ -235,6 +242,7 @@ export default class BuyWizard extends Component<BuyWizardProps> {
         await contracts.insureOption(optionContract.address, seller, satoshis);
         //this.props.history.push("/positions")
         showSuccessToast(this.props.toast, 'Successfully purchased option!', 3000);
+        this.exitModal();
       } else {
         throw Error("Options contract not found.");
       }
@@ -295,10 +303,19 @@ export default class BuyWizard extends Component<BuyWizardProps> {
     // ...else render nothing
     return null;
   }
+
+  exitModal() {
+    this.props.hideModal();
+    this.setState({currentStep: 1});
+  }
   
   render() {
     return (
-      <Container>
+      <Modal
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        show={this.props.showModal} onHide={() => this.exitModal()}>
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
               Buy Option
@@ -333,8 +350,9 @@ export default class BuyWizard extends Component<BuyWizardProps> {
         <Modal.Footer>
           {this.previousButton}
           {this.nextButton}
+          <Button variant="danger" onClick={() => this.exitModal()}>Cancel</Button>
         </Modal.Footer>
-      </Container>
+      </Modal>
     )
   }
 }

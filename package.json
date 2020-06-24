@@ -37,8 +37,8 @@
     "ts-node": "^8.6.2"
   },
   "scripts": {
-    "start": "npm run build --prefix '../' && cp -r ../artifacts src/ && react-scripts start",
-    "build": "npm run build --prefix '../' && cp -r ../artifacts src/ && react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "lint": "tsc --noEmit --pretty",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

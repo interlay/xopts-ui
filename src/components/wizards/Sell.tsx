@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, ListGroup, ListGroupItem, Form, FormGroup, FormControl, Modal } from "react-bootstrap";
+import { ListGroup, ListGroupItem, Form, FormGroup, FormControl, Modal } from "react-bootstrap";
 import * as utils from '../../utils/utils';
 import { showSuccessToast, showFailureToast } from '../../controllers/toast';
 import { SpinButton } from '../SpinButton';
@@ -126,10 +126,12 @@ class Confirm extends Component<ConfirmProps> {
 interface SellWizardProps extends AppProps {
   contract: string
   toast: any
-  hide: () => void
+  hideModal: () => void
+  showModal: boolean
 }
 
 interface SellWizardState {
+  contractAddress: string
   currentStep: number
   amountDai: Big
   btcAddress: string
@@ -141,6 +143,7 @@ interface SellWizardState {
 
 export default class SellWizard extends Component<SellWizardProps> {
   state: SellWizardState = {
+    contractAddress: this.props.contract,
     currentStep: 1,
     amountDai: utils.newBig(1),
     btcAddress: '',
@@ -157,18 +160,21 @@ export default class SellWizard extends Component<SellWizardProps> {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  async componentDidMount() {
-    const contract = this.props.contract;
+  async componentDidUpdate() {
+    if (this.state.contractAddress != this.props.contract) {
+      const contract = this.props.contract;
 
-    let contracts = this.props.contracts;
-    let optionContract = contracts.attachOption(contract);
-    let {expiry, strikePrice} = await optionContract.getDetails();
+      let contracts = this.props.contracts;
+      let optionContract = contracts.attachOption(contract);
+      let {expiry, strikePrice} = await optionContract.getDetails();
 
-    this.setState({
-      optionContract: optionContract,
-      expiry: parseInt(expiry.toString()),
-      strikePrice: utils.weiDaiToBtc(utils.newBig(strikePrice.toString())),
-    });
+      this.setState({
+        contractAddress: contract,
+        optionContract: optionContract,
+        expiry: parseInt(expiry.toString()),
+        strikePrice: utils.weiDaiToBtc(utils.newBig(strikePrice.toString())),
+      });
+    }
   }
 
   handleChange(event: React.ChangeEvent<FormControlElement>) {
@@ -225,6 +231,7 @@ export default class SellWizard extends Component<SellWizardProps> {
         await contracts.underwriteOption(optionContract.address, weiDai, btcAddress);
         //this.props.history.push("/positions")
         showSuccessToast(this.props.toast, 'Successfully sold options!', 3000);
+        this.exitModal();
       } else {
         throw Error("Options contract not found.");
       }
@@ -286,9 +293,18 @@ export default class SellWizard extends Component<SellWizardProps> {
     return null;
   }
 
+  exitModal() {
+    this.props.hideModal();
+    this.setState({currentStep: 1});
+  }
+
   render() {
     return (
-      <Container>
+      <Modal
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        show={this.props.showModal} onHide={() => this.exitModal()}>
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
               Sell Options
@@ -320,7 +336,7 @@ export default class SellWizard extends Component<SellWizardProps> {
           {this.previousButton}
           {this.nextButton}
         </Modal.Footer>
-      </Container>
+      </Modal>
     )
   }
 }

@@ -25,11 +25,10 @@ interface State {
     totalInsured: Big,
     insuranceAvailable: Big,
     avgPremium: Big,
-    showBuy: boolean,
-    showSell: boolean,
+    showBuyModal: boolean,
+    showSellModal: boolean,
     showCreateModal: boolean,
-    buy: string,
-    sell: string,
+    contractAddress: string,
 }
 
 export default class OptionList extends Component<AppProps, State> {
@@ -39,22 +38,21 @@ export default class OptionList extends Component<AppProps, State> {
         totalInsured: utils.newBig(0),
         insuranceAvailable: utils.newBig(0),
         avgPremium: utils.newBig(0),
-        showBuy: false,
-        showSell: false,
+        showBuyModal: false,
+        showSellModal: false,
         showCreateModal: false,
-        buy: '',
-        sell: ''
+        contractAddress: '',
     }
 
     constructor(props: AppProps) {
         super(props);
 
-        this.showBuy = this.showBuy.bind(this);
-        this.showSell = this.showSell.bind(this);
+        this.showBuyModal = this.showBuyModal.bind(this);
+        this.showSellModal = this.showSellModal.bind(this);
         this.showCreateModal = this.showCreateModal.bind(this);
 
-        this.hideBuy = this.hideBuy.bind(this);
-        this.hideSell = this.hideSell.bind(this);
+        this.hideBuyModal = this.hideBuyModal.bind(this);
+        this.hideSellModal = this.hideSellModal.bind(this);
         this.hideCreateModal = this.hideCreateModal.bind(this);
 
         this.reloadOptions = this.reloadOptions.bind(this);
@@ -117,35 +115,35 @@ export default class OptionList extends Component<AppProps, State> {
         return options;
     }
 
-    async showBuy(contract: string) {
+    async showBuyModal(contract: string) {
         if (!this.props.isLoggedIn) {
             await this.props.tryLogIn(true);
         }
         this.setState({
-            buy: contract,
-            showBuy: true,
+            contractAddress: contract,
+            showBuyModal: true,
         });
     }
 
-    hideBuy() {
+    hideBuyModal() {
         this.setState({
-            showBuy: false,
+            showBuyModal: false,
         })
     }
 
-    async showSell(contract: string) {
+    async showSellModal(contract: string) {
         if (!this.props.isLoggedIn) {
             await this.props.tryLogIn(true);
         }
         this.setState({
-            sell: contract,
-            showSell: true,
+            contractAddress: contract,
+            showSellModal: true,
         });
     }
 
-    hideSell() {
+    hideSellModal() {
         this.setState({
-            showSell: false,
+            showSellModal: false,
         })
     }
 
@@ -199,7 +197,7 @@ export default class OptionList extends Component<AppProps, State> {
                                 placement={"left"}
                                 text={"Buy"}
                                 variant={"outline-success"}
-                                show={this.showBuy}
+                                show={this.showBuyModal}
                                 showValue={contract}
                             />
                             {" "}
@@ -209,7 +207,7 @@ export default class OptionList extends Component<AppProps, State> {
                                 placement={"right"}
                                 text={"Sell"}
                                 variant={"outline-danger"}
-                                show={this.showSell}
+                                show={this.showSellModal}
                                 showValue={contract}
                             />
                         </td>
@@ -285,20 +283,20 @@ export default class OptionList extends Component<AppProps, State> {
                         </Row>
                     </Card.Body>
                 </Card>
-                <Modal
-                    size="lg"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                    show={this.state.showBuy} onHide={() => this.setState({ showBuy: false })}>
-                    <BuyWizard contract={this.state.buy} hide={this.hideBuy} toast={toast} {...this.props}></BuyWizard>
-                </Modal>
-                <Modal
-                    size="lg"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                    show={this.state.showSell} onHide={() => this.setState({ showSell: false })}>
-                    <SellWizard contract={this.state.sell} hide={this.hideSell} toast={toast} {...this.props}></SellWizard>
-                </Modal>
+                <BuyWizard
+                    contract={this.state.contractAddress}
+                    toast={toast}
+                    hideModal={this.hideBuyModal}
+                    showModal={this.state.showBuyModal}
+                    {...this.props}>
+                </BuyWizard>
+                <SellWizard
+                    contract={this.state.contractAddress}
+                    toast={toast}
+                    hideModal={this.hideSellModal}
+                    showModal={this.state.showSellModal}
+                    {...this.props}>
+                </SellWizard>
                 <CreateWizard 
                     toast={toast}
                     hideModal={this.hideCreateModal}
