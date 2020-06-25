@@ -47,10 +47,11 @@ export class Storage implements StorageInterface {
   }
 
   // stores an array of pending options
-  setPendingOption(option: string, txId: string, amountBtc: string, recipient: string, optionId: string, confirmations: number) {
+  setPendingOption(option: string, txId: string, amountBtc: string, btcAddress: string, ethAddress: string, optionId: string, confirmations: number) {
     let pendingOption: Option = {
       amountBtc: amountBtc,
-      recipient: recipient,
+      btcAddress: btcAddress,
+      ethAddress: ethAddress,
       optionId: optionId,
       confirmations: confirmations,
       pending: true,

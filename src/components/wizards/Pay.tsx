@@ -53,7 +53,7 @@ class SelectSeller extends Component<SelectSellerProps, SelectSellerState> {
             let amountBtc = utils.satToBtc(utils.newBig(seller[1].toString()));
             let addressShow = address.substr(0, 10) + '...';
 
-            if (this.state.pending.filter((value) => value.recipient === seller[0]).length > 0) return null;
+            if (this.state.pending.filter((value) => value.ethAddress === seller[0]).length > 0) return null;
             return (
                 <option key={address} value={address} onClick={() => this.props.updateAmount(amountBtc)}>{amountBtc.toString()} BTC (Seller: {addressShow})</option>
             );
@@ -67,7 +67,7 @@ class SelectSeller extends Component<SelectSellerProps, SelectSellerState> {
         return (
             <FormGroup>
                 <h5>Please select your position.</h5>
-                <Form.Control as="select" name="seller" defaultValue="default" onChange={this.props.handleChange}>
+                <Form.Control as="select" name="ethAddress" defaultValue="default" onChange={this.props.handleChange}>
                     <option disabled value="default"> -- Select -- </option>
                     {this.renderOptions()}
                 </Form.Control>
@@ -84,14 +84,14 @@ class SelectSeller extends Component<SelectSellerProps, SelectSellerState> {
 interface ScanBTCProps extends AppProps {
     step: number
     contract: string
-    seller: string
     amountBtc: Big
-    recipient: string
+    btcAddress: string
+    ethAddress: string
     option: string
     txid: string
     confirmations: number
     handleChange: (event: React.ChangeEvent<FormControlElement>) => void
-    updateRecipient: (btcAddress: string) => void
+    updateBtcAddress: (btcAddress: string) => void
     updateOption: (contract: string) => void
     updateConfirmations: (conf: number) => void
     updateStrikePrice: (strikePrice: Big) => void
@@ -102,7 +102,7 @@ interface ScanBTCState {
     loaded: boolean
     paymentUri: string
     selectionHasTxId: boolean
-    recipient: string
+    btcAddress: string
     option: string
     expiry: number
     premium: Big
@@ -116,7 +116,7 @@ class ScanBTC extends Component<ScanBTCProps, ScanBTCState> {
         loaded: false,
         paymentUri: '',
         selectionHasTxId: false,
-        recipient: '',
+        btcAddress: '',
         option: '',
         expiry: 0,
         premium: utils.newBig(0),
@@ -126,10 +126,10 @@ class ScanBTC extends Component<ScanBTCProps, ScanBTCState> {
     }
 
     async componentDidUpdate() {
-        if (this.props.contract && this.props.contracts && this.props.seller && this.props.storage && !this.state.loaded) {
+        if (this.props.contract && this.props.contracts && this.props.ethAddress && this.props.storage && !this.state.loaded) {
             // get all the info from the selected contract to store this into storage
             let optionContract = this.props.contracts.attachOption(this.props.contract);
-            let btcAddressRaw = await optionContract.getBtcAddress(this.props.seller);
+            let btcAddress = await optionContract.getBtcAddress(this.props.ethAddress);
             let {expiry, premium, strikePrice} = await optionContract.getDetails();
 
             // strike price is denoted in weiDai per satoshi
@@ -138,7 +138,6 @@ class ScanBTC extends Component<ScanBTCProps, ScanBTCState> {
             // exchange rate between option and dai is 1:1
             let amountDai = amountOptions;
 
-            let btcAddress = ethers.utils.toUtf8String(ethers.utils.hexlify(btcAddressRaw));
             let paymentUri = "bitcoin:" + btcAddress + "?amount=" + this.props.amountBtc;
 
             // check if there is already a matching tx
@@ -158,7 +157,7 @@ class ScanBTC extends Component<ScanBTCProps, ScanBTCState> {
             this.setState({
                 loaded: true,
                 paymentUri: paymentUri,
-                recipient: btcAddress,
+                btcAddress: btcAddress,
                 option: this.props.contract,
                 expiry: expiryDate,
                 premium: utils.newBig(premium.toString()),
@@ -167,7 +166,7 @@ class ScanBTC extends Component<ScanBTCProps, ScanBTCState> {
                 amountDai: amountDai,
             });
             // set the wizard state
-            this.props.updateRecipient(btcAddress);
+            this.props.updateBtcAddress(btcAddress);
             this.props.updateOption(this.props.contract);
             // this.props.updateTxId(txid);
             this.props.updateConfirmations(0);
@@ -202,7 +201,7 @@ class ScanBTC extends Component<ScanBTCProps, ScanBTCState> {
                 <FormGroup>
                     <ListGroup>
                       <ListGroupItem>Sending: <strong>{this.props.amountBtc.toString()} BTC</strong></ListGroupItem>
-                      <ListGroupItem>Address: <strong>{this.state.recipient}</strong></ListGroupItem>
+                      <ListGroupItem>Address: <strong>{this.state.btcAddress}</strong></ListGroupItem>
                       <ListGroupItem>Receiving: <strong>{utils.weiDaiToDai(this.state.amountOptions).toString()} DAI</strong></ListGroupItem>
                     </ListGroup>
                 </FormGroup>
@@ -273,11 +272,11 @@ interface PayWizardProps extends AppProps {
 
 interface PayWizardState {
     step: number
-    seller: string
     amountOptions: number
     amountDai: number
     amountBtc: Big
-    recipient: string
+    btcAddress: string
+    ethAddress: string
     option: string
     expiry: number
     premium: number
@@ -289,11 +288,11 @@ interface PayWizardState {
 export default class PayWizard extends Component<PayWizardProps, PayWizardState> {
     state: PayWizardState = {
         step: 1,
-        seller: "",
         amountOptions: 0,
         amountDai: 0,
         amountBtc: utils.newBig(0),
-        recipient: "",
+        btcAddress: "",
+        ethAddress: "",
         option: "",
         expiry: 0,
         premium: 0,
@@ -307,7 +306,7 @@ export default class PayWizard extends Component<PayWizardProps, PayWizardState>
 
         this.handleChange = this.handleChange.bind(this)
         this.updateAmount = this.updateAmount.bind(this)
-        this.updateRecipient = this.updateRecipient.bind(this)
+        this.updateBtcAddress = this.updateBtcAddress.bind(this)
         this.updateOption = this.updateOption.bind(this)
         this.updateTxId = this.updateTxId.bind(this)
         this.updateConfirmations = this.updateConfirmations.bind(this)
@@ -330,9 +329,9 @@ export default class PayWizard extends Component<PayWizardProps, PayWizardState>
         });
     }
 
-    updateRecipient(r: string) {
+    updateBtcAddress(a: string) {
       this.setState({
-        recipient: r
+        btcAddress: a
       });
     }
 
@@ -367,7 +366,7 @@ export default class PayWizard extends Component<PayWizardProps, PayWizardState>
     }
 
     isValid(step: number) {
-        if (step === 0 && this.state.seller === "") {
+        if (step === 0 && this.state.ethAddress === "") {
             return false;
         }
         return true;
@@ -383,10 +382,10 @@ export default class PayWizard extends Component<PayWizardProps, PayWizardState>
         }
         // store txid to local storage
         // store a mapping of the option to the txid
-        const { recipient, amountBtc, txid, expiry, strikePrice } = this.state;
+        const { btcAddress, ethAddress, amountBtc, txid, expiry, strikePrice } = this.state;
         const optionId = utils.btcPutOptionId(expiry, strikePrice.toString());
         try {
-            this.props.storage.setPendingOption(this.props.contract, txid, amountBtc.toString(), recipient, optionId, 0);
+            this.props.storage.setPendingOption(this.props.contract, txid, amountBtc.toString(), btcAddress, ethAddress, optionId, 0);
             showSuccessToast(this.props.toast, 'Awaiting verification!', 3000);
             this.props.hide();
             this.forceUpdate();
@@ -471,22 +470,20 @@ export default class PayWizard extends Component<PayWizardProps, PayWizardState>
                         <SelectSeller
                             step={this.state.step}
                             handleChange={this.handleChange}
-                            // seller={this.state.seller}
-                            // amountBtc={this.state.amountBtc}
                             updateAmount={this.updateAmount}
                             {...this.props}
                         />
                         <ScanBTC
                             step={this.state.step}
                             handleChange={this.handleChange}
-                            updateRecipient = {this.updateRecipient}
+                            updateBtcAddress = {this.updateBtcAddress}
                             updateOption = {this.updateOption}
                             updateConfirmations = {this.updateConfirmations}
                             updateStrikePrice = {this.updateStrikePrice}
                             updateExpiry = {this.updateExpiry}
-                            seller={this.state.seller}
                             amountBtc={this.state.amountBtc}
-                            recipient = {this.state.recipient}
+                            btcAddress={this.state.btcAddress}
+                            ethAddress={this.state.ethAddress}
                             option = { this.state.option }
                             txid = { this.state.txid }
                             confirmations = { this.state.confirmations }
