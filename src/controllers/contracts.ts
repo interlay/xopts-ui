@@ -12,6 +12,7 @@ import { IERC20SellableFactory } from "@interlay/xopts/dist/typechain/IERC20Sell
 import { IERC20Sellable } from "@interlay/xopts/dist/typechain/IERC20Sellable";
 import { IERC20BuyableFactory } from "@interlay/xopts/dist/typechain/IERC20BuyableFactory";
 import { BigNumber } from 'ethers/utils';
+import { decodeAddress, encodeAddress } from '../utils/address';
 
 const DEFAULT_CONFIRMATIONS = 1;
 
@@ -44,8 +45,8 @@ export class Contracts implements ContractsInterface {
             relayAddress = "0x99a463962829c26Da5357aE84ACAf85A401A7702"
         // Ropsten
         } else if (network.chainId === 3 && network.name === "ropsten") {
-            optionPoolAddress = "0x11Bb2d104E82a4DE8e40E9562d17999Ec2E46B8c";
-            erc20Address = "0x4DfB2bE72b3F2ac346Be86B78491E56f21522fB2";
+            optionPoolAddress = "0x929bcF49ce947535815b3A34ac312D027ec06825";
+            erc20Address = "0xF6832c228552b551aA4Bf6A17Da9cf435D6cC524";
             relayAddress = "0x78A389B693e0E3DE1849F34e70bf4Bcb57F0F2bb";
         // Buidlerevm
         } else if (network.chainId === 31337) {
@@ -113,9 +114,11 @@ export class Contracts implements ContractsInterface {
         await tx.wait(DEFAULT_CONFIRMATIONS);
     }
 
-    async underwriteOption(address: string, amount: Big, btcAddressHex: string) {
-        let btcAddress = ethers.utils.toUtf8Bytes(btcAddressHex);
-        let tx = await this.optionPoolContract.underwriteOption(address, amount.toString(), btcAddress);
+    async underwriteOption(address: string, amount: Big, btcAddressFull: string) {
+        let btcAddress = decodeAddress(btcAddressFull);
+        if (!btcAddress) throw Error("Invalid address");
+        const {hash, format} = btcAddress;
+        let tx = await this.optionPoolContract.underwriteOption(address, amount.toString(), hash, format);
         await tx.wait(DEFAULT_CONFIRMATIONS);
     }
 
@@ -180,8 +183,11 @@ export class Option {
         }));
     }
 
-    getBtcAddress(address: string) {
-        return this.sellable.getBtcAddress(address);
+    async getBtcAddress(address: string) {
+        const { 0: hash, 1: format} = await this.sellable.getBtcAddress(address);
+        const encoded = encodeAddress(hash.substr(2), format);
+        if (!encoded) throw Error("Invalid address");
+        return encoded;
     }
 
     async hasSellers() {

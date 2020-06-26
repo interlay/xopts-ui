@@ -179,7 +179,7 @@ export default class SellWizard extends Component<SellWizardProps> {
   }
 
   async componentDidUpdate() {
-    if (this.state.contractAddress != this.props.contract) {
+    if (this.state.contractAddress !== this.props.contract) {
       const contract = this.props.contract;
 
       let contracts = this.props.contracts;

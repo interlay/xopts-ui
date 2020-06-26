@@ -14,12 +14,14 @@ export function pollAllPendingConfirmations(bitcoin: BitcoinInterface, storage: 
 // Continually checks if a transaction is included and
 // updates the number of confirmations
 export function pollAndUpdateConfirmations(bitcoin: BitcoinInterface, storage: StorageInterface, option: string, txid: string) {
-    setInterval(async function() {
+    var timer = setInterval(async function() {
         try {
             let txStatus = await bitcoin.getStatusTransaction(txid);
             storage.modifyPendingConfirmations(option, txid, txStatus.confirmations);
             // TODO: stop after n retries
-            if (txStatus.confirmations >= STABLE_CONFIRMATIONS) clearInterval();
-        } catch(error) {}
+            if (txStatus.confirmations >= STABLE_CONFIRMATIONS) clearInterval(timer);
+        } catch(error) {
+            // Retry on error
+        }
     }, 30000);
 }

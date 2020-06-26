@@ -1269,16 +1269,13 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@interlay/xopts@0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@interlay/xopts/-/xopts-0.0.12.tgz#0850727000a5636fc2647931578bc6c9522279a9"
-  integrity sha512-xDUWjxqRw8BRTh8DXJ3ABnuB1VSPno3Fx3ti3Y8bqxWL/CBTRNnwKDvb+p/5OrxszIBnsQ7wp3QcrKcjRJTvmQ==
+"@interlay/xopts@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@interlay/xopts/-/xopts-0.1.1.tgz#aba636f0225a3f86831e7c3c5dc8fcfd28cf3777"
+  integrity sha512-5sHFhmNlet+vi0VrF0YZs+HPLeW7OgeWViN4zorOAfDiHs0OR60ksjQ4bh3oCiYiCRwaN00Q8l9h6wFpXD0V9w==
   dependencies:
     "@studydefi/money-legos" "^2.1.0"
-    bootswatch "^4.5.0"
-    qrcode.react "^1.0.0"
-    react-qr-code "^1.0.2"
-    uikit "^3.4.4"
+    bitcoinjs-lib "^5.1.10"
 
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
@@ -10018,15 +10015,6 @@ qr.js@0.0.0:
   resolved "https://registry.yarnpkg.com/qr.js/-/qr.js-0.0.0.tgz#cace86386f59a0db8050fa90d9b6b0e88a1e364f"
   integrity sha1-ys6GOG9ZoNuAUPqQ2baw6IoeNk8=
 
-qrcode.react@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/qrcode.react/-/qrcode.react-1.0.0.tgz#7e8889db3b769e555e8eb463d4c6de221c36d5de"
-  integrity sha512-jBXleohRTwvGBe1ngV+62QvEZ/9IZqQivdwzo9pJM4LQMoCM2VnvNBnKdjvGnKyDZ/l0nCDgsPod19RzlPvm/Q==
-  dependencies:
-    loose-envify "^1.4.0"
-    prop-types "^15.6.0"
-    qr.js "0.0.0"
-
 qs@6.7.0:
   version "6.7.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
@@ -12251,11 +12239,6 @@ ua-parser-js@^0.7.18:
   version "0.7.21"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.21.tgz#853cf9ce93f642f67174273cc34565ae6f308777"
   integrity sha512-+O8/qh/Qj8CgC6eYBVBykMrNtp5Gebn4dlGD/kKXVkJNDwyrAwSIqwz8CDf+tsAIWVycKcku6gIXJ0qwx/ZXaQ==
-
-uikit@^3.4.4:
-  version "3.5.4"
-  resolved "https://registry.yarnpkg.com/uikit/-/uikit-3.5.4.tgz#3291abbf8e80114313ebf9ea3b30c628d751d345"
-  integrity sha512-5alqUOBUVrkbc/7NH/G3LB6iCHDaknA2ZFDa8FKh/s+ieexDGK6FLQQjxAvRTIO6EdL+/irBxe85+BKI1B8okw==
 
 ultron@~1.1.0:
   version "1.1.1"

@@ -23,7 +23,8 @@ const Item = ( {href, active, children}: {href?: string, active: boolean, childr
 
 type Transaction = {
     amountBtc: string
-    recipient: string
+    btcAddress: string
+    ethAddress: string
     option: string
     txid: string
     confirmations: number
@@ -70,11 +71,11 @@ class Select extends Component<SelectProps, SelectState> {
             let options = this.props.storage.getPendingTransactionsFor(this.props.contract);
             return options.map((pendingOption, index) => {
                 if (!pendingOption) return null;
-                const { txid, amountBtc, recipient, optionId, confirmations } = pendingOption;
+                const { txid, amountBtc, btcAddress, ethAddress, optionId, confirmations } = pendingOption;
                 const option = this.props.contract;
 
                 return (
-                    <ListGroup key={txid + recipient} horizontal>
+                    <ListGroup key={txid + btcAddress} horizontal>
                         <Item active={confirmations >= STABLE_CONFIRMATIONS}>{optionId}</Item>
                         <Item 
                             href={"https://live.blockcypher.com/btc-testnet/tx/" + txid}
@@ -88,7 +89,7 @@ class Select extends Component<SelectProps, SelectState> {
                             action
                             disabled={confirmations < STABLE_CONFIRMATIONS}
                             className="text-center"
-                            onClick={() => this.props.exerciseOption({amountBtc, recipient, option, txid, confirmations}, index)}
+                            onClick={() => this.props.exerciseOption({amountBtc, btcAddress, ethAddress, option, txid, confirmations}, index)}
                         >
                             Confirm <FaChevronRight/>
                         </ListGroup.Item>
@@ -149,11 +150,11 @@ class Exercise extends Component<ExerciseProps, ExerciseState> {
 
     handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const { contract, recipient, height, index, txid, proof, rawtx } = this.props.tx;
+        const { contract, ethAddress, height, index, txid, proof, rawtx } = this.props.tx;
         this.setState({spinner: true});
         try {
             let id = "0x" + Buffer.from(txid, 'hex').reverse().toString('hex');
-            await this.props.contracts.exerciseOption(contract, recipient, height, index, id, proof, rawtx);
+            await this.props.contracts.exerciseOption(contract, ethAddress, height, index, id, proof, rawtx);
             showSuccessToast(this.props.toast, 'Success!', 3000);
             this.props.storage.removePendingOption(contract, txid);
             this.props.exitModal();
@@ -173,7 +174,7 @@ class Exercise extends Component<ExerciseProps, ExerciseState> {
                 <FormGroup>
                     <ListGroup>
                         <ListGroupItem>Transaction ID: <strong>{this.props.tx.txid}</strong></ListGroupItem>
-                        <ListGroupItem>Payment: <strong>{this.props.tx.amountBtc} BTC -&gt; {this.props.tx.recipient}</strong></ListGroupItem>
+                        <ListGroupItem>Payment: <strong>{this.props.tx.amountBtc} BTC -&gt; {this.props.tx.btcAddress}</strong></ListGroupItem>
                         <ListGroupItem>Block Height: <strong>{this.props.tx.height}</strong></ListGroupItem>
                         <ListGroupItem>Confirmations: <strong>{this.props.tx.confirmations}</strong></ListGroupItem>
                     </ListGroup>
@@ -203,7 +204,8 @@ export default class ConfWizard extends Component<ConfWizardProps> {
         step: 1,
         tx: {
             amountBtc: '0',
-            recipient: '',
+            btcAddress: '',
+            ethAddress: '',
             option: '',
             txid: '',
             confirmations: 0,
@@ -255,7 +257,8 @@ export default class ConfWizard extends Component<ConfWizardProps> {
                 txid: txid,
                 amountBtc: tx.amountBtc,
                 contract: tx.option,
-                recipient: tx.recipient,
+                btcAddress: tx.btcAddress,
+                ethAddress: tx.ethAddress,
                 confirmations: status.confirmations,
                 height: proof.block_height,
                 index: proof.pos,

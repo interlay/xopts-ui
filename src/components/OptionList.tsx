@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Col, Row, Table, Card, Spinner, Modal, Button } from "react-bootstrap";
+import { Col, Row, Table, Card, Spinner, Button } from "react-bootstrap";
 import * as utils from '../utils/utils';
 import BuyWizard from './wizards/Buy';
 import SellWizard from './wizards/Sell';
