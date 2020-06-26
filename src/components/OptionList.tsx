@@ -67,7 +67,7 @@ export default class OptionList extends Component<AppProps, State> {
     async getOptions() {
         if (this.props.contracts) {
             let optionContracts = await this.props.contracts.getOptions();
-            let options = await this.getOptionDetails(optionContracts);
+            let options = await this.getOptionsDetails(optionContracts);
             this.setState({
                 loaded: true,
                 options: options
@@ -75,36 +75,34 @@ export default class OptionList extends Component<AppProps, State> {
         }
     }
 
-    async getOptionDetails(optionContracts: string[]) {
+    async getOptionDetails(address: string) {
+        const optionContract = this.props.contracts.attachOption(address);
+        const optionRes = await optionContract.getDetails();
+        return {
+            expiry: parseInt(optionRes.expiry.toString()),
+            premium: utils.weiDaiToBtc(utils.newBig(optionRes.premium.toString())),
+            strikePrice: utils.weiDaiToBtc(utils.newBig(optionRes.strikePrice.toString())),
+            totalSupply: utils.weiDaiToDai(utils.newBig(optionRes.total.toString())),
+            totalSupplyLocked: utils.weiDaiToDai(utils.newBig(optionRes.totalSold.toString())),
+            totalSupplyUnlocked: utils.weiDaiToDai(utils.newBig(optionRes.totalUnsold.toString())),
+            hasSellers: await optionContract.hasSellers(),
+            spotPrice: this.props.btcPrices.dai,
+            contract: address,
+        };
+    }
 
-        let options = [];
-        var index;
+    async getOptionsDetails(optionContracts: string[]) {
         let insuranceAvailable = utils.newBig(0);
         let totalInsured = utils.newBig(0);
         let totalPremium = utils.newBig(0);
-        for (index in optionContracts) {
-            let addr = optionContracts[index];
-            let optionContract = this.props.contracts.attachOption(addr);
-            let optionRes = await optionContract.getDetails();
-            let option = {
-                expiry: parseInt(optionRes.expiry.toString()),
-                premium: utils.weiDaiToBtc(utils.newBig(optionRes.premium.toString())),
-                strikePrice: utils.weiDaiToBtc(utils.newBig(optionRes.strikePrice.toString())),
-                totalSupply: utils.weiDaiToDai(utils.newBig(optionRes.total.toString())),
-                totalSupplyLocked: utils.weiDaiToDai(utils.newBig(optionRes.totalSold.toString())),
-                totalSupplyUnlocked: utils.weiDaiToDai(utils.newBig(optionRes.totalUnsold.toString())),
-                hasSellers: await optionContract.hasSellers(),
-                spotPrice: 0,
-                contract: '',
-            }
-            option.spotPrice = this.props.btcPrices.dai;
-            option.contract = addr;
+        const optionPromises = optionContracts.map(addr => this.getOptionDetails(addr));
+        const options = await Promise.all(optionPromises);
+        options.forEach(option => {
             if (!option.strikePrice.eq(0))
                 totalInsured = totalInsured.add(option.totalSupplyLocked.div(option.strikePrice));
             insuranceAvailable = insuranceAvailable.add(option.totalSupplyUnlocked);
             totalPremium = totalPremium.add(option.premium);
-            options.push(option);
-        }
+        });
 
         this.setState({
             insuranceAvailable: insuranceAvailable,
