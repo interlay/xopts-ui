@@ -187,8 +187,8 @@ export default class UserSoldOptions extends Component<AppProps> {
                         <tr key={contract}>
                             <td>{id}</td>
                             <td>{new Date(expiry * 1000).toLocaleString()}</td>
-                            <td>{strikePrice.toString()} DAI</td>
-                            <td><span  className={(income.gte(0) ? "text-success": "text-danger")}>{spotPrice.toString()}</span> DAI</td>
+                            <td>{strikePrice.round(2, 0).toString()} DAI</td>
+                            <td><span className={(income.gte(0) ? "text-success": "text-danger")}>{spotPrice.toString()}</span> DAI</td>
                             <td><strong>{soldOptions.round(2, 0).toString()}</strong> / {totalSupplyLocked.round(2, 0).toString()} DAI <br/>({percentSold.toFixed(0)}%) </td>
                             <td>{totalSupplyLocked.round(2, 0).toString()} / {totalSupply.round(2, 0).toString()} DAI <br/> ({percentInsured.toFixed(0)}%)</td>
                             <td><strong className={"text-success"}>{premiumEarned.round(2, 0).toString()}</strong> DAI <br/> ({premium.round(2, 0).toString()} DAI/BTC)</td>
@@ -215,8 +215,6 @@ export default class UserSoldOptions extends Component<AppProps> {
             return <tr><td colSpan={7} className="text-center"><Spinner animation="border" /></td></tr>
         }
     }
-
-    // Earning details: <br/> (<strong className={"text-success"}>{premiumEarned}</strong> {(priceDiff > 0) && '+'} <strong className={(this.income >= 0 ? "text-success": "text-danger")}>{priceDiff} price delta)</strong>
 
     render() {
 
@@ -257,11 +255,11 @@ export default class UserSoldOptions extends Component<AppProps> {
                                         <h6>Locked</h6>
                                     </Col>
                                     <Col>
-                                        <h3 className={(this.state.totalPremium.gt(0) ? "text-success": (this.state.totalPremium.lt(0) ? "text-danger" : ""))}>{this.state.totalPremium.toString()} DAI</h3>
+                                        <h3 className={(this.state.totalPremium.gt(0) ? "text-success": (this.state.totalPremium.lt(0) ? "text-danger" : ""))}>{this.state.totalPremium.round(2, 0).toString()} DAI</h3>
                                         <h6>Premium Earned</h6>
                                     </Col>
                                     <Col>
-                                        <h3 className={(this.state.totalIncome.gt(0) ? "text-success": (this.state.totalIncome.lt(0) ? "text-danger" : ""))}>{(this.state.totalIncome).toString()} DAI</h3>
+                                        <h3 className={(this.state.totalIncome.gt(0) ? "text-success": (this.state.totalIncome.lt(0) ? "text-danger" : ""))}>{this.state.totalIncome.round(2, 0).toString()} DAI</h3>
                                         <h6>(Potential) Income</h6>
                                     </Col>
                                 </Row>
