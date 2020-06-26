@@ -59,12 +59,11 @@ export class Contracts implements ContractsInterface {
         return {optionPoolAddress, erc20Address, relayAddress};
     }
 
-    async maybeGetAddress() {
-        let address = "";
+    maybeGetAddress(): Promise<string | null> {
         if (this.signer instanceof ethers.Signer) {
-            address = await this.signer.getAddress();
+            return this.signer.getAddress();
         }
-        return address;
+        return Promise.resolve(null);
     }
 
     async getRelayHeight() {
@@ -87,6 +86,9 @@ export class Contracts implements ContractsInterface {
 
     async checkAllowance(amount: Big) {
         let address = await this.maybeGetAddress();
+        if (!address) {
+            throw new Error('not logged in');
+        }
         let allowance = await this.erc20Contract.allowance(address, this.optionPoolContract.address);
         if (xutils.newBig(allowance.toString()).lt(amount)) {
             let tx = await this.erc20Contract.approve(this.optionPoolContract.address, ethers.constants.MaxUint256);
@@ -96,12 +98,18 @@ export class Contracts implements ContractsInterface {
 
     async balanceOf() {
         let address = await this.maybeGetAddress();
+        if (!address) {
+            return new ethers.utils.BigNumber(0);
+        }
         let balance = await this.erc20Contract.balanceOf(address);
         return balance;
     }
 
     async mint() {
         let address = await this.maybeGetAddress();
+        if (!address) {
+            throw new Error('not logged in');
+        }
         return this.erc20Contract.mint(address, xutils.daiToWeiDai(xutils.newBig(10_000)).toString());
     }
 
@@ -164,15 +172,17 @@ export class Option {
     }
 
     async maybeGetAddress() {
-        let address = "";
         if (this.signer instanceof ethers.Signer) {
-            address = await this.signer.getAddress();
+            return await this.signer.getAddress();
         }
-        return address;
+        return Promise.resolve(null);
     }
 
     async getOptionOwners() {
         let address = await this.maybeGetAddress();
+        if (!address) {
+            return [];
+        }
         let buyableAddress = await this.sellable.getBuyable();
         let buyable = IERC20BuyableFactory.connect(buyableAddress, this.signer);
         let {sellers, options} = await buyable.getOptionOwnersFor(address);
