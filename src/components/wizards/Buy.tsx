@@ -68,32 +68,34 @@ class SelectSeller extends Component<SelectSellerProps, SelectSellerState> {
   }
 }
 
-interface EnterAmountProps {
-  currentStep: number
-  amountOptions: Big
-  strikePrice: Big
+interface EnterAmountProps extends BuyWizardState {
   handleChange: (event: React.ChangeEvent<FormControlElement>) => void
 }
 
 class EnterAmount extends Component<EnterAmountProps> {
-
   render() {
     if (this.props.currentStep !== 2) {
       return null
     }
-    let amount = utils.calculateAvailableBTC(this.props.amountOptions, this.props.strikePrice).round(5, 0).toString();
+    const { errors } = this.props;
+    const amountBtc = utils.calculateAvailableBTC(this.props.amountOptions, this.props.strikePrice).round(5, 0).toString();
     return(
       <FormGroup>
         <h5>Enter BTC Amount</h5>
         <FormControl
-          id="amountBTC"
-          name="amountBTC"
+          id="amountBtc"
+          name="amountBtc"
           type="number"
           placeholder="Amount"
-          max={amount}
-          defaultValue={amount}
+          max={this.props.amountBtcMax.round(5, 0).toString()}
+          value={amountBtc}
           onChange={this.props.handleChange}
+          isInvalid={errors.amountBtc ? true : false}
+          required
         />
+        <FormControl.Feedback type="invalid">
+          {errors?.amountBtc}
+        </FormControl.Feedback>
       </FormGroup>
     )
   }
@@ -146,11 +148,15 @@ interface BuyWizardState {
   currentStep: number
   seller: string
   amountOptions: Big
+  amountBtcMax: Big
   optionContract?: OptionInterface
   expiry: number
   premium: Big
   strikePrice: Big
   spinner: boolean
+  errors: {
+    amountBtc?: string
+  }
 }
 
 export default class BuyWizard extends Component<BuyWizardProps> {
@@ -159,10 +165,12 @@ export default class BuyWizard extends Component<BuyWizardProps> {
     currentStep: 1,
     seller: '',
     amountOptions: utils.newBig(0),
+    amountBtcMax: utils.newBig(0),
     expiry: 0,
     premium: utils.newBig(0),
     strikePrice: utils.newBig(0),
     spinner: false,
+    errors: {},
   }
 
   constructor(props: BuyWizardProps) {
@@ -196,9 +204,13 @@ export default class BuyWizard extends Component<BuyWizardProps> {
   // Use the submitted data to set the state
   handleChange(event: React.ChangeEvent<FormControlElement>) {
     let {name, value} = event.target
-    if(name === "amountBTC"){
+    if(name === "amountBtc"){
+      let amountBtc = utils.newBig(value || 0);
       this.setState({
-        amountOptions: utils.newBig(value || 0).mul(this.state.strikePrice)
+        amountOptions: amountBtc.mul(this.state.strikePrice),
+        errors: {
+          amountBtc: amountBtc.gt(0) ? undefined : "Invalid amount",
+        }
       });
     } else {
       this.setState({
@@ -207,9 +219,10 @@ export default class BuyWizard extends Component<BuyWizardProps> {
     }
   }
 
-  updateAmountOptions(i: Big) {
+  updateAmountOptions(o: Big) {
     this.setState({
-      amountOptions: i,
+      amountOptions: o,
+      amountBtcMax: utils.calculateAvailableBTC(o, this.state.strikePrice),
     });
   }
 
@@ -332,10 +345,8 @@ export default class BuyWizard extends Component<BuyWizardProps> {
               optionContract={this.state.optionContract}
             />
             <EnterAmount 
-              currentStep={this.state.currentStep} 
               handleChange={this.handleChange}
-              amountOptions={this.state.amountOptions}
-              strikePrice={this.state.strikePrice}
+              {...this.state}
             />
             <Confirm
               currentStep={this.state.currentStep} 

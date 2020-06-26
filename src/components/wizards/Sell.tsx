@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { ListGroup, ListGroupItem, Form, FormGroup, FormControl, Modal } from "react-bootstrap";
+import { ListGroup, ListGroupItem, Form, FormGroup, FormControl, Modal, Badge, Col, Container, Row, Alert } from "react-bootstrap";
 import * as utils from '../../utils/utils';
 import { showSuccessToast, showFailureToast } from '../../controllers/toast';
 import { SpinButton } from '../SpinButton';
@@ -7,12 +7,10 @@ import { AppProps } from "../../types/App";
 import { Big } from 'big.js';
 import { FormControlElement } from "../../types/Inputs";
 import { OptionInterface } from "../../types/Contracts";
+import { decodeAddress } from "../../utils/address";
 
-interface EnterAmountProps {
-  currentStep: number
+interface EnterAmountProps extends SellWizardState {
   handleChange: (event: React.ChangeEvent<FormControlElement>) => void,
-  amountDai: Big
-  balance: Big
 }
 
 interface EnterAmountState {
@@ -46,6 +44,7 @@ class EnterAmount extends Component<EnterAmountProps, EnterAmountState> {
     if (this.props.currentStep !== 1) {
       return null
     }
+    const { errors } = this.props;
     return(
       <FormGroup>
         <FormGroup>
@@ -58,6 +57,10 @@ class EnterAmount extends Component<EnterAmountProps, EnterAmountState> {
             isInvalid={this.state.amountDai <= 0}
             onChange={this.handleChange}
           />
+        <FormControl.Feedback type="invalid">
+          {errors?.amountDai}
+        </FormControl.Feedback>
+
         </FormGroup>
         <FormGroup>
           <Form.Label>Current Balance</Form.Label>
@@ -68,10 +71,8 @@ class EnterAmount extends Component<EnterAmountProps, EnterAmountState> {
   }
 }
 
-interface EnterAddressProps {
-  currentStep: number
+interface EnterAddressProps extends SellWizardState {
   handleChange: (event: React.ChangeEvent<FormControlElement>) => void,
-  btcAddress: string
 }
 
 class EnterAddress extends Component<EnterAddressProps> {
@@ -79,19 +80,23 @@ class EnterAddress extends Component<EnterAddressProps> {
     if (this.props.currentStep !== 2) {
       return null
     }
+    const { errors } = this.props;
     return(
       <FormGroup>
         <h5>Enter your BTC Address</h5>
-        <input
-          className="form-control"
+        <FormControl
           id="btcAddress"
           name="btcAddress"
           type="text"
           placeholder="BTC Address"
           value={this.props.btcAddress || ''}
           onChange={this.props.handleChange}
+          isInvalid={errors.btcAddress ? true : false}
           required
         />
+        <FormControl.Feedback type="invalid">
+          {errors?.btcAddress}
+        </FormControl.Feedback>
       </FormGroup>
     )
   }
@@ -114,7 +119,6 @@ class Confirm extends Component<ConfirmProps> {
     return(
       <FormGroup>
         <h5>Confirm & Pay</h5>
-        Note: you will <strong>not</strong> be able to withdraw your DAI until the option expires.
         <FormGroup>
           <ListGroup>
               <ListGroupItem>Strike Price: <strong>{this.props.strikePrice.toString()} DAI</strong></ListGroupItem>
@@ -123,6 +127,9 @@ class Confirm extends Component<ConfirmProps> {
               <ListGroupItem>Underwrites: <strong>{utils.calculateAvailableBTC(this.props.amountDai, this.props.strikePrice).round(2).toString()} BTC</strong></ListGroupItem>
               <ListGroupItem>BTC Address: <strong>{this.props.btcAddress}</strong></ListGroupItem>
           </ListGroup>
+          <Alert variant="danger" className="mt-3">
+            You will <strong>not</strong> be able to withdraw your DAI until the option expires.
+          </Alert>
         </FormGroup>
         <SpinButton spinner={this.props.spinner}/>
       </FormGroup>
@@ -147,6 +154,10 @@ interface SellWizardState {
   expiry: number
   strikePrice: Big
   balance: Big
+  errors: {
+    amountDai?: string
+    btcAddress?: string
+  }
 }
 
 export default class SellWizard extends Component<SellWizardProps> {
@@ -159,6 +170,7 @@ export default class SellWizard extends Component<SellWizardProps> {
     expiry: 0,
     strikePrice: utils.newBig(0),
     balance: utils.newBig(0),
+    errors: {},
   }
 
   constructor(props: SellWizardProps) {
@@ -198,8 +210,19 @@ export default class SellWizard extends Component<SellWizardProps> {
   handleChange(event: React.ChangeEvent<FormControlElement>) {
     let {name, value} = event.target
     if (name === "amountDai") {
+      const amountDai = utils.newBig(value || 0);
       this.setState({
-        amountDai: utils.newBig(value || 0)
+        amountDai: amountDai,
+        errors: {
+          amountDai: amountDai.gt(0) ? undefined : "Invalid amount",
+        }
+      });
+    } else if (name === "btcAddress") {
+      this.setState({
+        btcAddress: value,
+        errors: {
+          btcAddress: decodeAddress(value) ? undefined : "Invalid address",
+        }
       });
     } else {
       this.setState({
@@ -212,7 +235,7 @@ export default class SellWizard extends Component<SellWizardProps> {
     const { amountDai, btcAddress } = this.state;
     let valid = [
       amountDai.gt(0),
-      btcAddress !== "",
+      decodeAddress(btcAddress) ? true : false,
       true,
     ];
     return valid[step];
@@ -331,15 +354,12 @@ export default class SellWizard extends Component<SellWizardProps> {
         <Modal.Body>
           <Form onSubmit={this.handleSubmit}>
             <EnterAmount
-              currentStep={this.state.currentStep}
               handleChange={this.handleChange}
-              amountDai={this.state.amountDai}
-              balance={this.state.balance}
+              {...this.state}
             />
             <EnterAddress
-              currentStep={this.state.currentStep}
               handleChange={this.handleChange}
-              btcAddress={this.state.btcAddress}
+              {...this.state}
             />
             <Confirm
               currentStep={this.state.currentStep}
