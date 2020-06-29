@@ -8,7 +8,7 @@
 //                       (txId) -> Object
 //
 
-import { Option, StorageInterface } from '../types/Storage';
+import { Option, StorageInterface, PersistentStorage } from '../types/Storage';
 
 export class Storage implements StorageInterface {
   userAddress: string;
@@ -86,5 +86,28 @@ export class Storage implements StorageInterface {
   hasPendingTransactionsFor(option: string) {
     const obj = this.pending[option];
     return obj ? Object.keys(obj).length > 0 : false;
+  }
+}
+
+
+export class LocalStorage implements PersistentStorage {
+  loadItem<T>(key: string, factory?: (json: any) => T ): T | null {
+    const rawItem = localStorage.getItem(key);
+    if (!rawItem) {
+      return null;
+    }
+    let parsedItem = JSON.parse(rawItem);
+    if (factory) {
+      parsedItem = factory(parsedItem);
+    }
+    return parsedItem;
+  }
+
+  storeItem(key: string, item: any): void {
+    if (typeof item['toJSON'] === 'function') {
+      item = item.toJSON();
+    }
+    const rawItem = JSON.stringify(item);
+    localStorage.setItem(key, rawItem);
   }
 }

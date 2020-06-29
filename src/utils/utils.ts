@@ -57,3 +57,7 @@ export function btcPutOptionId(unixTimestamp: number, strikePrice: string) {
 export function concat(value: string) {
 	return value.substring(0, 6) + "..." + value.substring(value.length-6);
 }
+
+export function isDefined<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined;
+};

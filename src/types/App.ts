@@ -1,7 +1,6 @@
-import { StorageInterface } from "./Storage";
+import { StorageInterface, PersistentStorage } from "./Storage";
 import { BitcoinInterface } from "./Bitcoin";
 import { ContractsInterface } from "./Contracts";
-import { ethers } from "ethers";
 
 export interface AppState {
   isWeb3: boolean
@@ -10,6 +9,7 @@ export interface AppState {
   btcProvider: BitcoinInterface
   contracts?: ContractsInterface
   storage: StorageInterface
+  persistenStorage: PersistentStorage
   btcPrices: {
     dai: number
     usd: number
