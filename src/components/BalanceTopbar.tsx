@@ -62,7 +62,7 @@ export default class BalanceTopbar extends Component<AppPropsLoading, State> {
                     </Form>
                     &nbsp;
                     <a href="https://faucet.ropsten.be/" target="__blank">
-                    <Button variant="outline-dark" size="sm" >Get Testnet ETH</Button></a>
+                        <Button variant="outline-dark" size="sm" >Get Testnet ETH</Button></a>
                     &nbsp;
                     <a href="https://testnet-faucet.mempool.co/" target="__blank">
                     <Button variant="outline-warning" size="sm" >Get Testnet BTC</Button></a>

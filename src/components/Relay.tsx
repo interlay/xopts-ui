@@ -44,15 +44,14 @@ export default class Relay extends Component<AppProps> {
         if (!this.state.loaded) return "";
         let relayDiff = this.state.relayHeight - this.state.blockstreamHeight;
         return (
-            <p className="text-muted">
-                <a href={"https://ropsten.etherscan.io/address/" + this.state.relayAddress}>
-                Relay Status: &nbsp;
-                {relayDiff <= 1 ? "Online" : (relayDiff <= 6 ? "tailing" : "Offline")} 
+            <p>
+                {/* <a href={"https://ropsten.etherscan.io/address/" + this.state.relayAddress}> */}
+                {relayDiff <= 1 ? "Online" : (relayDiff <= 6 ? "tailing" : "Offline")}:
                 &nbsp;
                 <Badge pill variant={relayDiff <= 1 ? "success" : (relayDiff <= 6 ? "warning" : "danger")}>&nbsp;</Badge>
                 &nbsp;
-                (Block Height: {this.state.relayHeight} / {this.state.blockstreamHeight})
-                </a>
+                Height: {this.state.relayHeight} / {this.state.blockstreamHeight}
+                {/* </a> */}
             </p>
         )
     }

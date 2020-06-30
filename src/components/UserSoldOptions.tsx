@@ -7,6 +7,9 @@ import { RefundModal } from "./RefundModal";
 import {AppProps} from "../types/App";
 import { Big } from 'big.js';
 import { BigNumber } from "ethers/utils";
+import cx from 'classnames';
+import s from './UserPurchasedOptions.module.scss';
+import Widget from "./Widget/Widget";
 
 interface UserSoldOptionsState {
     soldLoaded: boolean
@@ -217,90 +220,67 @@ export default class UserSoldOptions extends Component<AppProps> {
     }
 
     render() {
+        return (
+            <div>
+                <Row>
+                    <Col>
+                        <Widget title="Sold BTC/DAI Put Option Contracts">
+                            <div>
+                                {this.state.soldLoaded &&
+                                    <Row className="text-center">
+                                        <Col>
+                                            <h3>{this.state.totalInsured.round(2, 0).toString()} DAI ({this.state.percentSold.round(2, 0).toString()}%)</h3>
+                                            <h6>Insurance Sold</h6>
+                                            {/* <h6>({this.state.totalBtcInsured.round(2, 0).toString()} BTC)</h6> */}
+                                        </Col>
+                                        <Col>
+                                            <h3>{this.state.totalLocked.round(2, 0).toString()} DAI</h3>
+                                            <h6>Locked</h6>
+                                        </Col>
+                                        <Col>
+                                            <h3 className={(this.state.totalPremium.gt(0) ? "text-success": (this.state.totalPremium.lt(0) ? "text-danger" : ""))}>{this.state.totalPremium.round(2, 0).toString()} DAI</h3>
+                                            <h6>Premium Earned</h6>
+                                        </Col>
+                                        <Col>
+                                            <h3 className={(this.state.totalIncome.gt(0) ? "text-success": (this.state.totalIncome.lt(0) ? "text-danger" : ""))}>{this.state.totalIncome.round(2, 0).toString()} DAI</h3>
+                                            <h6>(Potential) Income</h6>
+                                        </Col>
+                                    </Row>
+                                }
 
-        return <div>
-            <ToastContainer
-                position="top-center"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
-
-            <Col xl={{ span: 8, offset: 2 }}>
-                <Card border="dark">
-                    <Card.Header>
-                        <Card.Title>
-                            <h2 className="text-center">Sold BTC/DAI Put Option Contracts</h2>
-                            {!this.state.soldLoaded &&
-                                <Row>
-                                    <Col className="text-center">
-                                        <Spinner animation="border" />
-                                    </Col>
-                                </Row>
-                            }
-                            {this.state.soldLoaded &&
-                                <Row className="text-center">
-                                    <Col>
-                                        <h3>{this.state.totalInsured.round(2, 0).toString()} DAI ({this.state.percentSold.round(2, 0).toString()}%)</h3>
-                                        <h6>Insurance Sold</h6>
-                                        <h6>({this.state.totalBtcInsured.round(2, 0).toString()} BTC)</h6>
-                                    </Col>
-                                    <Col>
-                                        <h3>{this.state.totalLocked.round(2, 0).toString()} DAI</h3>
-                                        <h6>Locked</h6>
-                                    </Col>
-                                    <Col>
-                                        <h3 className={(this.state.totalPremium.gt(0) ? "text-success": (this.state.totalPremium.lt(0) ? "text-danger" : ""))}>{this.state.totalPremium.round(2, 0).toString()} DAI</h3>
-                                        <h6>Premium Earned</h6>
-                                    </Col>
-                                    <Col>
-                                        <h3 className={(this.state.totalIncome.gt(0) ? "text-success": (this.state.totalIncome.lt(0) ? "text-danger" : ""))}>{this.state.totalIncome.round(2, 0).toString()} DAI</h3>
-                                        <h6>(Potential) Income</h6>
-                                    </Col>
-                                </Row>
-                            }
-                        </Card.Title>
-                    </Card.Header>
-                    {this.state.soldLoaded &&
-                        <Card.Body>
-                            <Row>
-                                <Table hover responsive>
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Expiry</th>
-                                            <th>Strike Price</th>
-                                            <th>Current Price</th>
-                                            <th>Your Sold</th>
-                                            <th>Total Sold</th>
-                                            <th>Premium Earned</th>
-                                            <th>Potential Earnings</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {this.renderTableData()}
-                                    </tbody>
-                                </Table>
-                            </Row>
-                        </Card.Body>
-                    }
-                </Card>
-                <RefundModal
-                    showRefundModal={this.state.showRefundModal}
-                    hideRefundModal={this.hideRefundModal}
-                    refundOption={this.state.refundOption}
-                    reloadSold={this.reloadSold}
-                    toast={toast}
-                    {...this.props}
-                />
-
-            </Col>
-        </div>;
+                                {this.state.soldLoaded &&
+                                    <Table responsive borderless className={cx('mb-0', s.optionsTable)}>
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Expiry</th>
+                                                <th>Strike Price</th>
+                                                <th>Current Price</th>
+                                                <th>Your Sold</th>
+                                                <th>Total Sold</th>
+                                                <th>Premium Earned</th>
+                                                <th>Potential Earnings</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {this.renderTableData()}
+                                        </tbody>
+                                    </Table>
+                                }
+                                <RefundModal
+                                    showRefundModal={this.state.showRefundModal}
+                                    hideRefundModal={this.hideRefundModal}
+                                    refundOption={this.state.refundOption}
+                                    reloadSold={this.reloadSold}
+                                    toast={toast}
+                                    {...this.props}
+                                />
+                            </div>
+                        </Widget>
+                    </Col>
+                </Row>
+            </div>
+        );
     }
 }

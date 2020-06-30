@@ -53,7 +53,6 @@ export default class TopBar extends Component<AppPropsLoading> {
             <a className="nav-link" href="https://forms.gle/Rean9U1EiGfpTQha6" target="__blank">
               Give Feedback <FaComment />
             </a>
-              
           </Nav>
           <Nav>
             <BalanceTopbar {...this.props} />

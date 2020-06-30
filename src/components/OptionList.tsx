@@ -8,6 +8,8 @@ import { ButtonTool } from "./ButtonTool";
 import { ToastContainer, toast } from 'react-toastify';
 import { AppProps } from "../types/App";
 import { Big } from 'big.js';
+import cx from 'classnames';
+import s from './OptionsList.module.scss';
 
 interface State {
     loaded: boolean
@@ -58,10 +60,8 @@ export default class OptionList extends Component<AppProps, State> {
         this.reloadOptions = this.reloadOptions.bind(this);
     }
 
-    componentDidUpdate() {
-        if (this.state.loaded === false) {
-            this.getOptions();
-        }
+    componentDidMount() {
+        this.getOptions();
     }
 
     async getOptions() {
@@ -219,70 +219,51 @@ export default class OptionList extends Component<AppProps, State> {
         }
     }
 
-
     render() {
         return (
-            <Col xl={{ span: 8, offset: 2 }}>
-                <ToastContainer
-                    position="bottom-center"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
-                <Card border="dark">
-                    <Card.Header>
-                        <Card.Title><h2 className="text-center">BTC/DAI Put Option Contracts</h2>
-                            <Row className="text-center">
-                                <Col>
-                                    <h3>{this.state.totalInsured.round(2, 0).toString()} BTC</h3>
-                                    <h6>Insured</h6>
-                                </Col>
+            <div>
+                <Row className="text-center">
+                    <Col>
+                        <h3>{this.state.totalInsured.round(2, 0).toString()} BTC</h3>
+                        <h6>Insured</h6>
+                    </Col>
 
-                                <Col>
-                                    <h3>{this.state.insuranceAvailable.round(2, 0).toString()} DAI</h3>
-                                    <h6>Insurance Available</h6>
-                                </Col>
+                    <Col>
+                        <h3>{this.state.insuranceAvailable.round(2, 0).toString()} DAI</h3>
+                        <h6>Insurance Available</h6>
+                    </Col>
 
-                                <Col>
-                                    <h3>{this.state.avgPremium.round(2, 0).toString()} DAI/BTC</h3>
-                                    <h6>Average Premium</h6>
-                                </Col>
-                            </Row>
-                        </Card.Title>
-                    </Card.Header>
-                    <Card.Body>
-                        <Row>
-                            <Table hover responsive size={"md"}>
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Expiry</th>
-                                        <th>Strike Price</th>
-                                        <th>Current Price</th>
-                                        <th>Insurance Issued</th>
-                                        <th>Premium</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.renderTableData()}
-                                </tbody>
-                            </Table>
-                        </Row>
-                        <Row className="text-center">
-                            <Col>
-                                <Button className="text-center" variant="success" size="lg" onClick={() => { this.showCreateModal() }}>
-                                    Create
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Card.Body>
-                </Card>
+                    <Col>
+                        <h3>{this.state.avgPremium.round(2, 0).toString()} DAI/BTC</h3>
+                        <h6>Average Premium</h6>
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Table responsive borderless className={cx('mb-0', s.optionsTable)}>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Expiry</th>
+                                <th>Strike Price</th>
+                                <th>Current Price</th>
+                                <th>Insurance Issued</th>
+                                <th>Premium</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.renderTableData()}
+                        </tbody>
+                    </Table>
+                </Row>
+                <Row className="text-center">
+                    <Col>
+                        <Button className="text-center" variant="success" size="lg" onClick={() => { this.showCreateModal() }}>
+                            Create
+                        </Button>
+                    </Col>
+                </Row>
                 <BuyWizard
                     contract={this.state.contractAddress}
                     toast={toast}
@@ -304,7 +285,7 @@ export default class OptionList extends Component<AppProps, State> {
                     reloadOptions={this.reloadOptions}
                     {...this.props}>
                 </CreateWizard>
-            </Col>
+            </div>
         )
     }
 }

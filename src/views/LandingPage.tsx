@@ -9,12 +9,14 @@ import permissionlessImg from "../assets/img/icons/permissionless.png";
 import premiumImg from "../assets/img/icons/premium.png";
 import trustlessImg from "../assets/img/icons/trustless.png";
 
+import s from './LandingPage.module.scss';
+
 export default class LandingPage extends Component {
 
   render() {
     return (
       <div>
-        <section className="jumbotron text-center white-background mt-2">
+        <section className={s.content + "jumbotron text-center mb-5"}>
           <div className="container mt-5">
             <h1 style={{ fontSize: "3.4em" }}>Trustless, Non-Custodial Bitcoin Options</h1>
             <h3 style={{ fontSize: "1.5em" }} className="lead text-muted mt-3">Trade Bitcoin Options. Keep Control Over Your Funds.</h3>
@@ -30,7 +32,7 @@ export default class LandingPage extends Component {
           </div>
         </section>
         <Container fluid>
-          <section className="jumbotron text-center">
+          <section className={s.content + "jumbotron text-center"}>
             <Col xl={{ span: 6, offset: 3 }}>
 
               <Row className="">

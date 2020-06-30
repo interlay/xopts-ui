@@ -7,8 +7,11 @@ import Relay from "../components/Relay";
 import bitcoinImg from "../assets/img/icons/32/btc.png";
 import daiImg from "../assets/img/icons/32/dai.png";
 import {AppProps} from "../types/App";
+import { Breadcrumb, BreadcrumbItem, Row, Col } from "reactstrap";
+import Widget from "../components/Widget/Widget";
+import { FaUser } from "react-icons/fa";
 
-export default class Dashboard extends Component<AppProps> {
+export default class Positions extends Component<AppProps> {
 
   componentDidMount(){
     this.forceUpdate();
@@ -20,28 +23,28 @@ export default class Dashboard extends Component<AppProps> {
     }
     return (
       <div>
-        <section className="jumbotron text-center border-bottom shadow-sm">
-          <Container>
-            <h2>Your Positions</h2>
-            <p className="lead text-muted">Account: {this.props.address} </p>
-            <h4> BTC <Image src={bitcoinImg}/> - DAI <Image src={daiImg} /></h4>
-            <p className="lead text-muted">(Testnet - Ropsten)</p>
-            <a className="nav-link" href="https://www.cryptocompare.com/" target="__blank"> 
-              {this.props.btcPrices.dai} BTC/DAI  &nbsp; - &nbsp;
-              {this.props.btcPrices.usd} BTC/USD &nbsp; - &nbsp;
-              {this.props.daiPrices.usd} DAI/USD
-            </a>
-            <Relay {...this.props} />
-          </Container>
-        </section>
-        <Container fluid>
-          <section>
-            <UserPurchasedOptions {...this.props} />
-          </section>
-          <section className="mt-5 mb-5">
-            <UserSoldOptions {...this.props} />
-          </section>
-        </Container>
+        <h1 className="mb-lg">Your Positions</h1>
+        <h2 className="lead text-muted mb-lg">(Testnet - Ropsten)</h2>
+        <Row>
+          <Col sm={12} md={6}>
+            <Widget title="Relay Status" >
+              <Relay {...this.props} />
+            </Widget>
+
+          </Col>
+          <Col sm={12} md={6}>
+            <Widget title="Exchange Rate" >
+              <a className="nav-link" href="https://www.cryptocompare.com/" target="__blank"> 
+                {this.props.btcPrices.dai} BTC/DAI  &nbsp; - &nbsp;
+                {this.props.btcPrices.usd} BTC/USD &nbsp; - &nbsp;
+                {this.props.daiPrices.usd} DAI/USD
+              </a>
+            </Widget>
+          </Col>
+        </Row>
+
+        <UserPurchasedOptions {...this.props} />
+        <UserSoldOptions {...this.props} />
       </div>
     );
   }

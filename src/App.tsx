@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Switch, Route, HashRouter } from 'react-router-dom';
 
 // theme
 import './App.scss';
@@ -11,15 +11,20 @@ import './assets/css/custom.css';
 import {AppState} from './types/App';
 
 import { ethers } from 'ethers';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
-import Dashboard from "./views/Positions";
-import Home from "./views/Home";
-import LandingPage from "./views/LandingPage";
-import Help from "./views/Help";
+// import Dashboard from "./views/Positions";
+// import Home from "./views/Home";
+// import LandingPage from "./views/LandingPage";
+// import Help from "./views/Help";
 
-import Topbar from "./components/Topbar";
-import Footer from "./components/Footer";
+// import Topbar from "./components/Topbar";
+// import Footer from "./components/Footer";
+
+import ErrorPage from './views/Error/ErrorPage';
+
+import './styles/theme.scss';
+import Layout from './components/Layout/Layout';
 
 import { Contracts } from './controllers/contracts';
 import { BitcoinQuery } from './controllers/bitcoin-data';
@@ -32,6 +37,9 @@ type Provider = ethers.providers.InfuraProvider | ethers.providers.Web3Provider;
 declare global {
   interface Window { web3: any; ethereum: any; }
 }
+
+
+const CloseButton = ({closeToast}: {closeToast?: any}) => <i onClick={closeToast} className="la la-close notifications-close"/>
 
 const INFURA_API_TOKEN = "cffc5fafb168418abcd50a3309eed8be";
 
@@ -171,22 +179,17 @@ export default class App extends Component<{}, AppState> {
 
   render() {
     return (
-      <Router>
-        <div className="main d-flex flex-column min-vh-100">
-          <Topbar {...this.state} tryLogIn={this.tryLogIn} />
-          <div className="mb-5">
+      <div>
+        <ToastContainer
+          autoClose={5000}
+          hideProgressBar
+          closeButton={<CloseButton/>}
+        />
+        <HashRouter>
             <Switch>
-              <Route exact path="/">
-                <LandingPage />
-              </Route>
-
-              <Route path="/help">
-                <Help />
-              </Route>
-
               {this.state.contracts &&
-                <Route path="/positions">
-                  <Dashboard 
+                <Route path="/">
+                  <Layout 
                     {...this.state}
                     contracts={this.state.contracts}
                     tryLogIn={this.tryLogIn}
@@ -194,20 +197,12 @@ export default class App extends Component<{}, AppState> {
                 </Route>
               }
 
-              {this.state.contracts &&
-                <Route path="/trade">
-                  <Home 
-                    {...this.state}
-                    contracts={this.state.contracts}
-                    tryLogIn={this.tryLogIn}
-                  />
-                </Route>
-              }
+              <Route path="/error" exact component={ErrorPage}/>
             </Switch>
-          </div>
-          <Footer />
-        </div>
-      </Router>
+        </HashRouter>
+
+      </div>
+
     )
   }
 }

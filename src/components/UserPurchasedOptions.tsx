@@ -9,6 +9,9 @@ import {AppProps} from "../types/App";
 import { Big } from 'big.js';
 import { FormControlElement } from "../types/Inputs";
 import { BigNumber } from "ethers/utils";
+import cx from 'classnames';
+import s from './UserPurchasedOptions.module.scss';
+import Widget from "./Widget/Widget";
 
 interface UserPurchasedOptionsState {
     purchasedLoaded: boolean
@@ -241,92 +244,72 @@ export default class UserPurchasedOptions extends Component<AppProps> {
     }
 
     render() {
-        return <div>
-            <ToastContainer
-                position="top-center"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
-            <Col xl={{ span: 8, offset: 2 }}>
-                <Card border="dark">
-                    <Card.Header>
-                        <Card.Title>
-                            <div className="text-center mb-4">
-                                <h2>Purchased BTC/DAI Put Option Contracts</h2>
-                            </div>
-                            {!this.state.purchasedLoaded &&
-                                <Row>
-                                    <Col className="text-center">
-                                        <Spinner animation="border" />
-                                    </Col>
-                                </Row>
-                            }
-                            {this.state.purchasedLoaded &&
-                                <Row className="text-center">
-                                    <Col>
-                                        <h3>{this.state.totalInsured.round(2, 0).toString()} BTC</h3>
-                                        <h6>Insured</h6>
-                                    </Col>
-                                    <Col>
-                                        <h3>{this.state.paidPremium.round(2, 0).toString()} DAI</h3>
-                                        <h6>Premium Paid</h6>
-                                    </Col>
-                                    <Col>
-                                        <h3 className={(this.state.totalIncome.gt(0) ? "text-success" : (this.state.totalIncome.toLocaleString() ? "text-danger" : ""))}>{this.state.totalIncome.round(2, 0).toString()} DAI</h3>
-                                        <h6>(Potential) Income</h6>
-                                    </Col>
-                                </Row>
-                            }
-                        </Card.Title>
-                    </Card.Header>
-                    {this.state.purchasedLoaded &&
-                        <Card.Body>
-                            <Row>
-                                <Table hover responsive>
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Expiry</th>
-                                            <th>Strike Price</th>
-                                            <th>Current Price</th>
-                                            <th>Insurance Issued</th>
-                                            <th>Premium Paid</th>
-                                            <th>Potential Earnings / Losses</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {this.renderTableData()}
-                                    </tbody>
-                                </Table>
-                            </Row>
-                        </Card.Body>
-                    }
-                </Card>
+        return (
+            <div>
+                <Row>
+                    <Col>
+                        <Widget title="Purchased BTC/DAI Put Option Contracts">
+                            <div>
+                                {this.state.purchasedLoaded &&
+                                    <Row className="text-center">
+                                        <Col>
+                                            <h3>{this.state.totalInsured.round(2, 0).toString()} BTC</h3>
+                                            <h6>Insured</h6>
+                                        </Col>
+                                        <Col>
+                                            <h3>{this.state.paidPremium.round(2, 0).toString()} DAI</h3>
+                                            <h6>Premium Paid</h6>
+                                        </Col>
+                                        <Col>
+                                            <h3 className={(this.state.totalIncome.gt(0) ? "text-success" : (this.state.totalIncome.toLocaleString() ? "text-danger" : ""))}>{this.state.totalIncome.round(2, 0).toString()} DAI</h3>
+                                            <h6>(Potential) Income</h6>
+                                        </Col>
+                                    </Row>
+                                }
 
-                <PayWizard 
-                    contract={this.state.contractAddress}
-                    hide={this.hidePayModal}
-                    toast={toast}
-                    reloadPurchased={this.reloadPurchased}
-                    showPayModal={this.state.showPayModal}
-                    {...this.props}>
-                </PayWizard>
-                <ConfWizard 
-                    contract={this.state.contractAddress}
-                    hide={this.hideConfModal}
-                    toast={toast}
-                    reloadPurchased={this.reloadPurchased}
-                    showConfModal={this.state.showConfModal}
-                    {...this.props}>
-                </ConfWizard>
-            </Col>
-        </div>;
+                                {this.state.purchasedLoaded &&
+                                    <Row>
+                                        <Table responsive borderless className={cx('mb-0', s.optionsTable)}>
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Expiry</th>
+                                                    <th>Strike Price</th>
+                                                    <th>Current Price</th>
+                                                    <th>Insurance Issued</th>
+                                                    <th>Premium Paid</th>
+                                                    <th>Potential Earnings / Losses</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {this.renderTableData()}
+                                            </tbody>
+                                        </Table>
+                                    </Row>
+                                }
+                            </div>
+                            <PayWizard 
+                                contract={this.state.contractAddress}
+                                hide={this.hidePayModal}
+                                toast={toast}
+                                reloadPurchased={this.reloadPurchased}
+                                showPayModal={this.state.showPayModal}
+                                {...this.props}>
+                            </PayWizard>
+                            <ConfWizard 
+                                contract={this.state.contractAddress}
+                                hide={this.hideConfModal}
+                                toast={toast}
+                                reloadPurchased={this.reloadPurchased}
+                                showConfModal={this.state.showConfModal}
+                                {...this.props}>
+                            </ConfWizard>
+                        </Widget>
+                    </Col>
+                </Row>
+
+            </div>
+        );
     }
 }

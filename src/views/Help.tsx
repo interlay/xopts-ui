@@ -10,14 +10,10 @@ export default class Help extends Component {
   render() {
     return (
       <div>
-        <section className="jumbotron text-center">
-          <div className="container">
-            <h2>XOpts User Guide</h2>
-            <h3 className="lead text-muted">Learn how to buy and sell BTC options.</h3>
-          </div>
-        </section>
         <Container fluid>
           <section className="col-xl-8 offset-xl-2">
+            <h1 className="mb-lg">XOpts User Guide</h1>
+            <h2 className="lead text-muted mb-5">Learn how to buy and sell BTC options.</h2>
             <h2>Guides</h2>
             <div>
               <li className="list-group-item border-0"><a href="#getting-started" className="list-group-item-action">Getting Started</a></li>
