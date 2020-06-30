@@ -1,4 +1,5 @@
 import { Big } from 'big.js';
+import { BigNumber } from "ethers/utils";
 
 Big.DP = 30
 Big.RM = 1
@@ -6,7 +7,10 @@ Big.PE = 30
 
 type constructorArg = string | number | Big;
 
-export function newBig(i: constructorArg) {
+export function newBig(i: constructorArg | BigNumber) {
+  if (i instanceof BigNumber) {
+    i = i.toString();
+  }
 	return new Big(i);
 }
 

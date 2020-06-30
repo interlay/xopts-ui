@@ -3,20 +3,22 @@ import { Big } from 'big.js';
 
 export type BigNumber = ethers.utils.BigNumber;
 
+export interface OptionAmount {
+    address: string;
+    totalAmount: Big;
+}
+
+export interface OptionSoldAmount extends OptionAmount {
+    unsoldAmount: Big;
+}
+
 export interface ContractsInterface {
     relayContract: ethers.Contract
 
     getRelayHeight(): Promise<BigNumber>
     getOptions(): Promise<string[]>
-    getUserPurchasedOptions(address: string): Promise<{ optionContracts: string[]; purchasedOptions: BigNumber[]; }>
-    getUserSoldOptions(address: string): Promise<{
-        optionContracts: string[];
-        unsoldOptions: BigNumber[];
-        totalOptions: BigNumber[];
-        0: string[];
-        1: BigNumber[];
-        2: BigNumber[];
-    }>
+    getUserPurchasedOptions(address: string): Promise<OptionAmount[]>
+    getUserSoldOptions(address: string): Promise<OptionSoldAmount[]>
     checkAllowance(amount: Big): Promise<void>
     balanceOf(): Promise<BigNumber>
     mint(): Promise<ethers.ContractTransaction>
@@ -28,17 +30,19 @@ export interface ContractsInterface {
     createOption(expiry: number, premium: BigNumber, strikePrice: BigNumber): Promise<void>
 }
 
+export interface OptionDetailsProps {
+    expiry: BigNumber;
+    premium: BigNumber;
+    strikePrice: BigNumber;
+    total: BigNumber;
+    totalSold: BigNumber;
+    totalUnsold: BigNumber;
+}
+
 export interface OptionInterface {
     address: string;
 
-    getDetails(): Promise<{
-        expiry: BigNumber;
-        premium: BigNumber;
-        strikePrice: BigNumber;
-        total: BigNumber;
-        totalSold: BigNumber;
-        totalUnsold: BigNumber;
-    }>
+    getDetails(): Promise<OptionDetailsProps>
     getOptionSellers(): Promise<(string | ethers.utils.BigNumber)[][]>
     getOptionOwners(): Promise<(string | BigNumber)[][]>
     getBtcAddress(address: string): Promise<string>

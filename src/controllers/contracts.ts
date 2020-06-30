@@ -13,6 +13,7 @@ import { IERC20Sellable } from "@interlay/xopts/dist/typechain/IERC20Sellable";
 import { IERC20BuyableFactory } from "@interlay/xopts/dist/typechain/IERC20BuyableFactory";
 import { BigNumber } from 'ethers/utils';
 import { decodeAddress, encodeAddress } from '../utils/address';
+import * as utils from '../utils/utils';
 
 const DEFAULT_CONFIRMATIONS = 1;
 
@@ -76,12 +77,27 @@ export class Contracts implements ContractsInterface {
     }
 
     async getUserPurchasedOptions(address: string) {
+        const result = [];
         const {optionContracts, purchasedOptions} = await this.optionPoolContract.getUserPurchasedOptions(address);
-        return {optionContracts, purchasedOptions}
+        for (let i = 0; i < optionContracts.length; i++) {
+            result.push({ address: optionContracts[i], totalAmount: utils.newBig(purchasedOptions[i]) });
+        }
+        return result;
     }
 
-    getUserSoldOptions(address: string) {
-        return this.optionPoolContract.getUserSoldOptions(address);
+    async getUserSoldOptions(address: string) {
+        const result = [];
+        const { optionContracts, unsoldOptions, totalOptions } =
+            await this.optionPoolContract.getUserSoldOptions(address);
+
+        for (let i = 0; i < optionContracts.length; i++) {
+            result.push({
+                address: optionContracts[i],
+                unsoldAmount: utils.newBig(unsoldOptions[i]),
+                totalAmount: utils.newBig(totalOptions[i])
+            });
+        }
+        return result;
     }
 
     async checkAllowance(amount: Big) {

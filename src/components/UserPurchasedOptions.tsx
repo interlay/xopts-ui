@@ -6,29 +6,80 @@ import PayWizard from './wizards/Pay';
 import ConfWizard from './wizards/Confirm';
 import { ButtonTool } from "./ButtonTool";
 import {AppProps} from "../types/App";
+import { OptionDetailsProps, OptionAmount } from "../types/Contracts";
 import { Big } from 'big.js';
 import { FormControlElement } from "../types/Inputs";
-import { BigNumber } from "ethers/utils";
+
+
+interface PurchasedOptionProps {
+    expiry: number;
+    premium: Big;
+    strikePrice: Big;
+    totalSupply: Big;
+    totalSupplyLocked: Big;
+    numSellers: number;
+    contract: string;
+}
+
+class PurchasedOption {
+    private props: PurchasedOptionProps;
+
+    constructor(props: PurchasedOptionProps) {
+        this.props = props;
+    }
+
+    get expiry(): number { return this.props.expiry; }
+    get premium(): Big { return this.props.premium; }
+    get strikePrice(): Big { return this.props.strikePrice; }
+    get totalSupply(): Big { return this.props.totalSupply; }
+    get totalSupplyLocked(): Big { return this.props.totalSupplyLocked; }
+    get numSellers(): number { return this.props.numSellers; }
+    get contract(): string { return this.props.contract; }
+    get btcInsured(): Big { return this.totalSupplyLocked.div(this.strikePrice); }
+    get premiumPaid(): Big { return this.premium.mul(this.btcInsured); }
+    computeIncome(spotPrice: Big): Big {
+        return this.btcInsured.mul(this.strikePrice.sub(spotPrice).sub(this.premium));
+    }
+
+    static fromResponse(address: string, numSellers: number,
+                        totalSupplyLocked: Big, details: OptionDetailsProps): PurchasedOption {
+        let props = {
+            expiry: parseInt(details.expiry.toString()),
+            premium: utils.weiDaiToBtc(utils.newBig(details.premium.toString())),
+            strikePrice: utils.weiDaiToBtc(utils.newBig(details.strikePrice.toString())),
+            totalSupply: utils.weiDaiToDai(utils.newBig(details.total.toString())),
+            totalSupplyLocked: totalSupplyLocked,
+            numSellers: numSellers,
+            contract: address
+        };
+        return new PurchasedOption(props);
+    }
+
+    toJSON(): object {
+        return this.props;
+    }
+
+    static fromJSON(item: any): PurchasedOption {
+        return new PurchasedOption({
+            expiry: item.expiry,
+            premium: utils.newBig(item.premium),
+            strikePrice: utils.newBig(item.strikePrice),
+            totalSupply: utils.newBig(item.totalSupply),
+            totalSupplyLocked: utils.newBig(item.totalSupplyLocked),
+            numSellers: item.numSellers,
+            contract: item.contract,
+        });
+    }
+}
 
 interface UserPurchasedOptionsState {
     purchasedLoaded: boolean
-    purchasedOptions: {
-        expiry: number;
-        premium: Big;
-        strikePrice: Big;
-        totalSupply: Big;
-        totalSupplyLocked: Big;
-        numSellers: number;
-        spotPrice: Big;
-        contract: string;
-        btcInsured: Big;
-        premiumPaid: Big;
-        income: Big;    
-    }[]
+    purchasedOptions: PurchasedOption[]
     totalInsured: Big
     insuranceAvailable: Big
     paidPremium: Big
     totalIncome: Big
+    loading: boolean
     amount: number
     height: number
     index: number
@@ -48,6 +99,7 @@ export default class UserPurchasedOptions extends Component<AppProps> {
         insuranceAvailable: utils.newBig(0),
         paidPremium: utils.newBig(0),
         totalIncome: utils.newBig(0),
+        loading: false,
         amount: 0,
         height: 0,
         index: 0,
@@ -72,81 +124,98 @@ export default class UserPurchasedOptions extends Component<AppProps> {
     componentDidUpdate() {
         if (this.props.contracts && this.props.address) {
             if (!this.state.purchasedLoaded) {
-                this.getAvailableOptions();
+                this.loadOptions();
             }
         }
     }
 
-    async getAvailableOptions() {
-        if (this.props.contracts && this.props.address) {
-            let optionContracts = await this.props.contracts.getUserPurchasedOptions(this.props.address);
-            let purchasedOptions = await this.getOptions(optionContracts);
-            this.setState({
-                purchasedOptions: purchasedOptions,
-                purchasedLoaded: true
+    async loadOptions() {
+        if (this.state.loading) {
+            return;
+        }
+        this.setState({ loading: true });
+
+        let purchasedOptions = await this.getAvailableOptions(true);
+        this.setState({ purchasedOptions });
+        try {
+            purchasedOptions = await this.getAvailableOptions(false);
+        } catch (err) {
+            console.error(err);
+        }
+
+        this.setState({
+            purchasedOptions: purchasedOptions,
+            purchasedLoaded: true,
+            loading: false
+        });
+    }
+
+    async getPurchasedOptions(useCache: boolean = false): Promise<OptionAmount[]> {
+        const key = `user-purchased-options`;
+        if (useCache) {
+            const result = this.props.persistenStorage.loadItem(key, arr => {
+                return arr.map((v: any) => {
+                    return { address: v.address, totalAmount: utils.newBig(v.totalAmount) };
+                });
             });
+            return result || [];
         }
+        const result = await this.props.contracts.getUserPurchasedOptions(this.props.address);
+        this.props.persistenStorage.storeItem(key, result);
+        return result;
     }
 
-    async getOptions(optionContracts: {
-        optionContracts: string[];
-        purchasedOptions: BigNumber[];
-    }) {
-        // Remove 0-value contracts
-        for (let i = optionContracts.purchasedOptions.length - 1; i >= 0; i--) {
-            if (optionContracts.purchasedOptions[i].eq(0)) {
-                optionContracts.optionContracts.splice(i, 1);
-                optionContracts.purchasedOptions.splice(i, 1);
-            }
+    async getAvailableOptions(useCache: boolean = false) {
+        if (this.props.contracts && this.props.address) {
+            let optionContracts = await this.getPurchasedOptions(useCache);
+            return await this.getOptions(optionContracts, useCache);
         }
+        return [];
+    }
 
-        let options = [];
+    async getOption(optionAmount: OptionAmount, useCache: boolean = false): Promise<PurchasedOption | null> {
+        const key = `purchased-option:${optionAmount.address}`;
+        if (useCache) {
+            return this.props.persistenStorage.loadItem(key, PurchasedOption.fromJSON);
+        }
+        let optionContract = this.props.contracts?.attachOption(optionAmount.address);
+        let optionRes = await optionContract.getDetails();
+        const numSellers = (await optionContract.getOptionOwners()).length;
+        const totalSupplyLocked = utils.weiDaiToDai(optionAmount.totalAmount);
+        const option = PurchasedOption.fromResponse(optionAmount.address, numSellers, totalSupplyLocked, optionRes);
+        this.props.persistenStorage.storeItem(key, option);
+        return option;
+    }
+
+    async getOptions(optionAmounts: OptionAmount[], useCache: boolean = false): Promise<PurchasedOption[]> {
+        // Remove 0-value contracts
+        optionAmounts = optionAmounts.filter(option => !option.totalAmount.eq(0));
+
         let totalBtcInsured = utils.newBig(0);
         let paidPremium = utils.newBig(0);
         let totalIncome = utils.newBig(0);
-        try {
-            for (let i = 0; i < optionContracts.optionContracts.length; i++) {
-                let addr = optionContracts.optionContracts[i];
-                let optionContract = this.props.contracts?.attachOption(addr);
-                let optionRes = await optionContract.getDetails();
-                let option = {
-                    expiry: parseInt(optionRes.expiry.toString()),
-                    premium: utils.weiDaiToBtc(utils.newBig(optionRes.premium.toString())),
-                    strikePrice: utils.weiDaiToBtc(utils.newBig(optionRes.strikePrice.toString())),
-                    totalSupply: utils.weiDaiToDai(utils.newBig(optionRes.total.toString())),
-                    // User's purchased options
-                    totalSupplyLocked: utils.weiDaiToDai(utils.newBig(optionContracts.purchasedOptions[i].toString())),
-                    numSellers: (await optionContract.getOptionOwners()).length,
 
-                    spotPrice: utils.newBig(0),
-                    contract: '',
-                    btcInsured: utils.newBig(0),
-                    premiumPaid: utils.newBig(0),
-                    income: utils.newBig(0),
-                }
-                option.spotPrice = utils.newBig(this.props.btcPrices.dai);
-                option.contract = optionContracts.optionContracts[i];
-                option.btcInsured = option.totalSupplyLocked.div(option.strikePrice);
-                option.premiumPaid = option.premium.mul(option.btcInsured);
+        const tasks = optionAmounts.map(option => this.getOption(option, useCache));
+        const options = (await Promise.all(tasks)).filter(utils.isDefined);
 
-                let income = option.btcInsured.mul(option.strikePrice.sub(option.spotPrice).sub(option.premium));
-                option.income = income;
-                options.push(option);
-
-                paidPremium = paidPremium.add(option.premiumPaid);
-                totalBtcInsured = totalBtcInsured.add(option.btcInsured);
-                totalIncome = totalIncome.add(option.income);
-            }
-            this.setState({
-                paidPremium: paidPremium,
-                totalInsured: totalBtcInsured,
-                totalIncome: totalIncome,
-                totalBtcInsured: totalBtcInsured
-            });
-        } catch (error) {
-            console.log(error);
+        for (const option of options) {
+            paidPremium = paidPremium.add(option.premiumPaid);
+            totalBtcInsured = totalBtcInsured.add(option.btcInsured);
+            totalIncome = totalIncome.add(option.computeIncome(this.spotPrice));
         }
+
+        this.setState({
+            paidPremium: paidPremium,
+            totalInsured: totalBtcInsured,
+            totalIncome: totalIncome,
+            totalBtcInsured: totalBtcInsured
+        });
+
         return options;
+    }
+
+    get spotPrice() {
+        return utils.newBig(this.props.btcPrices.dai);
     }
 
     // TODO: fetch number of sellers
@@ -154,53 +223,62 @@ export default class UserPurchasedOptions extends Component<AppProps> {
         return this.props.storage.getPendingTransactionsFor(contract).length !== numSellers;
     }
 
-    renderTableData() {
-        if (this.state.purchasedOptions.length > 0) {
-            return this.state.purchasedOptions.map((option, index) => {
-                const { expiry, premium, strikePrice, spotPrice, totalSupply, totalSupplyLocked, income, premiumPaid, contract } = option;
-                const id = utils.btcPutOptionId(expiry, strikePrice.toString());
-                let percentInsured = ((totalSupply.lte(0)) ? utils.newBig(0) : (totalSupplyLocked.div(totalSupply)).mul(100));
-                return (
-                    <tr key={contract}>
-                        <td>{id}</td>
-                        <td>{new Date(expiry * 1000).toLocaleString()}</td>
-                        <td>{strikePrice.toString()} DAI</td>
-                        <td><span className={(income.gte(0.0) ? "text-success" : "text-danger")}>{spotPrice.toString()}</span> DAI</td>
-                        <td>{totalSupplyLocked.round(2, 0).toString()} / {totalSupply.round(2, 0).toString()} DAI ({percentInsured.toFixed(0)} %)</td>
-                        <td>{premiumPaid.round(2, 0).toString()} DAI <br /> ({premium.round(2, 0).toString()} DAI/BTC)</td>
-                        <td>
-                          <strong className={(income.gte(0.0) ? "text-success" : "text-danger")}>
-                            {( income.round(2,0).toString() )}
-                          </strong> DAI </td>
+    renderOption(option: PurchasedOption) {
+        const { expiry, premium, strikePrice, totalSupply, totalSupplyLocked, premiumPaid, contract } = option;
+        const id = utils.btcPutOptionId(expiry, strikePrice.toString());
+        let percentInsured = ((totalSupply.lte(0)) ? utils.newBig(0) : (totalSupplyLocked.div(totalSupply)).mul(100));
+        const income = option.computeIncome(this.spotPrice);
+        return (
+            <tr key={contract}>
+                <td>{id}</td>
+                <td>{new Date(expiry * 1000).toLocaleString()}</td>
+                <td>{strikePrice.toString()} DAI</td>
+                <td><span className={(income.gte(0.0) ? "text-success" : "text-danger")}>{this.spotPrice.toString()}</span> DAI</td>
+                <td>{totalSupplyLocked.round(2, 0).toString()} / {totalSupply.round(2, 0).toString()} DAI ({percentInsured.toFixed(0)} %)</td>
+                <td>{premiumPaid.round(2, 0).toString()} DAI <br /> ({premium.round(2, 0).toString()} DAI/BTC)</td>
+                <td>
+                    <strong className={(income.gte(0.0) ? "text-success" : "text-danger")}>
+                    {( income.round(2,0).toString() )}
+                    </strong> DAI </td>
 
-                        <td>
-                            <ButtonTool
-                                // TODO: allow repeats 
-                                disable={!this.hasNonPendingSellers(contract, option.numSellers)}
-                                reason={"Pending"}
-                                placement={"left"}
-                                text={"Exercise"}
-                                variant={"outline-success"}
-                                show={this.showPayModal}
-                                showValue={option.contract}
-                            />
-                            {" "}
-                            {
-                                this.props.storage.hasPendingTransactionsFor(option.contract) &&
-                                    <Button 
-                                        variant="outline-success"
-                                        // disabled={!this.hasNonPendingSellers(contract, 1)}
-                                        onClick={() => { this.showConfModal(option.contract) }}>
-                                        Confirm
-                                    </Button>
-                            }
-                        </td>
-                    </tr>
-                )
-            })
-        } else {
-            return <tr><td className="text-center" colSpan={8}>No Options</td></tr>
+                <td>
+                    <ButtonTool
+                        // TODO: allow repeats 
+                        disable={!this.hasNonPendingSellers(contract, option.numSellers)}
+                        reason={"Pending"}
+                        placement={"left"}
+                        text={"Exercise"}
+                        variant={"outline-success"}
+                        show={this.showPayModal}
+                        showValue={option.contract}
+                    />
+                    {" "}
+                    {
+                        this.props.storage.hasPendingTransactionsFor(option.contract) &&
+                            <Button 
+                                variant="outline-success"
+                                // disabled={!this.hasNonPendingSellers(contract, 1)}
+                                onClick={() => { this.showConfModal(option.contract) }}>
+                                Confirm
+                            </Button>
+                    }
+                </td>
+            </tr>
+        )
+    }
+
+    renderTableData() {
+        const result = [];
+        if (!this.state.purchasedLoaded) {
+            result.push(<tr key="spinner"><td colSpan={7} className="text-center"><Spinner animation="border" /></td></tr>);
         }
+
+        if (this.state.purchasedOptions.length > 0) {
+            const renderedOptions = this.state.purchasedOptions.map(option => this.renderOption(option));
+            result.push(...renderedOptions);
+        }
+
+        return result;
     }
 
     handleChange(event: React.ChangeEvent<FormControlElement>) {
@@ -260,14 +338,7 @@ export default class UserPurchasedOptions extends Component<AppProps> {
                             <div className="text-center mb-4">
                                 <h2>Purchased BTC/DAI Put Option Contracts</h2>
                             </div>
-                            {!this.state.purchasedLoaded &&
-                                <Row>
-                                    <Col className="text-center">
-                                        <Spinner animation="border" />
-                                    </Col>
-                                </Row>
-                            }
-                            {this.state.purchasedLoaded &&
+                            {
                                 <Row className="text-center">
                                     <Col>
                                         <h3>{this.state.totalInsured.round(2, 0).toString()} BTC</h3>
@@ -285,7 +356,7 @@ export default class UserPurchasedOptions extends Component<AppProps> {
                             }
                         </Card.Title>
                     </Card.Header>
-                    {this.state.purchasedLoaded &&
+                    {
                         <Card.Body>
                             <Row>
                                 <Table hover responsive>

@@ -10,7 +10,7 @@ import { AppProps } from "../types/App";
 import { Big } from 'big.js';
 
 
-interface OptionRecord {
+interface OptionProps {
     expiry: number;
     premium: Big;
     strikePrice: Big;
@@ -23,9 +23,9 @@ interface OptionRecord {
 }
 
 class PersistableOption {
-    private _option: OptionRecord;
+    private _option: OptionProps;
 
-    constructor(option: OptionRecord) {
+    constructor(option: OptionProps) {
         this._option = option;
     }
 
@@ -66,7 +66,7 @@ class PersistableOption {
 interface State {
     loaded: boolean
     loading: boolean,
-    options: OptionRecord[],
+    options: OptionProps[],
     totalInsured: Big,
     insuranceAvailable: Big,
     avgPremium: Big,
@@ -136,12 +136,12 @@ export default class OptionList extends Component<AppProps, State> {
         return result;
     }
 
-    async getOptions(useCache: boolean = true): Promise<OptionRecord[]> {
+    async getOptions(useCache: boolean = true): Promise<OptionProps[]> {
         let optionContracts = await this.getOptionContracts(useCache);
         return await this.getOptionsDetails(optionContracts, useCache);
     }
 
-    async getOptionDetails(address: string, useCache: boolean = false): Promise<OptionRecord | null> {
+    async getOptionDetails(address: string, useCache: boolean = false): Promise<OptionProps | null> {
         const optionKey = `option-details:${address}`;
         if (useCache) {
             const result = this.props.persistenStorage.loadItem(optionKey, PersistableOption.fromJSON);
@@ -167,7 +167,7 @@ export default class OptionList extends Component<AppProps, State> {
         return option;
     }
 
-    async getOptionsDetails(optionContracts: string[], useCache: boolean = false): Promise<OptionRecord[]> {
+    async getOptionsDetails(optionContracts: string[], useCache: boolean = false): Promise<OptionProps[]> {
         let insuranceAvailable = utils.newBig(0);
         let totalInsured = utils.newBig(0);
         let totalPremium = utils.newBig(0);
@@ -237,7 +237,7 @@ export default class OptionList extends Component<AppProps, State> {
         this.getOptions();
     }
 
-    renderOption(option: OptionRecord) {
+    renderOption(option: OptionProps) {
         const { expiry, premium, strikePrice, spotPrice, totalSupply, totalSupplyLocked, contract } = option;
         const id = utils.btcPutOptionId(expiry, strikePrice.toString());
 

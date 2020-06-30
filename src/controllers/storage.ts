@@ -91,7 +91,7 @@ export class Storage implements StorageInterface {
 
 
 export class LocalStorage implements PersistentStorage {
-  loadItem<T>(key: string, factory?: (json: any) => T ): T | null {
+  loadItem<T>(key: string, factory?: (json: any) => T): T | null {
     const rawItem = localStorage.getItem(key);
     if (!rawItem) {
       return null;
