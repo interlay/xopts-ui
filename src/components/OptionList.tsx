@@ -9,19 +9,64 @@ import { ToastContainer, toast } from 'react-toastify';
 import { AppProps } from "../types/App";
 import { Big } from 'big.js';
 
+
+interface OptionProps {
+    expiry: number;
+    premium: Big;
+    strikePrice: Big;
+    totalSupply: Big;
+    totalSupplyLocked: Big;
+    totalSupplyUnlocked: Big;
+    hasSellers: boolean;
+    spotPrice: number;
+    contract: string;
+}
+
+class PersistableOption {
+    private _option: OptionProps;
+
+    constructor(option: OptionProps) {
+        this._option = option;
+    }
+
+    toJSON(): object {
+        return {
+            expiry: this.option.expiry,
+            premium: this.option.premium.toString(),
+            strikePrice: this.option.strikePrice.toString(),
+            totalSupply: this.option.totalSupply.toString(),
+            totalSupplyLocked: this.option.totalSupplyLocked.toString(),
+            totalSupplyUnlocked: this.option.totalSupplyUnlocked.toString(),
+            hasSellers: this.option.hasSellers,
+            spotPrice: this.option.spotPrice,
+            contract: this.option.contract,
+        };
+    }
+
+    static fromJSON(option: any): PersistableOption {
+        return new PersistableOption({
+            expiry: option.expiry,
+            premium: utils.newBig(option.premium),
+            strikePrice: utils.newBig(option.strikePrice.toString()),
+            totalSupply: utils.newBig(option.totalSupply.toString()),
+            totalSupplyLocked: utils.newBig(option.totalSupplyLocked.toString()),
+            totalSupplyUnlocked: utils.newBig(option.totalSupplyUnlocked.toString()),
+            hasSellers: option.hasSellers,
+            spotPrice: option.spotPrice,
+            contract: option.contract,
+        });
+    }
+
+    get option() {
+        return this._option;
+    }
+}
+
+
 interface State {
     loaded: boolean
-    options: {
-        expiry: number;
-        premium: Big;
-        strikePrice: Big;
-        totalSupply: Big;
-        totalSupplyLocked: Big;
-        totalSupplyUnlocked: Big;
-        hasSellers: boolean;
-        spotPrice: number;
-        contract: string;    
-    }[],
+    loading: boolean,
+    options: OptionProps[],
     totalInsured: Big,
     insuranceAvailable: Big,
     avgPremium: Big,
@@ -34,6 +79,7 @@ interface State {
 export default class OptionList extends Component<AppProps, State> {
     state: State = {
         loaded: false,
+        loading: false,
         options: [],
         totalInsured: utils.newBig(0),
         insuranceAvailable: utils.newBig(0),
@@ -60,51 +106,79 @@ export default class OptionList extends Component<AppProps, State> {
 
     componentDidUpdate() {
         if (this.state.loaded === false) {
-            this.getOptions();
+            this.loadOptions();
         }
     }
 
-    async getOptions() {
-        if (this.props.contracts) {
-            let optionContracts = await this.props.contracts.getOptions();
-            let options = await this.getOptionDetails(optionContracts);
-            this.setState({
-                loaded: true,
-                options: options
-            });
+    async loadOptions() {
+        if (this.state.loading) {
+            return;
         }
+        this.setState({loading: true});
+        let options = await this.getOptions(true);
+        this.setState({ options });
+        options = await this.getOptions(false);
+        this.setState({
+            loaded: true,
+            loading: false,
+            options,
+        });
     }
 
-    async getOptionDetails(optionContracts: string[]) {
+    async getOptionContracts(useCache: boolean = false): Promise<string[]> {
+        const storageKey = 'option-contract-addresses';
+        if (useCache) {
+            const result = this.props.persistenStorage.loadItem(storageKey);
+            return (result || []) as string[];
+        }
+        const result = await this.props.contracts.getOptions();
+        this.props.persistenStorage.storeItem(storageKey, result)
+        return result;
+    }
 
-        let options = [];
-        var index;
+    async getOptions(useCache: boolean = true): Promise<OptionProps[]> {
+        let optionContracts = await this.getOptionContracts(useCache);
+        return await this.getOptionsDetails(optionContracts, useCache);
+    }
+
+    async getOptionDetails(address: string, useCache: boolean = false): Promise<OptionProps | null> {
+        const optionKey = `option-details:${address}`;
+        if (useCache) {
+            const result = this.props.persistenStorage.loadItem(optionKey, PersistableOption.fromJSON);
+            if (!result) {
+                return null;
+            }
+            return result.option;
+        }
+        const optionContract = this.props.contracts.attachOption(address);
+        const optionRes = await optionContract.getDetails();
+        const option = {
+            expiry: parseInt(optionRes.expiry.toString()),
+            premium: utils.weiDaiToBtc(utils.newBig(optionRes.premium.toString())),
+            strikePrice: utils.weiDaiToBtc(utils.newBig(optionRes.strikePrice.toString())),
+            totalSupply: utils.weiDaiToDai(utils.newBig(optionRes.total.toString())),
+            totalSupplyLocked: utils.weiDaiToDai(utils.newBig(optionRes.totalSold.toString())),
+            totalSupplyUnlocked: utils.weiDaiToDai(utils.newBig(optionRes.totalUnsold.toString())),
+            hasSellers: await optionContract.hasSellers(),
+            spotPrice: this.props.btcPrices.dai,
+            contract: address,
+        };
+        this.props.persistenStorage.storeItem(optionKey, new PersistableOption(option));
+        return option;
+    }
+
+    async getOptionsDetails(optionContracts: string[], useCache: boolean = false): Promise<OptionProps[]> {
         let insuranceAvailable = utils.newBig(0);
         let totalInsured = utils.newBig(0);
         let totalPremium = utils.newBig(0);
-        for (index in optionContracts) {
-            let addr = optionContracts[index];
-            let optionContract = this.props.contracts.attachOption(addr);
-            let optionRes = await optionContract.getDetails();
-            let option = {
-                expiry: parseInt(optionRes.expiry.toString()),
-                premium: utils.weiDaiToBtc(utils.newBig(optionRes.premium.toString())),
-                strikePrice: utils.weiDaiToBtc(utils.newBig(optionRes.strikePrice.toString())),
-                totalSupply: utils.weiDaiToDai(utils.newBig(optionRes.total.toString())),
-                totalSupplyLocked: utils.weiDaiToDai(utils.newBig(optionRes.totalSold.toString())),
-                totalSupplyUnlocked: utils.weiDaiToDai(utils.newBig(optionRes.totalUnsold.toString())),
-                hasSellers: await optionContract.hasSellers(),
-                spotPrice: 0,
-                contract: '',
-            }
-            option.spotPrice = this.props.btcPrices.dai;
-            option.contract = addr;
+        const optionPromises = optionContracts.map(addr => this.getOptionDetails(addr, useCache));
+        const options = (await Promise.all(optionPromises)).filter(utils.isDefined);
+        options.forEach(option => {
             if (!option.strikePrice.eq(0))
                 totalInsured = totalInsured.add(option.totalSupplyLocked.div(option.strikePrice));
             insuranceAvailable = insuranceAvailable.add(option.totalSupplyUnlocked);
             totalPremium = totalPremium.add(option.premium);
-            options.push(option);
-        }
+        });
 
         this.setState({
             insuranceAvailable: insuranceAvailable,
@@ -163,62 +237,67 @@ export default class OptionList extends Component<AppProps, State> {
         this.getOptions();
     }
 
-    renderTableData() {
-        if (this.state.loaded) {
-            return this.state.options.map((option, index) => {
-                const { expiry, premium, strikePrice, spotPrice, totalSupply, totalSupplyLocked, contract } = option;
-                const id = utils.btcPutOptionId(expiry, strikePrice.toString());
+    renderOption(option: OptionProps) {
+        const { expiry, premium, strikePrice, spotPrice, totalSupply, totalSupplyLocked, contract } = option;
+        const id = utils.btcPutOptionId(expiry, strikePrice.toString());
 
-                let percentInsured = utils.newBig(0);
-                if (totalSupply.gt(0)) {
-                    percentInsured = (totalSupplyLocked.div(totalSupply)).mul(100);
-                }
-                let currentDate = Math.floor(Date.now() / 1000);
-                
-                return (
-                    // Hide expired options
-                    <tr key={contract} hidden={expiry < currentDate}>
-
-                        <td>{id}</td>
-                        <td>{new Date(expiry * 1000).toLocaleString()}
-                            {(expiry < currentDate) &&
-                                <b> (Expired)</b>
-                            }
-                        </td>
-                        <td>{strikePrice.toString()} DAI/BTC</td>
-                        <td>{spotPrice} DAI</td>
-                        <td>{totalSupplyLocked.round(0, 0).toString()} / {totalSupply.round(0, 0).toString()} DAI ({percentInsured.toFixed(0)} %)</td>
-                        <td>{premium.toString()} DAI/BTC</td>
-
-                        <td>
-                            <ButtonTool
-                                disable={(expiry < currentDate) || !option.hasSellers}
-                                reason={(expiry < currentDate) ? "Expired" : (!option.hasSellers) ? "No Options" : ""}
-                                placement={"left"}
-                                text={"Buy"}
-                                variant={"outline-success"}
-                                show={this.showBuyModal}
-                                showValue={contract}
-                            />
-                            {" "}
-                            <ButtonTool
-                                disable={(expiry < currentDate)}
-                                reason={(expiry < currentDate) ? "Expired" : ""}
-                                placement={"right"}
-                                text={"Sell"}
-                                variant={"outline-danger"}
-                                show={this.showSellModal}
-                                showValue={contract}
-                            />
-                        </td>
-                    </tr>
-                )
-            })
-        } else {
-            return <tr><td colSpan={7} className="text-center"><Spinner animation="border" /></td></tr>
+        let percentInsured = utils.newBig(0);
+        if (totalSupply.gt(0)) {
+            percentInsured = (totalSupplyLocked.div(totalSupply)).mul(100);
         }
+        let currentDate = Math.floor(Date.now() / 1000);
+
+        return (
+            // Hide expired options
+            <tr key={contract} hidden={expiry < currentDate}>
+
+                <td>{id}</td>
+                <td>{new Date(expiry * 1000).toLocaleString()}
+                    {(expiry < currentDate) &&
+                        <b> (Expired)</b>
+                    }
+                </td>
+                <td>{strikePrice.toString()} DAI/BTC</td>
+                <td>{spotPrice} DAI</td>
+                <td>{totalSupplyLocked.round(0, 0).toString()} / {totalSupply.round(0, 0).toString()} DAI ({percentInsured.toFixed(0)} %)</td>
+                <td>{premium.toString()} DAI/BTC</td>
+
+                <td>
+                    <ButtonTool
+                        disable={(expiry < currentDate) || !option.hasSellers}
+                        reason={(expiry < currentDate) ? "Expired" : (!option.hasSellers) ? "No Options" : ""}
+                        placement={"left"}
+                        text={"Buy"}
+                        variant={"outline-success"}
+                        show={this.showBuyModal}
+                        showValue={contract}
+                    />
+                    {" "}
+                    <ButtonTool
+                        disable={(expiry < currentDate)}
+                        reason={(expiry < currentDate) ? "Expired" : ""}
+                        placement={"right"}
+                        text={"Sell"}
+                        variant={"outline-danger"}
+                        show={this.showSellModal}
+                        showValue={contract}
+                    />
+                </td>
+            </tr>
+        )
     }
 
+    renderTableData() {
+        const result = [];
+        if (!this.state.loaded) {
+            result.push(<tr key="spinner"><td colSpan={7} className="text-center"><Spinner animation="border" /></td></tr>);
+        }
+        if (this.state.options) {
+            const renderedOptions = this.state.options.map(option => this.renderOption(option));
+            result.push(...renderedOptions);
+        }
+        return result;
+    }
 
     render() {
         return (

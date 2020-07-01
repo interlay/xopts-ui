@@ -13,6 +13,7 @@ import { IERC20Sellable } from "@interlay/xopts/dist/typechain/IERC20Sellable";
 import { IERC20BuyableFactory } from "@interlay/xopts/dist/typechain/IERC20BuyableFactory";
 import { BigNumber } from 'ethers/utils';
 import { decodeAddress, encodeAddress } from '../utils/address';
+import * as utils from '../utils/utils';
 
 const DEFAULT_CONFIRMATIONS = 1;
 
@@ -59,12 +60,11 @@ export class Contracts implements ContractsInterface {
         return {optionPoolAddress, erc20Address, relayAddress};
     }
 
-    async maybeGetAddress() {
-        let address = "";
+    maybeGetAddress(): Promise<string | null> {
         if (this.signer instanceof ethers.Signer) {
-            address = await this.signer.getAddress();
+            return this.signer.getAddress();
         }
-        return address;
+        return Promise.resolve(null);
     }
 
     async getRelayHeight() {
@@ -77,16 +77,34 @@ export class Contracts implements ContractsInterface {
     }
 
     async getUserPurchasedOptions(address: string) {
+        const result = [];
         const {optionContracts, purchasedOptions} = await this.optionPoolContract.getUserPurchasedOptions(address);
-        return {optionContracts, purchasedOptions}
+        for (let i = 0; i < optionContracts.length; i++) {
+            result.push({ address: optionContracts[i], totalAmount: utils.newBig(purchasedOptions[i]) });
+        }
+        return result;
     }
 
-    getUserSoldOptions(address: string) {
-        return this.optionPoolContract.getUserSoldOptions(address);
+    async getUserSoldOptions(address: string) {
+        const result = [];
+        const { optionContracts, unsoldOptions, totalOptions } =
+            await this.optionPoolContract.getUserSoldOptions(address);
+
+        for (let i = 0; i < optionContracts.length; i++) {
+            result.push({
+                address: optionContracts[i],
+                unsoldAmount: utils.newBig(unsoldOptions[i]),
+                totalAmount: utils.newBig(totalOptions[i])
+            });
+        }
+        return result;
     }
 
     async checkAllowance(amount: Big) {
         let address = await this.maybeGetAddress();
+        if (!address) {
+            throw new Error('not logged in');
+        }
         let allowance = await this.erc20Contract.allowance(address, this.optionPoolContract.address);
         if (xutils.newBig(allowance.toString()).lt(amount)) {
             let tx = await this.erc20Contract.approve(this.optionPoolContract.address, ethers.constants.MaxUint256);
@@ -96,12 +114,18 @@ export class Contracts implements ContractsInterface {
 
     async balanceOf() {
         let address = await this.maybeGetAddress();
+        if (!address) {
+            return new ethers.utils.BigNumber(0);
+        }
         let balance = await this.erc20Contract.balanceOf(address);
         return balance;
     }
 
     async mint() {
         let address = await this.maybeGetAddress();
+        if (!address) {
+            throw new Error('not logged in');
+        }
         return this.erc20Contract.mint(address, xutils.daiToWeiDai(xutils.newBig(10_000)).toString());
     }
 
@@ -164,15 +188,17 @@ export class Option {
     }
 
     async maybeGetAddress() {
-        let address = "";
         if (this.signer instanceof ethers.Signer) {
-            address = await this.signer.getAddress();
+            return await this.signer.getAddress();
         }
-        return address;
+        return Promise.resolve(null);
     }
 
     async getOptionOwners() {
         let address = await this.maybeGetAddress();
+        if (!address) {
+            return [];
+        }
         let buyableAddress = await this.sellable.getBuyable();
         let buyable = IERC20BuyableFactory.connect(buyableAddress, this.signer);
         let {sellers, options} = await buyable.getOptionOwnersFor(address);

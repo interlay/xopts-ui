@@ -23,7 +23,7 @@ import Footer from "./components/Footer";
 
 import { Contracts } from './controllers/contracts';
 import { BitcoinQuery } from './controllers/bitcoin-data';
-import { Storage } from './controllers/storage';
+import { Storage, LocalStorage } from './controllers/storage';
 import { pollAllPendingConfirmations } from './utils/poll';
 import { showFailureToast } from "./controllers/toast";
 
@@ -42,6 +42,7 @@ export default class App extends Component<{}, AppState> {
     address: '',
     btcProvider: new BitcoinQuery(),
     storage: new Storage(''),
+    persistenStorage: new LocalStorage(),
     btcPrices: {
       dai: 0,
       usd: 0,

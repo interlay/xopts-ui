@@ -5,6 +5,7 @@ import * as utils from '../utils/utils';
 import { ButtonTool } from "./ButtonTool";
 import { RefundModal } from "./RefundModal";
 import {AppProps} from "../types/App";
+import { OptionSoldAmount } from "../types/Contracts";
 import { Big } from 'big.js';
 import { BigNumber } from "ethers/utils";
 
@@ -84,19 +85,9 @@ export default class UserSoldOptions extends Component<AppProps> {
         }
     }
 
-    async getOptions(optionContracts: {
-        optionContracts: string[];
-        unsoldOptions: BigNumber[];
-        totalOptions: BigNumber[];    
-    }) {
+    async getOptions(optionAmounts: OptionSoldAmount[]) {
         // Remove 0-value contracts
-        for (let i = optionContracts.unsoldOptions.length - 1; i >= 0; i--) {
-            if (parseInt(optionContracts.unsoldOptions[i].toString()) === 0) {
-                optionContracts.optionContracts.splice(i, 1);
-                optionContracts.unsoldOptions.splice(i, 1);
-                optionContracts.totalOptions.splice(i, 1);
-            }
-        }
+        optionAmounts = optionAmounts.filter(o => !o.unsoldAmount.eq(0));
 
         let options = [];
         let totalLocked = utils.newBig(0);
@@ -104,8 +95,8 @@ export default class UserSoldOptions extends Component<AppProps> {
         let totalPremium = utils.newBig(0);
         let totalBtcInsured = utils.newBig(0);
         let totalIncome = utils.newBig(0);
-        for (let i = 0; i < optionContracts.optionContracts.length; i++) {
-            let addr = optionContracts.optionContracts[i];
+        for (const optionAmount of optionAmounts) {
+            let addr = optionAmount.address;
             let optionContract = this.props.contracts?.attachOption(addr);
             let optionRes = await optionContract.getDetails();
             let option = {
@@ -115,8 +106,8 @@ export default class UserSoldOptions extends Component<AppProps> {
                 totalSupply: utils.weiDaiToDai(utils.newBig(optionRes.total.toString())),
 
                 // User's unsold options & total locked DAI
-                unsoldOptions: utils.weiDaiToDai(utils.newBig(optionContracts.unsoldOptions[i].toString())),
-                totalSupplyLocked: utils.weiDaiToDai(utils.newBig(optionContracts.totalOptions[i].toString())),
+                unsoldOptions: utils.weiDaiToDai(optionAmount.unsoldAmount),
+                totalSupplyLocked: utils.weiDaiToDai(optionAmount.totalAmount),
 
                 soldOptions: utils.newBig(0),
                 spotPrice: utils.newBig(0),
@@ -128,7 +119,7 @@ export default class UserSoldOptions extends Component<AppProps> {
             }
             option.soldOptions = option.totalSupplyLocked.sub(option.unsoldOptions);
             option.spotPrice = utils.newBig(this.props.btcPrices.dai);
-            option.contract = optionContracts.optionContracts[i];
+            option.contract = addr;
             option.percentSold = ((option.totalSupplyLocked.lte(0)) ? utils.newBig(0) : (option.soldOptions.div(option.totalSupplyLocked)).mul(100));
             option.btcInsured = option.soldOptions.div(option.strikePrice);
             option.premiumEarned = option.premium.mul(option.btcInsured);

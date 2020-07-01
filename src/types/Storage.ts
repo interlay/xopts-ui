@@ -22,3 +22,8 @@ export interface StorageInterface {
     hasPending(): boolean;
     hasPendingTransactionsFor(option: string): boolean;
 }
+
+export interface PersistentStorage {
+    loadItem<T>(key: string, factory?: (json: any) => T): T | null;
+    storeItem(key: string, item: any): void;
+}

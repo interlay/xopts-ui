@@ -1,4 +1,5 @@
 import { Big } from 'big.js';
+import { BigNumber } from "ethers/utils";
 
 Big.DP = 30
 Big.RM = 1
@@ -6,7 +7,10 @@ Big.PE = 30
 
 type constructorArg = string | number | Big;
 
-export function newBig(i: constructorArg) {
+export function newBig(i: constructorArg | BigNumber) {
+  if (i instanceof BigNumber) {
+    i = i.toString();
+  }
 	return new Big(i);
 }
 
@@ -57,3 +61,7 @@ export function btcPutOptionId(unixTimestamp: number, strikePrice: string) {
 export function concat(value: string) {
 	return value.substring(0, 6) + "..." + value.substring(value.length-6);
 }
+
+export function isDefined<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined;
+};
