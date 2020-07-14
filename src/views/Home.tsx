@@ -27,7 +27,7 @@ export default class Home extends Component<AppProps> {
             </a>
           </Container>
         </section>
-        
+
         <Container fluid>
           <section className="mb-5">
             <OptionList {...this.props} />

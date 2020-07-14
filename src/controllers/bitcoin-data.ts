@@ -1,17 +1,23 @@
 import { BitcoinInterface } from "../types/Bitcoin";
+import * as esplora from '@interlay/esplora-btc-api';
 
 export const STABLE_CONFIRMATIONS = 1;
 
 export class BitcoinQuery implements BitcoinInterface {
-  rootUrl: string;
+  txApi: esplora.TxApi;
+  addrApi: esplora.AddressApi;
+  blockApi: esplora.BlockApi;
 
   constructor() {
-    this.rootUrl = "https://blockstream.info/testnet/api/"
+    const basePath = "https://blockstream.info/testnet/api";
+    this.txApi = new esplora.TxApi({basePath: basePath});
+    this.addrApi = new esplora.AddressApi({basePath: basePath});
+    this.blockApi = new esplora.BlockApi({basePath: basePath});
   }
 
   async getBlockHeight(): Promise<number> {
-    let currentChainTipQuery = this.rootUrl.concat("blocks/tip/height");
-    return parseInt(await queryToText(currentChainTipQuery));
+    let result = await this.blockApi.getLastBlockHeight();
+    return result.data;
   }
 
   // Returns a status object with
@@ -29,27 +35,28 @@ export class BitcoinQuery implements BitcoinInterface {
       confirmations: 0,
     }
 
-    let statusQuery = this.rootUrl.concat("tx/", txid.toString(), "/status");
-    let statusResult = await queryToJSON(statusQuery);
+    let status = (await this.txApi.getTxStatus(txid)).data;
 
-    txStatus.confirmed = statusResult.confirmed;
+    txStatus.confirmed = status.confirmed;
 
     let currentChainTip = await this.getBlockHeight();
 
-    if (statusResult.hasOwnProperty('block_height')) {
-      txStatus.confirmations = currentChainTip - statusResult.block_height;
+    if (status.block_height) {
+      txStatus.confirmations = currentChainTip - status.block_height;
     }
 
     return txStatus;
+  }
+
+  async getHexTransaction(txid: string) {
+    return (await this.txApi.getTxHex(txid)).data;
   }
 
   // Compatible with BTC core getrawtransaction
   // https://developer.bitcoin.org/reference/rpc/getrawtransaction.html
   // returns a hex encoded rawtx
   async getRawTransaction(txid: string) {
-    let query = this.rootUrl.concat("tx/", txid.toString(), "/raw");
-    let rawtx = await queryToArrayBuffer(query);
-    return rawtx;
+    return Buffer.from(await this.getHexTransaction(txid), 'hex');
   }
 
   // Gets the Merkle proof including the position of the transaction
@@ -67,42 +74,23 @@ export class BitcoinQuery implements BitcoinInterface {
     merkle: string[]
     pos: number
   }> {
-    let query = this.rootUrl.concat("tx/", txid.toString(), "/merkle-proof");
-    let proof = await queryToJSON(query);
-    return proof;
+    const result = await this.txApi.getTxMerkleProof(txid);
+    return result.data;
   }
-}
 
-async function query(url: string): Promise<Response> {
-  try {
-    let response = await fetch(url);
-
-    if (response.ok) {
-      return response;
-    } else {
-      // TODO: retry?
-      throw Error("No response");
-    }
-  } catch (error) {
-    throw error;
+  async getAccountValue(addr: string) {
+    const info = (await this.addrApi.getAddress(addr)).data;
+    return info.chain_stats.funded_txo_sum || 0;
   }
-}
 
-async function queryToText(url: string) {
-  let response = await query(url);
-  let text = await response.text();
-  return text;
-}
-
-async function queryToJSON(url: string) {
-  let response = await query(url);
-  let json = await response.json();
-  return json;
-}
-
-async function queryToArrayBuffer(url: string) {
-  let response = await query(url);
-  let arrayBuffer = await response.arrayBuffer();
-  let buffer = Buffer.from(arrayBuffer);
-  return buffer;
+  async getAccountUtxos(addr: string) {
+    const info = (await this.addrApi.getAddressUtxo(addr)).data;
+    return info.map(utxo => {
+      return {
+        txid: utxo.txid,
+        value: utxo.value,
+        vout: utxo.vout,
+      }
+    })
+  }
 }

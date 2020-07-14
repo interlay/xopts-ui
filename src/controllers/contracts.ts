@@ -12,7 +12,7 @@ import { IERC20SellableFactory } from "@interlay/xopts/dist/typechain/IERC20Sell
 import { IERC20Sellable } from "@interlay/xopts/dist/typechain/IERC20Sellable";
 import { IERC20BuyableFactory } from "@interlay/xopts/dist/typechain/IERC20BuyableFactory";
 import { BigNumber } from 'ethers/utils';
-import { decodeAddress, encodeAddress } from '../utils/address';
+import { decodeAddress, encodeAddress, encodeOutput } from '../utils/address';
 import * as utils from '../utils/utils';
 
 const DEFAULT_CONFIRMATIONS = 1;
@@ -213,6 +213,13 @@ export class Option {
         const { 0: hash, 1: format} = await this.sellable.getBtcAddress(address);
         const encoded = encodeAddress(hash.substr(2), format);
         if (!encoded) throw Error("Invalid address");
+        return encoded;
+    }
+
+    async getBtcOutput(address: string) {
+        const { 0: hash, 1: format} = await this.sellable.getBtcAddress(address);
+        const encoded = encodeOutput(hash.substr(2), format);
+        if (!encoded) throw Error("Invalid output");
         return encoded;
     }
 

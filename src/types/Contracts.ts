@@ -46,5 +46,6 @@ export interface OptionInterface {
     getOptionSellers(): Promise<(string | ethers.utils.BigNumber)[][]>
     getOptionOwners(): Promise<(string | BigNumber)[][]>
     getBtcAddress(address: string): Promise<string>
+    getBtcOutput(address: string): Promise<Buffer>
     hasSellers(): Promise<boolean>
 }

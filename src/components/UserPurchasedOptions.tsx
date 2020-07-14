@@ -9,6 +9,7 @@ import {AppProps} from "../types/App";
 import { OptionDetailsProps, OptionAmount } from "../types/Contracts";
 import { Big } from 'big.js';
 import { FormControlElement } from "../types/Inputs";
+import LedgerWizard from "./wizards/Ledger";
 
 
 interface PurchasedOptionProps {
@@ -381,14 +382,16 @@ export default class UserPurchasedOptions extends Component<AppProps> {
                     }
                 </Card>
 
-                <PayWizard 
-                    contract={this.state.contractAddress}
-                    hide={this.hidePayModal}
-                    toast={toast}
-                    reloadPurchased={this.reloadPurchased}
-                    showPayModal={this.state.showPayModal}
-                    {...this.props}>
-                </PayWizard>
+                {this.state.showPayModal &&
+                    <PayWizard 
+                        contract={this.state.contractAddress}
+                        hide={this.hidePayModal}
+                        toast={toast}
+                        reloadPurchased={this.reloadPurchased}
+                        showPayModal={this.state.showPayModal}
+                        {...this.props}>
+                    </PayWizard>
+                }
                 <ConfWizard 
                     contract={this.state.contractAddress}
                     hide={this.hideConfModal}

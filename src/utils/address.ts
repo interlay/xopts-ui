@@ -3,12 +3,7 @@ import { Script } from "@interlay/xopts";
 
 const NETWORK = bitcoin.networks.testnet;
 
-interface Payable {
-    hash?: Buffer;
-    address?: string;
-}
-
-function decode<P extends Payable, O>(p: P, f: (payment: P, options?: O) => P, t: Script): { hash: string, format: Script} | undefined {
+function decode<P extends bitcoin.Payment, O>(p: P, f: (payment: P, options?: O) => P, t: Script): { hash: string, format: Script} | undefined {
     try {
         let pay = f(p)
         let hash = pay.hash ? "0x" + pay.hash.toString('hex') : '';        
@@ -24,7 +19,7 @@ export function decodeAddress(addr: string) {
            decode({address: addr, network: NETWORK}, bitcoin.payments.p2wpkh, Script.p2wpkh);
 }
 
-function encode<P extends Payable, O>(p: P, f: (payment: P, options?: O) => P) {
+function toAddress<P extends bitcoin.Payment, O>(p: P, f: (payment: P, options?: O) => P) {
     try {
         let pay = f(p)
         return pay.address ? pay.address : undefined;        
@@ -38,10 +33,32 @@ export function encodeAddress(hex: string, format: Script) {
 
     switch (format) {
         case Script.p2sh:
-            return encode({hash: hash, network: NETWORK}, bitcoin.payments.p2sh);
+            return toAddress({hash: hash, network: NETWORK}, bitcoin.payments.p2sh);
         case Script.p2pkh:
-            return encode({hash: hash, network: NETWORK}, bitcoin.payments.p2pkh);
+            return toAddress({hash: hash, network: NETWORK}, bitcoin.payments.p2pkh);
         case Script.p2wpkh:
-            return encode({hash: hash, network: NETWORK}, bitcoin.payments.p2wpkh);
+            return toAddress({hash: hash, network: NETWORK}, bitcoin.payments.p2wpkh);
+    }
+}
+
+function toOutput<P extends bitcoin.Payment, O>(p: P, f: (payment: P, options?: O) => P) {
+    try {
+        let pay = f(p)
+        return pay.output ? pay.output : undefined;        
+    } catch (err) {
+        return undefined;
+    }
+}
+
+export function encodeOutput(hex: string, format: Script) {
+    const hash = Buffer.from(hex, 'hex');
+
+    switch (format) {
+        case Script.p2sh:
+            return toOutput({hash: hash, network: NETWORK}, bitcoin.payments.p2sh);
+        case Script.p2pkh:
+            return toOutput({hash: hash, network: NETWORK}, bitcoin.payments.p2pkh);
+        case Script.p2wpkh:
+            return toOutput({hash: hash, network: NETWORK}, bitcoin.payments.p2wpkh);
     }
 }
