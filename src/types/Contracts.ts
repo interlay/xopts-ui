@@ -15,7 +15,7 @@ export interface OptionSoldAmount extends OptionAmount {
 export interface ContractsInterface {
     relayContract: ethers.Contract
 
-    getRelayHeight(): Promise<BigNumber>
+    getRelayHeight(): Promise<number>
     getOptions(): Promise<string[]>
     getUserPurchasedOptions(address: string): Promise<OptionAmount[]>
     getUserSoldOptions(address: string): Promise<OptionSoldAmount[]>
@@ -25,7 +25,7 @@ export interface ContractsInterface {
     attachOption(address: string): OptionInterface
     insureOption(address: string, seller: string, amount: Big): Promise<void>
     underwriteOption(address: string, amount: Big, btcAddressHex: string): Promise<void>
-    exerciseOption(address: string, seller: string, height: number, index: number, txid: string, proof: string, rawtx: string): Promise<void>
+    exerciseOption(address: string, seller: string, height: number, index: number, txid: string, header: string, proof: string, rawtx: string): Promise<void>
     refundOption(address: string): Promise<void>
     createOption(expiry: number, premium: BigNumber, strikePrice: BigNumber): Promise<void>
 }

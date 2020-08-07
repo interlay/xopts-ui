@@ -34,6 +34,7 @@ type FullTransaction = Transaction & {
     contract: string
     height: number
     index: number
+    header: string
     proof: string
     rawtx: string
 }
@@ -150,11 +151,11 @@ class Exercise extends Component<ExerciseProps, ExerciseState> {
 
     handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const { contract, ethAddress, height, index, txid, proof, rawtx } = this.props.tx;
+        const { contract, ethAddress, height, index, txid, header, proof, rawtx } = this.props.tx;
         this.setState({spinner: true});
         try {
             let id = "0x" + Buffer.from(txid, 'hex').reverse().toString('hex');
-            await this.props.contracts.exerciseOption(contract, ethAddress, height, index, id, proof, rawtx);
+            await this.props.contracts.exerciseOption(contract, ethAddress, height, index, id, header, proof, rawtx);
             showSuccessToast(this.props.toast, 'Success!', 3000);
             this.props.storage.removePendingOption(contract, txid);
             this.props.exitModal();
@@ -212,6 +213,7 @@ export default class ConfWizard extends Component<ConfWizardProps> {
             contract: '',
             height: 0,
             index: 0,
+            header: '',
             proof: '',
             rawtx: '',
         
@@ -231,7 +233,9 @@ export default class ConfWizard extends Component<ConfWizardProps> {
         step = step + 1;
 
         let txid = tx.txid;
+        let height = 0;
         let status;
+        let header: Buffer;
         let proof;
         let rawtx;
 
@@ -239,6 +243,8 @@ export default class ConfWizard extends Component<ConfWizardProps> {
             status = await this.props.btcProvider.getStatusTransaction(txid);
             if (status.confirmed) {
               proof = await this.props.btcProvider.getMerkleProof(txid);
+              height = proof.block_height;
+              header = await this.props.btcProvider.getBlockHeader(height);
               rawtx = await this.props.btcProvider.getRawTransaction(txid);
             } else {
                 return;
@@ -260,7 +266,7 @@ export default class ConfWizard extends Component<ConfWizardProps> {
                 btcAddress: tx.btcAddress,
                 ethAddress: tx.ethAddress,
                 confirmations: status.confirmations,
-                height: proof.block_height,
+                height: height,
                 index: proof.pos,
                 proof: "0x" + nodes,
                 rawtx: "0x" + rawtx.toString('hex'),
