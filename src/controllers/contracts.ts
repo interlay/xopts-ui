@@ -4,8 +4,8 @@ import { Big } from 'big.js';
 import { ContractsInterface } from "../types/Contracts";
 import { OptionPoolFactory } from '@interlay/xopts/dist/typechain/OptionPoolFactory';
 import { OptionPool } from '@interlay/xopts/dist/typechain/OptionPool';
-import { ICollateralFactory } from '@interlay/xopts/dist/typechain/ICollateralFactory';
-import { ICollateral } from "@interlay/xopts/dist/typechain/ICollateral";
+import { CollateralFactory } from '@interlay/xopts/dist/typechain/CollateralFactory';
+import { Collateral } from "@interlay/xopts/dist/typechain/Collateral";
 import { IRelayFactory } from '@interlay/xopts/dist/typechain/IRelayFactory';
 import { IRelay } from "@interlay/xopts/dist/typechain/IRelay";
 import { IERC20SellableFactory } from "@interlay/xopts/dist/typechain/IERC20SellableFactory";
@@ -24,14 +24,14 @@ type Provider = ethers.providers.InfuraProvider | ethers.providers.Web3Provider;
 export class Contracts implements ContractsInterface {
     signer: Signer | Provider;
     optionPoolContract: OptionPool;
-    erc20Contract: ICollateral;
+    erc20Contract: Collateral;
     relayContract: IRelay;
 
     constructor(signer: Signer | Provider, optionPoolAddress: string, erc20Address: string, relayAddress: string) {
         this.signer = signer;
 
         this.optionPoolContract = OptionPoolFactory.connect(optionPoolAddress, signer);
-        this.erc20Contract = ICollateralFactory.connect(erc20Address, signer);
+        this.erc20Contract = CollateralFactory.connect(erc20Address, signer);
         this.relayContract = IRelayFactory.connect(relayAddress, signer);
     }
 
@@ -146,8 +146,8 @@ export class Contracts implements ContractsInterface {
         await tx.wait(DEFAULT_CONFIRMATIONS);
     }
 
-    async exerciseOption(address: string, seller: string, height: number, index: number, txid: string, proof: string, rawtx: string) {
-        let tx = await this.optionPoolContract.exerciseOption(address, seller, height, index, txid, proof, rawtx);
+    async exerciseOption(address: string, seller: string, height: number, index: number, txid: string, header: string, proof: string, rawtx: string) {
+        let tx = await this.optionPoolContract.exerciseOption(address, seller, height, index, txid, header, proof, rawtx);
         await tx.wait(DEFAULT_CONFIRMATIONS);
     }
 
