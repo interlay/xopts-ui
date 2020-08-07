@@ -46,9 +46,9 @@ export class Contracts implements ContractsInterface {
             relayAddress = "0x99a463962829c26Da5357aE84ACAf85A401A7702"
         // Ropsten
         } else if (network.chainId === 3 && network.name === "ropsten") {
-            optionPoolAddress = "0x929bcF49ce947535815b3A34ac312D027ec06825";
-            erc20Address = "0xF6832c228552b551aA4Bf6A17Da9cf435D6cC524";
-            relayAddress = "0x78A389B693e0E3DE1849F34e70bf4Bcb57F0F2bb";
+            optionPoolAddress = "0x026AB0c5619F2281A77383d9Ed7d30221dbd1638";
+            erc20Address = "0xa45708515de81779138133F2be102Ff399dA40be";
+            relayAddress = "0x5f01D00210A292aedD74322Acb6704E9731F5d48";
         // Buidlerevm
         } else if (network.chainId === 31337) {
             optionPoolAddress = "0xf4e77E5Da47AC3125140c470c71cBca77B5c638c";
