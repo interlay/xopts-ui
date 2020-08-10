@@ -1,4 +1,4 @@
-import { Action } from "../types/util";
+import { Action } from "../utils/util.types";
 import Position from "../models/position";
 
 const initialState: Position[] = [];

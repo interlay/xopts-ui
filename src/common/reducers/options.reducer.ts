@@ -1,4 +1,4 @@
-import { Action } from "../types/util";
+import { Action } from "../utils/util.types";
 import Option from "../models/option";
 import { ADD_OPTION } from "../actions/options.actions";
 

@@ -24,7 +24,7 @@ function App(): ReactElement {
                         {/* <Topbar {...this.state} tryLogIn={this.tryLogIn} /> */}
                         <div className="mb-5">
                             <Switch>
-                                <Route path="/test">
+                                <Route path="/">
                                     <LandingPage />
                                 </Route>
 

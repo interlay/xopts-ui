@@ -1,4 +1,4 @@
-import { Action } from "./common/types/util";
+import { Action } from "./common/utils/util.types";
 
 export const loadState = () => {
     try {
