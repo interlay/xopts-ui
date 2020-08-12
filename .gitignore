@@ -4,5 +4,5 @@ cache
 typechain
 docs/venv
 docs/build
-.DS-Store
+.DS_Store
 *.pyc

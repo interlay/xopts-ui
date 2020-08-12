@@ -1,7 +1,6 @@
 export interface User {
     isConnected: boolean;
     network: string;
-    positions: Position[];
 }
 
 export interface Option {

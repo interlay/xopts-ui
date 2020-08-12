@@ -1,6 +1,8 @@
 import { rootReducer } from "./common/reducers/index";
 import { createLogger } from "redux-logger";
 import { applyMiddleware, createStore } from "redux";
+import { errorToast } from "./common/utils/toast";
+import i18n from "i18next";
 
 export type AppState = ReturnType<typeof rootReducer>
 
@@ -12,7 +14,8 @@ export const loadState = () => {
         }
         return JSON.parse(serializedState);
     } catch(error) {
-        return undefined;
+        setTimeout(()=>errorToast(i18n.t("enable_localstorage")), 2000);
+
     }
 };
 
@@ -21,7 +24,7 @@ export const saveState = (store: AppState) => {
         const serializedState = JSON.stringify(store);
         localStorage.setItem("store", serializedState);
     } catch(error) {
-        console.log("Local Storage is disabled, please enable local storage");
+        setTimeout(()=>errorToast(i18n.t("enable_localstorage")), 2000);
     }
 };
 
