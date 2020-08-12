@@ -1,7 +1,6 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { stat } from "fs";
-import { Store } from "../utils/util.types";
+import { AppState } from "../../store";
 
 type MetaMaskProps = {
     connectWallet: (activeLogin: boolean) => Promise<void>
@@ -9,7 +8,7 @@ type MetaMaskProps = {
 
 export function MetaMaskButton({connectWallet}: MetaMaskProps): ReactElement {
     
-    const isConnected = useSelector((state: Store) => state.user.isConnected);
+    const isConnected = useSelector((state: AppState) => state.user.isConnected);
 
     return <React.Fragment>
         {!isConnected && 

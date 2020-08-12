@@ -1,13 +1,12 @@
-import { Action } from "../utils/util.types";
-import Option from "../models/option";
-import { ADD_OPTION } from "../actions/options.actions";
+import { Option } from "../types/util.types";
+import { OptionsActions, ADD_OPTIONS } from "../types/actions.types";
 
 const initialState: Option[] = [];
 
-export const optionsReducer = (state: Option[] = initialState, action: Action) : Option[] => {
+export const optionsReducer = (state: Option[] = initialState, action: OptionsActions) : Option[] => {
     switch(action.type) {
-    case ADD_OPTION: 
-        return [...state, action.payload];
+    case ADD_OPTIONS: 
+        return action.options;
     default: return state;
     }
 };

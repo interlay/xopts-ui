@@ -1,8 +1,7 @@
-import { Action } from "../utils/util.types";
-import Option from "../models/option";
+import { Option } from "../types/util.types";
+import { AddOptions, ADD_OPTIONS } from "../types/actions.types";
 
-export const ADD_OPTION = "ADD_OPTION";
-
-export default function addOptionAction(payload: Option): Action {
-    return new Action(ADD_OPTION,payload);
-}
+export const addOptionsAction = (options: Option[]): AddOptions => ({
+    type: ADD_OPTIONS,
+    options
+});

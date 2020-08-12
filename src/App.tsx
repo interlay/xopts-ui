@@ -1,63 +1,41 @@
-import React, { ReactElement, Suspense } from "react";
+import React, { ReactElement } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { applyMiddleware, createStore } from "redux";
 import { Provider } from "react-redux";
-import { rootReducer } from "./common/reducers/index";
-import { createLogger } from "redux-logger";
-import "./_general.scss";
+import TopNavigation from "./common/components/top-navigation/top-navigation";
 import HelpPage from "./pages/help/help.page";
 import LandingPage from "./pages/landing/landing.page";
-import { loadState, saveState, actionMiddleware } from "./store";
+import TradeOptionsPage from "./pages/trade-options/trade-options.page";
+import { configureStore } from "./store";
 
-const storeLogger = createLogger();
-const store = createStore(rootReducer,loadState(),applyMiddleware(storeLogger,actionMiddleware));
-store.subscribe(() => {
-    saveState(store.getState());
-});
+import "./_general.scss";
+
+const store = configureStore();
 
 function App(): ReactElement {
     return (
-        <Suspense fallback="loading">
-            <Provider store={store}>
-                <Router>
-                    <div className="main d-flex flex-column min-vh-100">
-                        {/* <Topbar {...this.state} tryLogIn={this.tryLogIn} /> */}
-                        <div className="mb-5">
-                            <Switch>
-                                <Route path="/">
-                                    <LandingPage />
-                                </Route>
+        <Provider store={store}>
+            <Router>
+                <div className="main d-flex flex-column min-vh-100">
+                    <TopNavigation/>
+                    <Switch>
+                            
+                        <Route exact path="/">
+                            <LandingPage />
+                        </Route>
 
-                                <Route path="/help">
-                                    <HelpPage />
-                                </Route>
+                        <Route path="/help">
+                            <HelpPage />
+                        </Route>
 
-                                {/* {this.state.contracts &&
-                <Route path="/positions">
-                  <Dashboard 
-                    {...this.state}
-                    contracts={this.state.contracts}
-                    tryLogIn={this.tryLogIn}
-                  />
-                </Route>
-              }
+                        <Route path="/trade-options">
+                            <TradeOptionsPage />
+                        </Route>
 
-              {this.state.contracts &&
-                <Route path="/trade">
-                  <Home 
-                    {...this.state}
-                    contracts={this.state.contracts}
-                    tryLogIn={this.tryLogIn}
-                  />
-                </Route>
-              } */}
-                            </Switch>
-                        </div>
-                        {/* <Footer /> */}
-                    </div>
-                </Router>
-            </Provider>
-        </Suspense>
+                    </Switch>
+                    {/* <Footer /> */}
+                </div>
+            </Router>
+        </Provider>
     );
 }
 

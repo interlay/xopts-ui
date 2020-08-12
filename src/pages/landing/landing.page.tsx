@@ -1,8 +1,8 @@
 import React, { ReactElement, useEffect } from "react";
-import { ReadWriteContracts, Deployments, ethers } from "@interlay/xopts";
+import { ReadWriteContracts, ethers } from "@interlay/xopts";
 import { MetaMaskButton } from "../../common/components/meta-mask-button";
 import { useDispatch } from "react-redux";
-import updateUserAction from "../../common/actions/user.actions";
+import { updateIsUserConnectedAction } from "../../common/actions/user.actions";
 
 const detectEthereumProvider = require("@metamask/detect-provider");
 
@@ -20,18 +20,16 @@ export default function LandingPage(): ReactElement {
                 const account = await etherProvider.request({ method: "eth_requestAccounts" });
                 console.log(account);
                 const provider = new ethers.providers.Web3Provider(etherProvider);
-                const contracts = (await ReadWriteContracts.resolve(provider))!;
-                const options = await contracts.listOptions();
-                const pair = await contracts.getPair(options[0]);
-                const details = await pair.getDetails();
-                console.log(options);
-                console.log(details);
-                dispatch(updateUserAction({isConnected: true}));
+                // const contracts = (await ReadWriteContracts.resolve(provider))!;
+                // const options = await contracts.listOptions();
+                // const pair = await contracts.getPair(options[0]);
+                // const details = await pair.getDetails();
+                dispatch(updateIsUserConnectedAction(true));
             } catch (error) {
                 console.log(error);
             }
         } else {
-            dispatch(updateUserAction({isConnected: false}));
+            dispatch(updateIsUserConnectedAction(false));
         }
     };
 

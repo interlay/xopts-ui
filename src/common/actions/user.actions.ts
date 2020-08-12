@@ -1,7 +1,18 @@
-import { Action } from "../utils/util.types";
+import { UpdateIsUserConnected, UpdateUserNetwork, AddPositions, 
+    UPDATE_IS_USER_CONNECTED, UPDATE_USER_NETWORK, ADD_POSITIONS } from "../types/actions.types";
+import { Position } from "../types/util.types";
 
-export const UPDATE_USER = "UPDATE_USER";
+export const updateIsUserConnectedAction = (isConnected: boolean): UpdateIsUserConnected => ({
+    type: UPDATE_IS_USER_CONNECTED,
+    isConnected
+});
 
-export default function updateUserAction(payload: any): Action {
-    return new Action(UPDATE_USER,payload);
-}
+export const updateUserNetworkAction = (network: string): UpdateUserNetwork => ({
+    type: UPDATE_USER_NETWORK,
+    network
+});
+
+export const addPositionsAction = (positions: Position[]): AddPositions => ({
+    type: ADD_POSITIONS,
+    positions
+});

@@ -1,0 +1,41 @@
+
+@import "../../../mixins";
+@import "../../../variables"; 
+
+.top-navigation {
+    padding: 10px 5px;
+    box-shadow: 0 0 10px grey;
+
+    .app-name {
+        font-size: 1.25rem;
+        display: inline;
+        color: $brand-color;
+        padding-left: 5px;
+    }    
+    a {
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: none;
+    }
+
+    .nav-item {
+        float: right;
+    }
+}
+
+.menu {
+    .bars {
+        display: none;
+        float: right;
+    }
+}
+
+@include mobile-range {
+    .menu{
+        .bars {
+            display: inline-block;
+            float: right;
+        }
+    }
+}

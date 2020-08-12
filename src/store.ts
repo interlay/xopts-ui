@@ -1,4 +1,8 @@
-import { Action } from "./common/utils/util.types";
+import { rootReducer } from "./common/reducers/index";
+import { createLogger } from "redux-logger";
+import { applyMiddleware, createStore } from "redux";
+
+export type AppState = ReturnType<typeof rootReducer>
 
 export const loadState = () => {
     try {
@@ -12,21 +16,20 @@ export const loadState = () => {
     }
 };
 
-export const saveState = (state: any) => {
+export const saveState = (store: AppState) => {
     try {
-        const serializedState = JSON.stringify(state);
+        const serializedState = JSON.stringify(store);
         localStorage.setItem("store", serializedState);
     } catch(error) {
-        console.log("Local Storage in disabled, please enable local storage");
+        console.log("Local Storage is disabled, please enable local storage");
     }
 };
 
-export const actionMiddleware = (store: any) => (next: any) => (action: any) => {
-    let plainAction = action;
-  
-    if (action instanceof Action){
-        plainAction = {...action};
-        plainAction.__classAction = action;
-    }
-    next(plainAction);
+export const configureStore = () => {
+    const storeLogger = createLogger();
+    const store = createStore(rootReducer,loadState(),applyMiddleware(storeLogger));
+    store.subscribe(() => {
+        saveState(store.getState());
+    });
+    return store;
 };
