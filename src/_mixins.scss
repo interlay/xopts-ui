@@ -1,0 +1,25 @@
+@import "./variables";
+
+ @mixin mobile-range {
+    @media (max-width: $mobile-large-size) {
+       @content;
+    }
+ }
+ 
+ @mixin tablet-range {
+    @media (max-width: $tablet-size) {
+       @content;
+    }
+ }
+ 
+ @mixin small-desktop-range {
+    @media (max-width: $desktop-size) {
+       @content;
+    }
+ }
+
+ @mixin large-desktop-range {
+    @media (min-width: $desktop-size +1) {
+       @content;
+    }
+ }
