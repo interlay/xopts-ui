@@ -1,4 +1,4 @@
-import { UserActions, UPDATE_USER_NETWORK, ADD_POSITIONS } from "../types/actions.types";
+import { UserActions, UPDATE_USER_NETWORK } from "../types/actions.types";
 import { User } from "../types/util.types";
 import { UPDATE_IS_USER_CONNECTED } from "../types/actions.types";
 

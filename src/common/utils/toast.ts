@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 
-export function successToast(message: string, durationTime: number = 5000) {
+export function successToast(message: string, durationTime = 5000): void {
     toast.success(message, {
         position: "top-center",
         autoClose: durationTime,
@@ -12,7 +12,7 @@ export function successToast(message: string, durationTime: number = 5000) {
     });
 }
   
-export function errorToast(message: string, durationTime: number = 5000) {
+export function errorToast(message: string, durationTime = 5000): void {
     toast.error(message, {
         position: "top-center",
         autoClose: durationTime,

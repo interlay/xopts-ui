@@ -6,7 +6,7 @@ import HelpPage from "./pages/help/help.page";
 import LandingPage from "./pages/landing/landing.page";
 import TradeOptionsPage from "./pages/trade-options/trade-options.page";
 import { configureStore } from "./store";
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 
 import "./_general.scss";
 
@@ -17,7 +17,7 @@ function App(): ReactElement {
         <Provider store={store}>
             <Router>
                 <div className="main d-flex flex-column min-vh-100">
-                <ToastContainer></ToastContainer>
+                    <ToastContainer></ToastContainer>
                     <TopNavigation/>
                     <Switch>
                             

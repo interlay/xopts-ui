@@ -3,7 +3,9 @@
 @import "../../../variables"; 
 
 .top-navigation {
-    padding: 10px 5px;
+    position: fixed;
+    padding: 15px 5px;
+    background-color: white;
     box-shadow: 0 0 10px grey;
 
     .app-name {
@@ -20,22 +22,52 @@
     }
 
     .nav-item {
+        padding: 0px 15px;
         float: right;
+        color: rgba(0,0,0,.5);
+        &:hover {
+            color: $brand-color;
+        }
     }
-}
 
-.menu {
-    .bars {
-        display: none;
-        float: right;
-    }
-}
-
-@include mobile-range {
-    .menu{
+    .menu {
         .bars {
-            display: inline-block;
+            display: none;
             float: right;
         }
     }
-}
+
+    @include mobile-range {
+        .menu{
+            font-size: 1.3rem;
+            .bars {
+                display: inline-block;
+                float: right;
+            }
+        }
+        .navigation-items{
+            max-height: 0;
+            overflow: hidden;
+        }
+    
+        .navigation-items.open{
+            transition-property: max-height;
+            transition: max-height 1s ease-in-out;
+            max-height: 1000px;
+            background: white;
+            display: block;
+            position: fixed;
+            top: 65px;
+            left: 0px;
+            width: 100%;
+            z-index: 10;
+            box-shadow: 0 0 10px grey;
+            .nav-item {
+                display: block;
+                width: 100%;
+                background-color: white;
+                padding: 5px 15px;
+            }
+        }
+    }
+}   
