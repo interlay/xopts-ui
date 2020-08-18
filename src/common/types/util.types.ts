@@ -1,6 +1,6 @@
 import { rootReducer } from "../reducers/index";
 import { Store, CombinedState } from "redux";
-import { AddOptions, UpdateIsUserConnected, UpdateUserNetwork, AddPositions, ToggleSideMenu } from "./actions.types";
+import { AddOptions, UpdateIsUserConnected, UpdateUserNetwork, AddPositions, ToggleSideMenu, ChangeSelectedExpiry } from "./actions.types";
 
 export interface User {
     isConnected: boolean;
@@ -9,7 +9,7 @@ export interface User {
 
 export interface Option {
     contract: string;
-    expiry: string;
+    expiry: number;
     strikePrice: string;
     spotPrice: number;
     liquidity: string;
@@ -23,6 +23,7 @@ export interface Position {
 
 export type UIState = {
     isSideCollapsed: boolean;
+    selectedExpiry: number;
 }
 
 export type AppState = ReturnType<typeof rootReducer>
@@ -40,4 +41,4 @@ export type dispatcher = {
 }
 
 export type StoreState = Store<CombinedState<StoreType>, 
-AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ToggleSideMenu> & dispatcher
+AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ToggleSideMenu | ChangeSelectedExpiry> & dispatcher

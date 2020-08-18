@@ -23,6 +23,25 @@
             float: right;
         }
     }
+    .side-navigation-items{
+        text-align: center;
+        padding: 15px 0px;
+        .side-item {
+            display: block;
+            text-decoration: none;
+            padding: 3px;
+            color: rgba(0, 0, 0, 0.5);
+            &:hover {
+                text-decoration: none;
+                color: $brand-color;
+                cursor: pointer;
+            }
+        }
+        .side-item.selected-item{
+            color: $brand-color;
+            font-weight: 600;
+        }
+    }
 }
 
 .side-navigation.side-navigation-collapsed {

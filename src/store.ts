@@ -8,7 +8,7 @@ import i18n from "i18next";
 export const loadState = (): StoreType => {
     const emptyStore = { positions: [], options: [], 
         user: { isConnected: false, network: "" }, 
-        ui: {isSideCollapsed: false} };
+        ui: {isSideCollapsed: false, selectedExpiry: -1} };
     try {
         const serializedState = localStorage.getItem("store");
         if (serializedState === null) {

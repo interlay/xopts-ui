@@ -29,6 +29,9 @@
             color: $brand-color;
         }
     }
+    .nav-item.side{
+        display: none;
+    }
 
     .menu {
         .bars {
@@ -36,8 +39,15 @@
             float: right;
         }
     }
+    .nav-item.selected-item{
+        color: $brand-color;
+        font-weight: 600;
+    }
 
     @include mobile-range {
+        background-color: white;
+        z-index: 10;
+
         .menu{
             font-size: 1.3rem;
             .bars {
