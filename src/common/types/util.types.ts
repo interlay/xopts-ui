@@ -1,6 +1,12 @@
 import { rootReducer } from "../reducers/index";
 import { Store, CombinedState } from "redux";
-import { AddOptions, UpdateIsUserConnected, UpdateUserNetwork, AddPositions, ToggleSideMenu, ChangeSelectedExpiry } from "./actions.types";
+import { AddOptions, 
+    UpdateIsUserConnected, 
+    UpdateUserNetwork, 
+    AddPositions, 
+    ToggleSideMenu, 
+    ChangeSelectedExpiry 
+} from "./actions.types";
 
 export interface User {
     isConnected: boolean;
@@ -41,4 +47,5 @@ export type dispatcher = {
 }
 
 export type StoreState = Store<CombinedState<StoreType>, 
-AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ToggleSideMenu | ChangeSelectedExpiry> & dispatcher
+AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ToggleSideMenu | ChangeSelectedExpiry> 
+& dispatcher

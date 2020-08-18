@@ -8,7 +8,7 @@ export default function TradeOptionsPage (): ReactElement {
 
     // this function will be removed after real options are pulled from backend
     useEffect(()=>{
-    let options = [{
+        const options = [{
             contract: "some contract",
             expiry: 1559514940161,
             strikePrice: "450",
@@ -29,8 +29,8 @@ export default function TradeOptionsPage (): ReactElement {
             spotPrice: 309,
             liquidity: "dsaf"
         }
-    ];
-    dispatch(addOptionsAction(options));
+        ];
+        dispatch(addOptionsAction(options));
     });
     return <Page>
         <div> data tables goes here 
