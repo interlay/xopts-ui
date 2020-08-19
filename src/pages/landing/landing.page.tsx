@@ -1,12 +1,14 @@
 import React, { ReactElement, useEffect } from "react";
-import { ReadWriteContracts, ethers } from "@interlay/xopts";
 import { MetaMaskButton } from "../../common/components/meta-mask-button";
 import { useDispatch } from "react-redux";
 import { updateIsUserConnectedAction } from "../../common/actions/user.actions";
+import Page from "../page/page";
 
+// eslint-disable-next-line
 const detectEthereumProvider = require("@metamask/detect-provider");
 
 declare global {
+    // eslint-disable-next-line
     interface Window { web3: any; ethereum: any; }
 }
 
@@ -19,7 +21,8 @@ export default function LandingPage(): ReactElement {
             try {
                 const account = await etherProvider.request({ method: "eth_requestAccounts" });
                 console.log(account);
-                const provider = new ethers.providers.Web3Provider(etherProvider);
+                console.log(activeLogin);
+                // const provider = new ethers.providers.Web3Provider(etherProvider);
                 // const contracts = (await ReadWriteContracts.resolve(provider))!;
                 // const options = await contracts.listOptions();
                 // const pair = await contracts.getPair(options[0]);
@@ -38,8 +41,8 @@ export default function LandingPage(): ReactElement {
     });
 
     return (
-        <div>
+        <Page sideBar={false}>
             <MetaMaskButton { ...{connectWallet}}/>
-        </div>
+        </Page>
     );
 }

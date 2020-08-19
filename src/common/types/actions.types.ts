@@ -38,3 +38,21 @@ export interface AddPositions{
 }
 
 export type PositionsActions = AddPositions;
+
+// UI
+
+export const TOGGLE_SIDE_MENU = "TOGGLE_SIDE_MENU";
+
+export interface ToggleSideMenu{
+    type: typeof TOGGLE_SIDE_MENU;
+    isSideCollapsed: boolean;
+}
+
+export const CHANGE_SELECTED_EXPIRY = "CHANGE_SELECTED_EXPIRY";
+
+export interface ChangeSelectedExpiry{
+    type: typeof CHANGE_SELECTED_EXPIRY;
+    selectedExpiry: number;
+}
+
+export type UIActions = ToggleSideMenu | ChangeSelectedExpiry;
