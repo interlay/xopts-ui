@@ -41,7 +41,7 @@ export default function LandingPage(): ReactElement {
     });
 
     return (
-        <Page>
+        <Page sideBar={false}>
             <MetaMaskButton { ...{connectWallet}}/>
         </Page>
     );

@@ -4,10 +4,12 @@ import HelpExercise from "./help-exercise";
 import HelpSell from "./help-sell";
 import HelpRefund from "./help-refund";
 import HelpGettingStarted from "./help-getting-started";
+import Page from "../page/page";
 
 export default function HelpPage(): ReactElement{
     return (
-        <React.Fragment>
+        <Page sideBar={false}>
+            <React.Fragment>
             <section className="center-text">
                 <h2 className="brand-color">XOpts User Guide</h2>
                 <h3 className="lead text-muted">Learn how to buy and sell BTC options.</h3>
@@ -53,6 +55,7 @@ export default function HelpPage(): ReactElement{
                     <HelpRefund />
                 </section>
             </div>
-        </React.Fragment>
+            </React.Fragment>
+        </Page>
     );
 }
