@@ -2,6 +2,7 @@ import React, { ReactElement, useEffect } from "react";
 import { MetaMaskButton } from "../../common/components/meta-mask-button";
 import { useDispatch } from "react-redux";
 import { updateIsUserConnectedAction } from "../../common/actions/user.actions";
+import Page from "../page/page";
 
 // eslint-disable-next-line
 const detectEthereumProvider = require("@metamask/detect-provider");
@@ -40,8 +41,8 @@ export default function LandingPage(): ReactElement {
     });
 
     return (
-        <div>
+        <Page>
             <MetaMaskButton { ...{connectWallet}}/>
-        </div>
+        </Page>
     );
 }
