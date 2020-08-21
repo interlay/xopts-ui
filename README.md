@@ -15,7 +15,7 @@
 ## About
 
 In traditional finance, an [option](https://en.wikipedia.org/wiki/Option_(finance)) enables the owner to buy or sell an underlying asset at a specified conversion rate before an expiration date.
-XOPTS extends the native capabilities of Ethereum to track and execute PUT Options against BTC. Specifically, we enable sellers to lock DAI collateral in a contract to mint ERC-20 compatible option
+XOPTS extends the native capabilities of Ethereum to track and execute put options against BTC. Specifically, we enable sellers to lock USDT collateral in a contract to mint ERC-20 compatible option
 tokens that can be traded on [Uniswap](https://uniswap.org/). Buyers can then insure an arbitrary amount of BTC relative to the contract's strike price and pay in an amount of DAI collateral as premium.
 Finally, options can be exercised once the buyer proves payment to the respective underwriters of that contract using an on-chain Bitcoin SPV client.
 
@@ -31,7 +31,7 @@ Finally, options can be exercised once the buyer proves payment to the respectiv
 Clone the repository, install the dependencies and start the react app.
 
 ```bash
-git clone git@gitlab.com:interlay/xopts-ui.git
+git clone git@github.com:interlay/xopts-ui.git
 yarn install
 yarn start
 ```
@@ -43,11 +43,11 @@ We are live on the Ropsten testnet. Make sure to point MetaMask to Ropsten to in
 ### Development
 
 If you would like to get started developing on XOpts, easiest would be to set-up a local development environment that includes the smart contracts as well.
-Check out the [XOpts smart contracts repository to get started with a development environment](https://gitlab.com/interlay/xopts).
+Check out the [XOpts smart contracts repository to get started with a development environment](https://github.com/interlay/xopts).
 
 ## Contributing
 
-If you would like to contribute, please file an issue on Github or reach out to us.
+If you would like to contribute, please file an issue on GitHub or reach out to us.
 
 - [Telegram](t.me/interlay)
 - [Riot](https://matrix.to/#/!nZablWWaicZyVTWyZk:matrix.org?via=matrix.org)
