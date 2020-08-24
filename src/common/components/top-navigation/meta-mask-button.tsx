@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { useSelector } from "react-redux";
-import { AppState } from "../types/util.types";
+import { AppState } from "../../types/util.types";
 
 type MetaMaskProps = {
     connectWallet: (activeLogin: boolean) => Promise<void>
