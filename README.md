@@ -10,7 +10,8 @@
 		<h5 align="center">Status: Testnet (Ropsten) </h5>
 	</p>
 </div>
-s
+
+
 ## About
 
 In traditional finance, an [option](https://en.wikipedia.org/wiki/Option_(finance)) enables the owner to buy or sell an underlying asset at a specified conversion rate before an expiration date.
