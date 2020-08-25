@@ -6,7 +6,7 @@
     margin-top: 60px;
 
     .page-content {
-        margin-left: 10vw;
+        margin-left: 0;
     }
 
     .page-content.side-navigation-collapsed {
@@ -17,6 +17,12 @@
         .page-content {
             margin-left: 0px;
         }
+    }
+}
+
+.page.page-with-side-bar {
+    .page-content {
+        margin-left: 10vw;
     }
 }
 
