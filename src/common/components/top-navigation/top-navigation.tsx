@@ -37,17 +37,13 @@ export default function TopNavigation(): ReactElement {
 
     const connectWallet = async (activeLogin: boolean) => {
         const etherProvider = await detectEthereumProvider();
+        const isUnlocked = await etherProvider._metamask.isUnlocked();
         setHasMetaMask(etherProvider);
-        if (etherProvider) {
+
+        if (etherProvider && (activeLogin || isUnlocked)) {
             try {
                 const account = await etherProvider.request({ method: "eth_requestAccounts" });
                 console.log(account);
-                console.log(activeLogin);
-                // const provider = new ethers.providers.Web3Provider(etherProvider);
-                // const contracts = (await ReadWriteContracts.resolve(provider))!;
-                // const options = await contracts.listOptions();
-                // const pair = await contracts.getPair(options[0]);
-                // const details = await pair.getDetails();
                 dispatch(updateIsUserConnectedAction(true));
             } catch (error) {
                 console.log(error);

@@ -1,4 +1,5 @@
 @import "../../_variables";
+@import "../../mixins";
 
 .landing-page{
 
@@ -12,22 +13,25 @@
     .statistics{
         text-align: center;
         margin-top: 4rem;
+        .stat{
+            :first-child{
+                color: $brand-color;
+            }
+        }
     }
 
     .action-boxes {
-        
+        margin-top: 5rem;
         .action-box{
             box-shadow: 0px 0px 10px grey;
-            margin: 5rem 2rem;
+            margin: 1rem 2rem;
             text-align: center;
             overflow: visible;
             min-height: 200px;
             .box-header{
                 padding: 15px;
                 font-weight: 600;
-            }
-            p{
-                text-align: left;
+                color: $brand-color;
             }
             .action-button{
                 position: absolute; 
@@ -38,6 +42,18 @@
                 margin-right: auto; 
                 width: 200px; /* Need a specific value to work */
             }
+        }
+    }
+    @include mobile-range{
+        .title {
+            font-size: 2rem;
+            margin-top: 2rem;
+        }
+        .statistics {
+            margin-top: 2rem;
+        }
+        .action-boxes {
+            margin-top: 2rem;
         }
     }
 }
