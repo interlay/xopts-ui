@@ -1,0 +1,43 @@
+@import "../../_variables";
+
+.landing-page{
+
+    .title{
+        font-size: 3rem;
+        text-align: center;
+        margin-top: 7rem;
+        color: $brand-color;
+    }
+
+    .statistics{
+        text-align: center;
+        margin-top: 4rem;
+    }
+
+    .action-boxes {
+        
+        .action-box{
+            box-shadow: 0px 0px 10px grey;
+            margin: 5rem 2rem;
+            text-align: center;
+            overflow: visible;
+            min-height: 200px;
+            .box-header{
+                padding: 15px;
+                font-weight: 600;
+            }
+            p{
+                text-align: left;
+            }
+            .action-button{
+                position: absolute; 
+                left: 0; 
+                right: 0; 
+                bottom: 20px;
+                margin-left: auto; 
+                margin-right: auto; 
+                width: 200px; /* Need a specific value to work */
+            }
+        }
+    }
+}
