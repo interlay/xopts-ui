@@ -1,11 +1,8 @@
-import React, { ReactElement, useEffect } from "react";
-import { MetaMaskButton } from "../../common/components/meta-mask-button";
-import { useDispatch } from "react-redux";
-import { updateIsUserConnectedAction } from "../../common/actions/user.actions";
+import React, { ReactElement } from "react";
 import Page from "../page/page";
 
-// eslint-disable-next-line
-const detectEthereumProvider = require("@metamask/detect-provider");
+import "./landing.page.scss";
+import { Link } from "react-router-dom";
 
 declare global {
     // eslint-disable-next-line
@@ -13,36 +10,54 @@ declare global {
 }
 
 export default function LandingPage(): ReactElement {
-    const dispatch = useDispatch();
-
-    const connectWallet = async (activeLogin: boolean) => {
-        const etherProvider = await detectEthereumProvider();
-        if (etherProvider) {
-            try {
-                const account = await etherProvider.request({ method: "eth_requestAccounts" });
-                console.log(account);
-                console.log(activeLogin);
-                // const provider = new ethers.providers.Web3Provider(etherProvider);
-                // const contracts = (await ReadWriteContracts.resolve(provider))!;
-                // const options = await contracts.listOptions();
-                // const pair = await contracts.getPair(options[0]);
-                // const details = await pair.getDetails();
-                dispatch(updateIsUserConnectedAction(true));
-            } catch (error) {
-                console.log(error);
-            }
-        } else {
-            dispatch(updateIsUserConnectedAction(false));
-        }
-    };
-
-    useEffect(()=> {
-        connectWallet(false);
-    });
-
     return (
         <Page sideBar={false}>
-            <MetaMaskButton { ...{connectWallet}}/>
+            <div className="landing-page">
+                <div className="title">Zero Trust Bitcoin Options</div>
+                <div className="statistics row justify-content-center">
+                    <div className="stat col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6">
+                        <p>Option Markets</p>
+                        <p>18</p>
+                    </div>
+                    <div className="stat col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6">
+                        <p>Liquidity</p>
+                        <p>55,435,064 USDT</p>
+                    </div>
+                    <div className="stat col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6">
+                        <p>Fees Earned</p>
+                        <p>6,678 USDT</p>
+                    </div>
+                    <div className="stat col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6">
+                        <p>Bitcoin Transfered</p>
+                        <p>31.4 USDT</p>
+                    </div>
+                </div>
+                <div className="action-boxes row justify-content-center">
+                    <div className="action-box col-xl-3 col-lg-4 col-md-6 col-sm-11 col-11">
+                        <div className="box-header">Options</div>
+                        <p>
+                            Trade Bitcoin options with an AMM for direct execution and optimization of profits.
+                        </p>
+                        <Link to="/trade-options">
+                            <div className="action-button">
+                                Trade Options
+                            </div>
+                        </Link>
+                    </div>
+                    <div className="action-box col-xl-3 col-lg-4 col-md-6 col-sm-11 col-11">
+                        <div className="box-header">Bitcoin</div>
+                        <p>
+                            Potentially buy Bitcoin at your desired price by providing liquidity. 
+                            Buy USDT on Ethereum with you Bitcoin to enter DeFi.
+                        </p>
+                        <Link to="/bitcoin">
+                            <div className="action-button">
+                                Trade Bitcoin
+                            </div>
+                        </Link>
+                    </div>
+                </div>
+            </div>
         </Page>
     );
 }

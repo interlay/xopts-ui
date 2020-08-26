@@ -1,7 +1,28 @@
 @import "_variables";
+@import "_mixins";
+  
+@include font-fam("airbnb-cereal-light", "./assets/fonts/airbnb-cereal/AirbnbCerealLight");
+// @include font-fam("airbnb-cereal-medium", "./assets/fonts/airbnb-cereal/AirbnbCerealMedium");
+// @include font-fam("airbnb-cereal-book", "./assets/fonts/airbnb-cereal/AirbnbCerealBook");
 
-body {
-    font-family: Roboto;
+html, body, div, p, a, span, button, i, form, table, tr, td, th, li, ul{
+    font-family: airbnb-cereal-light, "Comic Sans MS", Arial;
+}
+
+a{
+    text-decoration: none;
+    &:hover{
+        text-decoration: none;
+    }
+    &:link{
+        text-decoration: none;
+    }
+    &:visited{
+        text-decoration: none;
+    }
+    &:active{
+        text-decoration: none;
+    }
 }
 
 .center-text {
@@ -10,4 +31,23 @@ body {
 
 .brand-color {
     color: $brand-color;
+}
+
+// Buttons
+
+.action-button{
+    max-height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 1rem;
+    border-radius: 5px;
+    padding: 0px 10px;
+    box-shadow: 0 0 5px $brand-color;
+    color: $brand-color;
+    &:hover {
+        color: white;
+        background-color: $brand-color;
+        box-shadow: 0 0 10px $brand-color;
+        cursor: pointer;
+    }
 }

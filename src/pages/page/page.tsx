@@ -13,7 +13,7 @@ type PageProps = {
 export default function Page ({children,sideBar=true}: PageProps): ReactElement {
     const isSideCollapsed = useSelector((state: AppState) => state.ui.isSideCollapsed);
 
-    return <div className="page">
+    return <div className={"page " + (sideBar ? "page-with-side-bar" : "")}>
         {sideBar && <SideNavigation></SideNavigation>}
         <div className={"page-content " + (isSideCollapsed ? "side-navigation-collapsed" : "")}>
             {children}
