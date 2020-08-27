@@ -5,7 +5,7 @@ import { AddOptions,
     UpdateUserNetwork, 
     AddPositions, 
     ToggleSideMenu, 
-    ChangeSelectedExpiry 
+    ChangeSelectedPage 
 } from "./actions.types";
 
 export interface User {
@@ -29,7 +29,7 @@ export interface Position {
 
 export type UIState = {
     isSideCollapsed: boolean;
-    selectedExpiry: number;
+    selectedPage: string;
 }
 
 export type AppState = ReturnType<typeof rootReducer>
@@ -47,5 +47,5 @@ export type dispatcher = {
 }
 
 export type StoreState = Store<CombinedState<StoreType>, 
-AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ToggleSideMenu | ChangeSelectedExpiry> 
+AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ToggleSideMenu | ChangeSelectedPage> 
 & dispatcher

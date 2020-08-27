@@ -48,11 +48,11 @@ export interface ToggleSideMenu{
     isSideCollapsed: boolean;
 }
 
-export const CHANGE_SELECTED_EXPIRY = "CHANGE_SELECTED_EXPIRY";
+export const CHANGE_SELECTED_PAGE = "CHANGE_SELECTED_PAGE";
 
-export interface ChangeSelectedExpiry{
-    type: typeof CHANGE_SELECTED_EXPIRY;
-    selectedExpiry: number;
+export interface ChangeSelectedPage{
+    type: typeof CHANGE_SELECTED_PAGE;
+    selectedPage: string;
 }
 
-export type UIActions = ToggleSideMenu | ChangeSelectedExpiry;
+export type UIActions = ToggleSideMenu | ChangeSelectedPage;

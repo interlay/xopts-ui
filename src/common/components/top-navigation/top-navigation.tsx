@@ -2,7 +2,7 @@ import React, { ReactElement, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import logo from "../../../assets/img/xopts.png";
 import { Link } from "react-router-dom";
-import { changeSelectedExpiryAction } from "../../actions/ui.actions";
+import { changeSelectedPageAction } from "../../actions/ui.actions";
 import { AppState } from "../../types/util.types";
 import { updateIsUserConnectedAction } from "../../actions/user.actions";
 
@@ -17,7 +17,6 @@ export default function TopNavigation(): ReactElement {
     const [hasMetaMask, setHasMetaMask] = useState(null);
     const dispatch = useDispatch();
     const options = useSelector((state: AppState) => state.options);
-    const allOptions = -1;
 
     const closeDropDownMenu = () => {
         if (window.innerWidth <= 768) {
@@ -29,7 +28,7 @@ export default function TopNavigation(): ReactElement {
         return () => {
             closeDropDownMenu();
             if (isOption) {
-                dispatch(changeSelectedExpiryAction(Number(page)));
+                dispatch(changeSelectedPageAction(page));
             }
             setSelectedPage(page);
         };
@@ -91,12 +90,12 @@ export default function TopNavigation(): ReactElement {
                     </Link>
                     <Link className={"nav-item" + ("trade-options" === selectedPage ? " selected-item" : "")} 
                         to="/trade-options" 
-                        onClick={openPage(allOptions.toString())}>
+                        onClick={openPage("all-expirations")}>
                             Options
                     </Link>
-                    <Link className={"nav-item side" + (allOptions === Number(selectedPage) ? " selected-item" : "")} 
+                    <Link className={"nav-item side" + ("all-expirations" === selectedPage ? " selected-item" : "")} 
                         to="/developers" 
-                        onClick={openPage(allOptions.toString())}>
+                        onClick={openPage("all-expirations")}>
                             All Expirations
                     </Link>
                     
