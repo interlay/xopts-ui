@@ -1,0 +1,15 @@
+.trade-options-page{
+    text-align: center;
+    .table-box{
+        background-color: white;
+        padding: 30px;
+        margin: auto;
+        margin-top: 2rem;
+        width: fit-content;
+        .data-table{
+            th, td{
+                padding: 5px 30px;
+            }
+        }
+    }
+}
