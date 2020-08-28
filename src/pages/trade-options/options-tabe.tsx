@@ -31,4 +31,4 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
             })}
         </table>
     </div>;
-} 
+}
