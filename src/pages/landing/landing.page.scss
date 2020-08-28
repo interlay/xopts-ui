@@ -2,7 +2,8 @@
 @import "../../mixins";
 
 .landing-page{
-
+    background-color: white;
+    margin-top: 60px;
     .title{
         font-size: 3rem;
         text-align: center;
@@ -21,6 +22,7 @@
     }
 
     .action-boxes {
+        background-color: white;
         margin-top: 5rem;
         .action-box{
             box-shadow: 0px 0px 10px grey;

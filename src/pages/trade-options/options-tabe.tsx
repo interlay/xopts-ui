@@ -11,7 +11,9 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
     const optionsToShow = options.filter((option) => option.expiry.toString() === props.expiry);
 
     return <div className="table-box">
-        <div className="title">{new Date(Number(props.expiry)).toDateString().slice(4,15)}</div>
+        <div className="title">
+            BTC Options &nbsp;&nbsp;&nbsp; {new Date(Number(props.expiry)).toDateString().slice(4,15)}
+        </div>
         <table className="data-table">
             <tr>
                 <th>Strike Price</th>

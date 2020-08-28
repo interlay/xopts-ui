@@ -2,15 +2,12 @@
 @import "../../variables"; 
 
 .page {
+    background-color: #f1f3fa;
     padding: 15px;
     margin-top: 60px;
-
+    min-height: 100vh;
     .page-content {
         margin-left: 0;
-    }
-
-    .page-content.side-navigation-collapsed {
-        margin-left: 50px;
     }
 
     @include mobile-range {
@@ -23,6 +20,10 @@
 .page.page-with-side-bar {
     .page-content {
         margin-left: 10vw;
+    }
+
+    .page-content.side-navigation-collapsed {
+        margin-left: 50px;
     }
 }
 

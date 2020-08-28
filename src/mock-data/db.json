@@ -1,48 +1,6 @@
 {
     "options": [
         {
-            "strikePrice": 4000,
-            "liquidity": 23904,
-            "last-price": 3,
-            "your-positions": 92302,
-            "expiry": 1605598437527
-        },
-        {
-            "strikePrice": 4000,
-            "liquidity": 23904,
-            "last-price": 3,
-            "your-positions": 92302,
-            "expiry": 1605598437527
-        },
-        {
-            "strikePrice": 4000,
-            "liquidity": 23904,
-            "last-price": 3,
-            "your-positions": 92302,
-            "expiry": 1605598437527
-        },
-        {
-            "strikePrice": 5000,
-            "liquidity": 23904,
-            "last-price": 3,
-            "your-positions": 92302,
-            "expiry": 1605598437527
-        },
-        {
-            "strikePrice": 5000,
-            "liquidity": 23904,
-            "last-price": 3,
-            "your-positions": 92302,
-            "expiry": 1605598437527
-        },
-        {
-            "strikePrice": 5000,
-            "liquidity": 23904,
-            "last-price": 3,
-            "your-positions": 92302,
-            "expiry": 1605598437527
-        },
-        {
             "strikePrice": 6000,
             "liquidity": 23904,
             "last-price": 1,
@@ -90,6 +48,48 @@
             "last-price": 2,
             "your-positions": 92302,
             "expiry": 1603598437527
+        },
+        {
+            "strikePrice": 4000,
+            "liquidity": 23904,
+            "last-price": 3,
+            "your-positions": 92302,
+            "expiry": 1605598437527
+        },
+        {
+            "strikePrice": 4000,
+            "liquidity": 23904,
+            "last-price": 3,
+            "your-positions": 92302,
+            "expiry": 1605598437527
+        },
+        {
+            "strikePrice": 4000,
+            "liquidity": 23904,
+            "last-price": 3,
+            "your-positions": 92302,
+            "expiry": 1605598437527
+        },
+        {
+            "strikePrice": 5000,
+            "liquidity": 23904,
+            "last-price": 3,
+            "your-positions": 92302,
+            "expiry": 1605598437527
+        },
+        {
+            "strikePrice": 5000,
+            "liquidity": 23904,
+            "last-price": 3,
+            "your-positions": 92302,
+            "expiry": 1605598437527
+        },
+        {
+            "strikePrice": 5000,
+            "liquidity": 23904,
+            "last-price": 3,
+            "your-positions": 92302,
+            "expiry": 1605598437527
         },
         {
             "strikePrice": 9000,

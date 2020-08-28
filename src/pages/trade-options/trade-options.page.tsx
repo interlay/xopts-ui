@@ -49,7 +49,27 @@ export default function TradeOptionsPage (): ReactElement {
                 })}
             </section>
             <section id="positions-section">
-                Positions
+                <div className="table-box">
+                    <div className="title">Positions</div>
+                    <table className="data-table">
+                        <tr>
+                            <th>Expiry Date</th>
+                            <th>Strike Price</th>
+                            <th>Liquidity</th>
+                            <th>Your Obligations</th>
+                            <th>Your Options</th>
+                            <th>Premium</th>
+                            <th>Potential Performance</th>
+                        </tr>
+                        <tr>
+                            <td>{Math.floor(Math.random() * 10000)}</td>
+                            <td>{Math.floor(Math.random() * 4)}</td>
+                            <td>{Math.floor(Math.random() * 10000)}$</td>
+                            <td>{Math.floor(Math.random() * 3)}</td>
+                            <td>{Math.floor(Math.random() * 5)}</td>
+                        </tr>
+                    </table>
+                </div>
             </section>
         </div>
     </Page>;

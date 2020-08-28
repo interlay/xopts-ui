@@ -6,9 +6,17 @@
         margin: auto;
         margin-top: 2rem;
         width: fit-content;
+        .title {
+            text-align: left;
+            padding-bottom: 30px;
+            font-weight: 600;
+        }
         .data-table{
             th, td{
                 padding: 5px 30px;
+            }
+            tr:nth-child(odd) {
+                background-color: #eee;
             }
         }
     }
