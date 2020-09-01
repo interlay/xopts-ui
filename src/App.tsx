@@ -29,7 +29,7 @@ function App(): ReactElement {
                             <HelpPage />
                         </Route>
 
-                        <Route path="/trade-options">
+                        <Route path="/trade-options/:currency">
                             <TradeOptionsPage />
                         </Route>
 

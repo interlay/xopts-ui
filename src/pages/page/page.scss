@@ -25,5 +25,12 @@
     .page-content.side-navigation-collapsed {
         margin-left: 50px;
     }
+
+    @include mobile-range {
+        padding: 5px;
+        .page-content {
+            margin-left: 0px;
+        }
+    }
 }
 

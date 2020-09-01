@@ -10,7 +10,7 @@ declare global {
 
 export default function LandingPage(): ReactElement {
     return (
-        <div className="landing-page">
+        <div className="landing-page container-fluid">
             <div className="title">Zero Trust Bitcoin Options</div>
             <div className="statistics row justify-content-center">
                 <div className="stat col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6">
@@ -36,7 +36,7 @@ export default function LandingPage(): ReactElement {
                     <p>
                         Trade Bitcoin options with an AMM for direct execution and optimization of profits.
                     </p>
-                    <Link to="/trade-options">
+                    <Link to="/trade-options/btc">
                         <div className="action-button">
                             Trade Options
                         </div>

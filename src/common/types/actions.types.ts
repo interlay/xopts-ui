@@ -1,5 +1,6 @@
 import { Option, Position } from "../types/util.types";
 
+
 // USER
 
 export const UPDATE_IS_USER_CONNECTED = "UPDATE_IS_USER_CONNECTED";
@@ -17,6 +18,7 @@ export interface UpdateUserNetwork{
 
 export type UserActions = UpdateIsUserConnected | UpdateUserNetwork | AddPositions;
 
+
 // OPTIONS
 
 export const ADD_OPTIONS = "ADD_OPTIONS";
@@ -27,6 +29,7 @@ export interface AddOptions{
 }
 
 export type OptionsActions = AddOptions;
+
 
 // POSITIONS
 
@@ -39,20 +42,26 @@ export interface AddPositions{
 
 export type PositionsActions = AddPositions;
 
+
 // UI
 
 export const TOGGLE_SIDE_MENU = "TOGGLE_SIDE_MENU";
+export const CHANGE_SELECTED_PAGE = "CHANGE_SELECTED_PAGE";
+export const CHANGE_CURRENCY = "CHANGE_CURRENCY";
 
 export interface ToggleSideMenu{
     type: typeof TOGGLE_SIDE_MENU;
     isSideCollapsed: boolean;
 }
 
-export const CHANGE_SELECTED_PAGE = "CHANGE_SELECTED_PAGE";
-
 export interface ChangeSelectedPage{
     type: typeof CHANGE_SELECTED_PAGE;
     selectedPage: string;
 }
 
-export type UIActions = ToggleSideMenu | ChangeSelectedPage;
+export interface ChangeCurrency{
+    type: typeof CHANGE_CURRENCY;
+    currency: string;
+}
+
+export type UIActions = ToggleSideMenu | ChangeSelectedPage | ChangeCurrency;

@@ -5,6 +5,7 @@ import { toggleSideMenuAction } from "../../actions/ui.actions";
 import { Link } from "react-router-dom";
 import { changeSelectedPageAction } from "../../actions/ui.actions";
 import { filterUniqueOptions } from "../../utils/utils";
+import { useParams } from "react-router";
 
 import "./side-navigation.scss";
 
@@ -14,6 +15,7 @@ export default function SideNavigation (): ReactElement {
     const uniqueOptions = filterUniqueOptions(options);
     const isCollapsed = useSelector((state: AppState) => state.ui.isSideCollapsed);
     const selectedPage = useSelector((state: AppState) => state.ui.selectedPage);
+    const {currency} = useParams();
 
     const openPage = (expiry: string) => {
         return () => {
@@ -27,14 +29,14 @@ export default function SideNavigation (): ReactElement {
 
     return <div className={"side-navigation " + (isCollapsed ? "side-navigation-collapsed" : "")}>
         <div className="side-navigation-items">
-            <Link to="/trade-options"
+            <Link to={"/trade-options/" + currency}
                 className={"side-item" + ( selectedPage === "all-expirations" ? " selected-item" : "")}
                 onClick={openPage("all-expirations")}>
                 {"All " + (!isCollapsed ? "Expirations" : "")}
             </Link>
             {
                 uniqueOptions.map((option, index) => {
-                    return <Link to="/trade-options"
+                    return <Link to={"/trade-options/" + currency}
                         className={"side-item" + (selectedPage === option.expiry.toString() ? " selected-item" : "")} 
                         key={index} 
                         onClick={openPage(option.expiry.toString())}>
@@ -42,8 +44,9 @@ export default function SideNavigation (): ReactElement {
                     </Link>;
                 })
             }
-            <div className={"side-item" + (selectedPage === "/trade-options#positions" ? " selected-item" : "")}
-                onClick={scrollToPositions}>
+            <div className={"side-item" + 
+                (selectedPage === "/trade-options/" + currency + "#positions" ? " selected-item" : "")}
+            onClick={scrollToPositions}>
                 {"Pos" + (!isCollapsed ? "itions" : "")}
             </div>
         </div>

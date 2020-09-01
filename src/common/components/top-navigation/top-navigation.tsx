@@ -2,9 +2,11 @@ import React, { ReactElement, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import logo from "../../../assets/img/xopts.png";
 import { Link } from "react-router-dom";
-import { changeSelectedPageAction } from "../../actions/ui.actions";
+import { changeSelectedPageAction, changeCurrencyAction } from "../../actions/ui.actions";
 import { AppState } from "../../types/util.types";
 import { updateIsUserConnectedAction } from "../../actions/user.actions";
+import { useHistory } from "react-router-dom";
+import { filterUniqueOptions } from "../../utils/utils";
 
 import "./top-navigation.scss";
 
@@ -17,6 +19,9 @@ export default function TopNavigation(): ReactElement {
     const [hasMetaMask, setHasMetaMask] = useState(null);
     const dispatch = useDispatch();
     const options = useSelector((state: AppState) => state.options);
+    const uniqueOptions = filterUniqueOptions(options);
+    const history = useHistory();
+    const currency = useSelector((state: AppState) => state.ui.currency);
 
     const closeDropDownMenu = () => {
         if (window.innerWidth <= 768) {
@@ -52,20 +57,37 @@ export default function TopNavigation(): ReactElement {
         }
     };
 
+    const changeTab = (currency: string) => {
+        dispatch(changeCurrencyAction(currency));
+        history.push("/trade-options/" + currency);
+    };
+
     useEffect(()=> {
         connectWallet(false);
     });
 
     return <div className="top-navigation container-fluid">
         <div className="row">
-            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-4">
-                <Link to="/">
+            <div className="col-xl-4 col-lg-4 col-md-5 col-sm-6 col-10">
+                <Link to="/"
+                    onClick={openPage("landing")}>
                     <img src={logo} width="30" height="30" alt="company logo" 
                         className="d-inline-block align-top img-fluid"/>
                     <div className="app-name">XOpts</div>
                 </Link>
+                {(history.location.pathname.indexOf("/trade-options/") !== -1) && <div className="tabs">
+                    <div className={"tab" + (currency==="btc" ? " active" : "")} onClick={()=>changeTab("btc")}>
+                        <p><i className="fab fa-bitcoin"></i>&nbsp;Bitcoin</p>
+                        <p>11234</p>
+                    </div>
+                    <div className={"tab" + (currency==="eth" ? " active" : "")} onClick={()=>changeTab("eth")}>
+                        <p><i className="fab fa-ethereum"></i>&nbsp;Ethereum</p>
+                        <p>234</p>
+                    </div>
+                </div>
+                }
             </div>
-            <div className="menu col-xl-8 col-lg-8 col-md-8 col-sm-6 col-8">
+            <div className="menu col-xl-8 col-lg-8 col-md-7 col-sm-6 col-2">
                 <div className="bars" onClick={()=>{setIsOpened(!isOpened);}}><i className="fas fa-bars"></i></div>
                 <div className={"navigation-items " + (isOpened ? "open" : "")}>
                     {hasMetaMask && <div className="nav-item nav-button" onClick={() => { connectWallet(true); }}>
@@ -89,7 +111,7 @@ export default function TopNavigation(): ReactElement {
                             Bitcoin
                     </Link>
                     <Link className={"nav-item" + ("trade-options" === selectedPage ? " selected-item" : "")} 
-                        to="/trade-options" 
+                        to={"/trade-options/" + currency} 
                         onClick={openPage("all-expirations")}>
                             Options
                     </Link>
@@ -99,10 +121,10 @@ export default function TopNavigation(): ReactElement {
                             All Expirations
                     </Link>
                     
-                    {options.map((option, index) => {
+                    {uniqueOptions.map((option, index) => {
                         return <Link 
                             className={"nav-item side"+(option.expiry === Number(selectedPage) ? " selected-item" :"")}
-                            to="/trade-options"
+                            to={"/trade-options/" + currency}
                             key={index} 
                             onClick={openPage(option.expiry.toString())}>
                             {new Date(option.expiry).toDateString().slice(4,15)}

@@ -7,6 +7,7 @@ import { getOptions } from "../../mock-data/mock-api";
 import { Option, AppState } from "../../common/types/util.types";
 import { filterUniqueOptions } from "../../common/utils/utils";
 import OptionsTable from "./options-tabe";
+import { useParams } from "react-router";
 
 import "./trade-options.page.scss";
 
@@ -16,7 +17,7 @@ const filterOptions = (selectedPage: string, options: Option[]): Option[] => {
     if (selectedPage === "all-expirations") {
         optionsToShow = uniqueOptions;
     } else {
-        uniqueOptions.map((option):void => {
+        uniqueOptions.forEach((option):void => {
             if (option.expiry.toString() === selectedPage){
                 optionsToShow.push(option);
             }
@@ -30,16 +31,16 @@ export default function TradeOptionsPage (): ReactElement {
     const options = useSelector((state: AppState) => state.options);
     const selectedPage = useSelector((state: AppState) => state.ui.selectedPage);
     const optionsToShow = filterOptions(selectedPage,options);
-    // this function will be removed after real options are pulled from backend
+    const { currency } = useParams();
+    
+    // this function will be removed after real options are pulled from contracts
     useEffect(()=>{
         const fetchOptions = async () => {
             const options = await getOptions<Option[]>();
             dispatch(addOptionsAction(options));
         };
         fetchOptions();
-    },[]);
-
-
+    },[currency]);
 
     return <Page>
         <div className="trade-options-page">
@@ -50,25 +51,33 @@ export default function TradeOptionsPage (): ReactElement {
             </section>
             <section id="positions-section">
                 <div className="table-box">
-                    <div className="title">Positions</div>
-                    <table className="data-table">
-                        <tr>
-                            <th>Expiry Date</th>
-                            <th>Strike Price</th>
-                            <th>Liquidity</th>
-                            <th>Your Obligations</th>
-                            <th>Your Options</th>
-                            <th>Premium</th>
-                            <th>Potential Performance</th>
-                        </tr>
-                        <tr>
-                            <td>{Math.floor(Math.random() * 10000)}</td>
-                            <td>{Math.floor(Math.random() * 4)}</td>
-                            <td>{Math.floor(Math.random() * 10000)}$</td>
-                            <td>{Math.floor(Math.random() * 3)}</td>
-                            <td>{Math.floor(Math.random() * 5)}</td>
-                        </tr>
-                    </table>
+                    <div className="table-wrapper">
+                        <div className="title">Positions</div>
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Expiry Date</th>
+                                    <th>Strike Price</th>
+                                    <th>Liquidity</th>
+                                    <th>Your Obligations</th>
+                                    <th>Your Options</th>
+                                    <th>Premium</th>
+                                    <th>Potential Performance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{Math.floor(Math.random() * 10000)}</td>
+                                    <td>{Math.floor(Math.random() * 4)}</td>
+                                    <td>{Math.floor(Math.random() * 10000)}$</td>
+                                    <td>{Math.floor(Math.random() * 3)}</td>
+                                    <td>{Math.floor(Math.random() * 5)}</td>
+                                    <td>{Math.floor(Math.random() * 1000)}$</td>
+                                    <td>{Math.floor(Math.random() * 1000)}$</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
         </div>
