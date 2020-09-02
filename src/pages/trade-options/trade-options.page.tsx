@@ -59,8 +59,8 @@ export default function TradeOptionsPage (): ReactElement {
                                     <th>Expiry Date</th>
                                     <th>Strike Price</th>
                                     <th>Liquidity</th>
-                                    <th>Your Obligations</th>
-                                    <th>Your Options</th>
+                                    <th>Your Obligations ({currency.toUpperCase()})</th>
+                                    <th>Your Options ({currency.toUpperCase()})</th>
                                     <th>Premium</th>
                                     <th>Potential Performance</th>
                                 </tr>
@@ -70,8 +70,8 @@ export default function TradeOptionsPage (): ReactElement {
                                     <td>{Math.floor(Math.random() * 10000)}</td>
                                     <td>{Math.floor(Math.random() * 4)}</td>
                                     <td>{Math.floor(Math.random() * 10000)}$</td>
-                                    <td>{Math.floor(Math.random() * 3)}</td>
-                                    <td>{Math.floor(Math.random() * 5)}</td>
+                                    <td>{Math.floor(Math.random() * 3)/100}</td>
+                                    <td>{Math.floor(Math.random() * 5)/100}</td>
                                     <td>{Math.floor(Math.random() * 1000)}$</td>
                                     <td>{Math.floor(Math.random() * 1000)}$</td>
                                 </tr>

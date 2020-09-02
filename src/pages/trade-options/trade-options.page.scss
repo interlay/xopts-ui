@@ -26,10 +26,24 @@
                 th, td{
                     padding: 5px 30px;
                     border: 1px solid #ddd;
+                    i{
+                        color: rgba(0, 0, 0, 0.5);
+                    }
                 }
                 thead{
                     background-color: #eaeaea;
                 }
+                .option-type{
+                    font-weight: 600;
+                    text-align: left;
+                }
+                .expires-in{
+                    text-align: right;
+                }
+            }
+            .highlight-col{
+                background-color: #edf0f1;
+                font-weight: 600;
             }
         }
     }
