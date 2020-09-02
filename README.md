@@ -45,6 +45,28 @@ We are live on the Ropsten testnet. Make sure to point MetaMask to Ropsten to in
 If you would like to get started developing on XOpts, easiest would be to set-up a local development environment that includes the smart contracts as well.
 Check out the [XOpts smart contracts repository to get started with a development environment](https://github.com/interlay/xopts).
 
+### Mock Data
+
+If you would like to use mocked data for testing purposes please install json-server:
+
+```bash
+npm install -g json-server
+```
+
+To use our mocked data please login enter in mock-data folder:
+
+```bash
+cd xopts-io/src/mock-data
+```
+
+and run json server:
+
+```bash
+json-server --watch db.json
+```
+
+For additional help please check the [link](https://github.com/typicode/json-server)
+
 ## Contributing
 
 If you would like to contribute, please file an issue on GitHub or reach out to us.
