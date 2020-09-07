@@ -6,7 +6,7 @@ import { addOptionsAction } from "../../common/actions/options.actions";
 import { getOptions } from "../../mock-data/mock-api";
 import { Option, AppState } from "../../common/types/util.types";
 import { filterUniqueOptions } from "../../common/utils/utils";
-import OptionsTable from "./options-tabe";
+import OptionsTable from "./options-table";
 import { useParams } from "react-router";
 
 import "./trade-options.page.scss";
@@ -40,8 +40,9 @@ export default function TradeOptionsPage (): ReactElement {
             dispatch(addOptionsAction(options));
         };
         fetchOptions();
-    },[currency]);
+    },[currency, dispatch]);
 
+    console.log("izredao sam se");
     return <Page>
         <div className="trade-options-page">
             <section id="options-section">

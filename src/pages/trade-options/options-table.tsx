@@ -1,6 +1,7 @@
 import React, { ReactElement } from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../../common/types/util.types";
+import { useParams } from "react-router";
 
 type TablePropsType = {
     expiry: string
@@ -9,7 +10,7 @@ type TablePropsType = {
 export default function OptionsTable(props: TablePropsType): ReactElement{
     const options = useSelector((state: AppState)=>state.options);
     const optionsToShow = options.filter((option) => option.expiry.toString() === props.expiry);
-    const currency = useSelector((state: AppState) => state.ui.currency);
+    const { currency } = useParams();
 
     const calculateExpiry = () => {
         const period = optionsToShow[0].expiry - Date.now();
