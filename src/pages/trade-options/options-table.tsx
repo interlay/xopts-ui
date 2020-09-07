@@ -23,32 +23,31 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
     return <div className="table-box">
         <div className="table-wrapper">
             <div className="title">
-                Options &nbsp;&nbsp;&nbsp; {new Date(Number(props.expiry)).toDateString().slice(4,15)}
+                <b>{new Date(Number(props.expiry)).toDateString().slice(4,15)}</b>
             </div>
             <div className="data-table">
-                <div className="row justify-content-right">
+                <div className="row table-heading justify-content-right">
                     <div className="col-xl-6 option-type">Puts</div>
                     <div className="col-xl-6 expires-in">Expires in {calculateExpiry()}</div>
                 </div>
                 <table>
                     <thead>
                         <tr>
+                            <th>Strike Price</th>
                             <th>Liquidity</th>
                             <th>Last Price</th>
                             <th>Your Obligations ({currency.toUpperCase()})</th>
                             <th>Your Options ({currency.toUpperCase()})</th>
-                            <th>Strike Price</th>
-
                         </tr>
                     </thead>
                     <tbody>
                         {optionsToShow.map((option,index) => {
                             return <tr key={index}>
+                                <td className="highlight-col">{option.strikePrice}</td>
                                 <td>{Math.floor(Math.random() * 4)}</td>
                                 <td>{Math.floor(Math.random() * 10000)}$</td>
                                 <td>{Math.floor(Math.random() * 3)/100}</td>
                                 <td>{Math.floor(Math.random() * 5)/100}</td>
-                                <td className="highlight-col">{option.strikePrice}</td>
                             </tr>;
                         })}
                     </tbody>

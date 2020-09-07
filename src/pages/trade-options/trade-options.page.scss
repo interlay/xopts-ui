@@ -2,6 +2,7 @@
 
 .trade-options-page{
     text-align: center;
+
     .table-box{
         background-color: white;
         padding: 30px;
@@ -9,20 +10,32 @@
         margin-bottom: 15px;
         width: 100%;
         text-align: center;
+
         .table-wrapper{
-            // width: fit-content;
             margin: auto;
+
+            .table-heading{
+                margin: 0px;
+
+                div {
+                    padding: 0px;
+                }
+            }
+
             .title {
-                text-align: left;
+                text-align: center;
                 padding-bottom: 30px;
                 font-weight: 600;
+                font-size: 1.15rem;
             }
+
             .data-table{
                 display: block;
                 overflow-x: auto;
                 white-space: nowrap;
                 max-width: fit-content;
                 margin: auto;
+
                 th, td{
                     padding: 5px 30px;
                     border: 1px solid #ddd;
@@ -30,17 +43,21 @@
                         color: rgba(0, 0, 0, 0.5);
                     }
                 }
+
                 thead{
                     background-color: #eaeaea;
                 }
+
                 .option-type{
                     font-weight: 600;
                     text-align: left;
                 }
+
                 .expires-in{
                     text-align: right;
                 }
             }
+            
             .highlight-col{
                 background-color: #edf0f1;
                 font-weight: 600;
