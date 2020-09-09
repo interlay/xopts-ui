@@ -6,8 +6,15 @@ import { AddOptions,
     AddPositions, 
     ToggleSideMenu, 
     ChangeSelectedPage, 
-    ChangeCurrency
+    ChangeCurrency,
+    UpdatePrices,
+    ChangeClickedOption
 } from "./actions.types";
+
+export interface Prices {
+    btc: number;
+    eth: number;
+}
 
 export interface User {
     isConnected: boolean;
@@ -17,9 +24,9 @@ export interface User {
 export interface Option {
     contract: string;
     expiry: number;
-    strikePrice: string;
+    strikePrice: number;
     spotPrice: number;
-    liquidity: string;
+    liquidity: number;
 }
 
 export interface Position {
@@ -32,6 +39,7 @@ export type UIState = {
     isSideCollapsed: boolean;
     selectedPage: string;
     currency: string;
+    clickedOption?: Option;
 }
 
 export type AppState = ReturnType<typeof rootReducer>
@@ -40,7 +48,8 @@ export type StoreType = {
     options: Option[];
     user: User;
     positions: Position[];
-    ui: UIState
+    ui: UIState;
+    prices: Prices;
 }
 
 export type dispatcher = {
@@ -49,5 +58,6 @@ export type dispatcher = {
 }
 
 export type StoreState = Store<CombinedState<StoreType>, 
-AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ToggleSideMenu | ChangeSelectedPage | ChangeCurrency> 
+AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ToggleSideMenu | ChangeSelectedPage | 
+ChangeCurrency | UpdatePrices | ChangeClickedOption> 
 & dispatcher

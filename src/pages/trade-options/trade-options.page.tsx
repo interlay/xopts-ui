@@ -6,8 +6,9 @@ import { addOptionsAction } from "../../common/actions/options.actions";
 import { getOptions } from "../../mock-data/mock-api";
 import { Option, AppState } from "../../common/types/util.types";
 import { filterUniqueOptions } from "../../common/utils/utils";
-import OptionsTable from "./options-table";
+import OptionsTable from "./options-table/options-table";
 import { useParams } from "react-router";
+import TradeModal from "./trade-modal/trade-modal";
 
 import "./trade-options.page.scss";
 
@@ -42,12 +43,14 @@ export default function TradeOptionsPage (): ReactElement {
         fetchOptions();
     },[currency, dispatch]);
 
-    console.log("izredao sam se");
     return <Page>
         <div className="trade-options-page">
+            <TradeModal currency={currency}></TradeModal>
             <section id="options-section">
                 {optionsToShow.map((option,index)=>{
-                    return <OptionsTable expiry={option.expiry.toString()} key={index}></OptionsTable>;
+                    return (
+                        <OptionsTable expiry={option.expiry.toString()} options={options} key={index}></OptionsTable>
+                    );
                 })}
             </section>
             <section id="positions-section">

@@ -18,10 +18,12 @@ export default function TopNavigation(): ReactElement {
     const [selectedPage, setSelectedPage] = useState("");
     const [hasMetaMask, setHasMetaMask] = useState(null);
     const dispatch = useDispatch();
+    const btcPrice = useSelector((state: AppState) => state.prices.btc);
     const options = useSelector((state: AppState) => state.options);
     const uniqueOptions = filterUniqueOptions(options);
     const history = useHistory();
     const currency = useSelector((state: AppState) => state.ui.currency);
+    const isConnected = useSelector((state: AppState) => state.user.isConnected);
 
     const closeDropDownMenu = () => {
         if (window.innerWidth <= 768) {
@@ -53,7 +55,9 @@ export default function TopNavigation(): ReactElement {
                 console.log(error);
             }
         } else {
-            dispatch(updateIsUserConnectedAction(false));
+            if (isConnected === true){
+                dispatch(updateIsUserConnectedAction(false));
+            }
         }
     };
 
@@ -78,11 +82,11 @@ export default function TopNavigation(): ReactElement {
                 {(history.location.pathname.indexOf("/trade-options/") !== -1) && <div className="tabs">
                     <div className={"tab" + (currency==="btc" ? " active" : "")} onClick={()=>changeTab("btc")}>
                         <p><i className="fab fa-bitcoin"></i>&nbsp;Bitcoin</p>
-                        <p>11234</p>
+                        <p>{btcPrice}</p>
                     </div>
-                    <div className={"tab" + (currency==="eth" ? " active" : "")} onClick={()=>changeTab("eth")}>
+                    <div className="tab eth">
                         <p><i className="fab fa-ethereum"></i>&nbsp;Ethereum</p>
-                        <p>234</p>
+                        <p>Coming Soon</p>
                     </div>
                 </div>
                 }

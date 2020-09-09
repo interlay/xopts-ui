@@ -56,7 +56,7 @@ npm install -g json-server
 To use our mocked data please login enter in mock-data folder:
 
 ```bash
-cd xopts-io/src/mock-data
+cd xopts-ui/src/mock-data
 ```
 
 and run json server:

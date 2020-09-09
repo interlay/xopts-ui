@@ -93,7 +93,17 @@
                 margin-bottom: 0px;
                 line-height: 20px;       
             }
+            p:nth-child(2) {
+                font-size: 0.8rem;
+            }    
         }
+
+        .tab.eth{
+            p:nth-child(2) {
+                font-size: 0.7rem;
+            }    
+        }
+
         .tab.active{
             color: $brand-color;
             border-top: 4px solid $brand-color;

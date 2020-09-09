@@ -6,9 +6,13 @@ import { AppState, StoreType, StoreState } from "./common/types/util.types";
 import i18n from "i18next";
 
 export const loadState = (): StoreType => {
-    const emptyStore = { positions: [], options: [], 
+    const emptyStore = {
+        positions: [], 
+        options: [], 
         user: { isConnected: false, network: "" }, 
-        ui: {isSideCollapsed: false, selectedPage: "all-expirations", currency: "btc"} };
+        ui: { isSideCollapsed: false, selectedPage: "all-expirations", currency: "btc", clickedOption: undefined },
+        prices: { btc: 0, eth: 0 } 
+    };
     try {
         const serializedState = localStorage.getItem("store");
         if (serializedState === null) {

@@ -1,4 +1,5 @@
 @import "../../mixins";
+@import "../../variables";
 
 .trade-options-page{
     text-align: center;
@@ -27,35 +28,6 @@
                 padding-bottom: 30px;
                 font-weight: 600;
                 font-size: 1.15rem;
-            }
-
-            .data-table{
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-                max-width: fit-content;
-                margin: auto;
-
-                th, td{
-                    padding: 5px 30px;
-                    border: 1px solid #ddd;
-                    i{
-                        color: rgba(0, 0, 0, 0.5);
-                    }
-                }
-
-                thead{
-                    background-color: #eaeaea;
-                }
-
-                .option-type{
-                    font-weight: 600;
-                    text-align: left;
-                }
-
-                .expires-in{
-                    text-align: right;
-                }
             }
             
             .highlight-col{

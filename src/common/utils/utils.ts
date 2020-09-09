@@ -15,3 +15,13 @@ export const filterUniqueOptions = (options: Option[]): Option[] => {
     });
     return uniqueOpts;
 };
+
+export const findObjByProperty = (array: any[], value: any, property: string): any => {
+    var result = null;
+    array.forEach((element)=>{
+        if (element[property] === value){
+            result = element;
+        }
+    })
+    return result;
+}

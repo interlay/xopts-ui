@@ -1,0 +1,55 @@
+@import "../../../variables";
+
+.data-table{
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    max-width: fit-content;
+    margin: auto;
+
+    th, td{
+        padding: 5px 30px;
+        border: 1px solid #ddd;
+        i{
+            color: rgba(0, 0, 0, 0.5);
+        }
+        p{
+            margin: 0px;
+        }
+    }
+
+    thead{
+        background-color: #eaeaea;
+    }
+
+    .option-type{
+        font-weight: 600;
+        text-align: left;
+    }
+
+    .expires-in{
+        text-align: right;
+    }
+
+    .green-cell {
+        background-color: $green-color;
+    }
+    tbody{
+        &:hover{
+            cursor: pointer;
+        }
+
+        td {
+            margin: 0px;
+            padding: 0px;
+
+            :nth-child(2){
+                line-height: 1rem;
+                margin: 0px;
+                font-size: 0.9rem;
+                color:rgb(153, 153, 153)
+            }
+        }
+        
+    }
+}
