@@ -7,12 +7,14 @@ import LandingPage from "./pages/landing/landing.page";
 import TradeOptionsPage from "./pages/trade-options/trade-options.page";
 import { configureStore } from "./store";
 import { ToastContainer } from "react-toastify";
+import { startDataPuller } from "./common/utils/data-puller";
 
 import "./_general.scss";
 
 const store = configureStore();
 
 function App(): ReactElement {
+    startDataPuller(store);
     return (
         <Provider store={store}>
             <Router>
@@ -29,7 +31,7 @@ function App(): ReactElement {
                             <HelpPage />
                         </Route>
 
-                        <Route path="/trade-options">
+                        <Route path="/trade-options/:currency">
                             <TradeOptionsPage />
                         </Route>
 

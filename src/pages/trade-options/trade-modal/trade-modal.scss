@@ -1,0 +1,16 @@
+#trade-modal {
+    .trade-buttons {
+        color: white;
+        padding: 5px 60px;
+    }
+    
+    .buy-button {
+        @extend .trade-buttons;
+        background-color: #35aa47;
+    }
+    
+    .sell-button {
+        @extend .trade-buttons;
+        background-color: #d84a38;
+    }
+}

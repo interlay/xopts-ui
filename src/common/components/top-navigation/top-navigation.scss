@@ -69,6 +69,58 @@
         color: $brand-color;
         font-weight: 600;
     }
+    
+    .tabs{
+        display: inline-block;
+        position: absolute;
+        left: 10vw;
+        top: -3px;
+        color: $text-color;
+        .tab{
+            
+            display: inline-block;
+            max-height: 50px;
+            line-height: 50px;
+            text-align: center;
+            padding: 3px 10px;
+            &:hover{
+                cursor: pointer;
+                color: #510101;
+            }
+            p{
+                margin: auto;
+                margin-top: 0px;
+                margin-bottom: 0px;
+                line-height: 20px;       
+            }
+            p:nth-child(2) {
+                font-size: 0.8rem;
+            }    
+        }
+
+        .tab.eth{
+            p:nth-child(2) {
+                font-size: 0.7rem;
+            }    
+        }
+
+        .tab.active{
+            color: $brand-color;
+            border-top: 4px solid $brand-color;
+            // border-left: 1px solid $brand-color;
+            // border-right: 1px solid $brand-color;
+        }
+    }
+
+    @media (max-width: 1090px) {
+        .nav-button.nav-item {
+            margin: 0px;
+        }
+
+        .app-name {
+            display: none;
+        }
+    }
 
     @include mobile-range {
         background-color: white;
@@ -81,6 +133,11 @@
                 float: right;
             }
         }
+
+        .app-name {
+            display: none;
+        }
+
         .navigation-items{
             max-height: 0;
             overflow: hidden;
@@ -118,6 +175,13 @@
             height: fit-content;
             text-align: left;
             margin: 0px;
+        }
+        .tabs{
+            display: inline-block;
+            position: absolute;
+            left: 15vw;
+            top: -3px;
+            color: $text-color;
         }
     }
 }   

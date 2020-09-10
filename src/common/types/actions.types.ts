@@ -1,4 +1,5 @@
-import { Option, Position } from "../types/util.types";
+import { Option, Position, Prices } from "../types/util.types";
+
 
 // USER
 
@@ -17,6 +18,7 @@ export interface UpdateUserNetwork{
 
 export type UserActions = UpdateIsUserConnected | UpdateUserNetwork | AddPositions;
 
+
 // OPTIONS
 
 export const ADD_OPTIONS = "ADD_OPTIONS";
@@ -27,6 +29,7 @@ export interface AddOptions{
 }
 
 export type OptionsActions = AddOptions;
+
 
 // POSITIONS
 
@@ -39,20 +42,41 @@ export interface AddPositions{
 
 export type PositionsActions = AddPositions;
 
+
 // UI
 
 export const TOGGLE_SIDE_MENU = "TOGGLE_SIDE_MENU";
+export const CHANGE_SELECTED_PAGE = "CHANGE_SELECTED_PAGE";
+export const CHANGE_CURRENCY = "CHANGE_CURRENCY";
+export const CHANGE_CLICKED_OPTION = "CHANGE_CLICKED_OPTION";
 
 export interface ToggleSideMenu{
     type: typeof TOGGLE_SIDE_MENU;
     isSideCollapsed: boolean;
 }
 
-export const CHANGE_SELECTED_EXPIRY = "CHANGE_SELECTED_EXPIRY";
-
-export interface ChangeSelectedExpiry{
-    type: typeof CHANGE_SELECTED_EXPIRY;
-    selectedExpiry: number;
+export interface ChangeSelectedPage{
+    type: typeof CHANGE_SELECTED_PAGE;
+    selectedPage: string;
 }
 
-export type UIActions = ToggleSideMenu | ChangeSelectedExpiry;
+export interface ChangeCurrency{
+    type: typeof CHANGE_CURRENCY;
+    currency: string;
+}
+
+export interface ChangeClickedOption{
+    type: typeof CHANGE_CLICKED_OPTION;
+    clickedOption: Option;
+}
+
+export type UIActions = ToggleSideMenu | ChangeSelectedPage | ChangeCurrency | ChangeClickedOption;
+
+// PRICES
+
+export const UPDATE_PRICES = "UPDATE_PRICES";
+
+export interface UpdatePrices {
+    type: typeof UPDATE_PRICES;
+    prices: Prices;
+}

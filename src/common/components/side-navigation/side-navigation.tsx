@@ -3,40 +3,52 @@ import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../types/util.types";
 import { toggleSideMenuAction } from "../../actions/ui.actions";
 import { Link } from "react-router-dom";
-import { changeSelectedExpiryAction } from "../../actions/ui.actions";
+import { changeSelectedPageAction } from "../../actions/ui.actions";
+import { filterUniqueOptions } from "../../utils/utils";
+import { useParams } from "react-router";
 
 import "./side-navigation.scss";
 
 export default function SideNavigation (): ReactElement {
     const dispatch = useDispatch();
     const options = useSelector((state: AppState) => state.options);
+    const uniqueOptions = filterUniqueOptions(options);
     const isCollapsed = useSelector((state: AppState) => state.ui.isSideCollapsed);
-    const selectedOption = useSelector((state: AppState) => state.ui.selectedExpiry);
-    const allOptions = -1;  
+    const selectedPage = useSelector((state: AppState) => state.ui.selectedPage);
+    const {currency} = useParams();
 
-    const openOption = (expiry: number) => {
+    const openPage = (expiry: string) => {
         return () => {
-            dispatch(changeSelectedExpiryAction(expiry));
+            dispatch(changeSelectedPageAction(expiry));
         };
+    };
+
+    const scrollToPositions = () => {
+        window.location.href = "#positions-section";
     };
 
     return <div className={"side-navigation " + (isCollapsed ? "side-navigation-collapsed" : "")}>
         <div className="side-navigation-items">
-            <Link to="/trade-options"
-                className={"side-item" + (allOptions === selectedOption ? " selected-item" : "")}
-                onClick={openOption(allOptions)}>
+            <Link to={"/trade-options/" + currency}
+                className={"side-item" + ( selectedPage === "all-expirations" ? " selected-item" : "")}
+                onClick={openPage("all-expirations")}>
                 {"All " + (!isCollapsed ? "Expirations" : "")}
             </Link>
             {
-                options.map((option, index) => {
-                    return <Link to="/trade-options"
-                        className={"side-item" + (selectedOption === option.expiry ? " selected-item" : "")} 
+                uniqueOptions.map((option, index) => {
+                    return <Link to={"/trade-options/" + currency}
+                        className={"side-item" + (selectedPage === option.expiry.toString() ? " selected-item" : "")} 
                         key={index} 
-                        onClick={openOption(option.expiry)}>
+                        onClick={openPage(option.expiry.toString())}>
                         {!isCollapsed ? new Date(option.expiry).toDateString().slice(4,15) : "20.07"}
                     </Link>;
                 })
             }
+            <div className={"side-item" + 
+                (selectedPage === "/trade-options/" + currency + "#positions" ? " selected-item" : "")}
+            onClick={scrollToPositions}>
+                {"Pos" + (!isCollapsed ? "itions" : "")}
+            </div>
         </div>
         <div className="toggle-menu">
             <i className={"fas fa-arrow-" + (isCollapsed ? "right":"left")}
