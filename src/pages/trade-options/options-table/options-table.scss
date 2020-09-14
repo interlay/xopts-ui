@@ -32,12 +32,9 @@
     }
 
     .green-cell {
-        background-color: $green-color;
+        background-color: rgba(13, 243, 11, 0.05);
     }
     tbody{
-        &:hover{
-            cursor: pointer;
-        }
 
         td {
             margin: 0px;
@@ -49,7 +46,60 @@
                 font-size: 0.9rem;
                 color:rgb(153, 153, 153)
             }
+
+            .row{
+                margin-left: 0px;
+                margin-right: 0px;
+            }
+
+            .trade-buttons {
+                color: white;
+                padding: 5px 60px;
+                line-height: 1rem;
+                margin: 5px 0px;
+                border-radius: 5px;
+            }
+            
+            .buy-button {
+                @extend .trade-buttons;
+                background-color: #35aa47;
+            }
+            
+            .sell-button {
+                @extend .trade-buttons;
+                background-color: #d84a38;
+            }
+
+            .quantity-label{
+                display: inline-block;
+                position: relative;
+                left: 15px;
+            }
+
+            .quantity-wrapper{
+                display: inline-block;
+            }
+
+            .table-input{
+                position: relative;
+                #quantity-input{
+                    margin: 5px -30px;
+                    width: 50%;
+                    position: relative;
+                }
+            }
         }
-        
+        td.green-text{
+            color: $active-green!important;
+            :nth-child(2){
+                color: $active-green;
+            }
+        }
+        td.red-text{
+            color: $error-color!important;
+            :nth-child(2){
+                color: $error-color;
+            }
+        }
     }
 }

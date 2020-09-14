@@ -33,7 +33,8 @@ export default function TradeOptionsPage (): ReactElement {
     const selectedPage = useSelector((state: AppState) => state.ui.selectedPage);
     const optionsToShow = filterOptions(selectedPage,options);
     const { currency } = useParams();
-    
+    const btcPrice = useSelector((state: AppState) => state.prices.btc);
+
     // this function will be removed after real options are pulled from contracts
     useEffect(()=>{
         const fetchOptions = async () => {
@@ -43,6 +44,14 @@ export default function TradeOptionsPage (): ReactElement {
         fetchOptions();
     },[currency, dispatch]);
 
+    // these objects will be removed once we have real data
+    const li1 = Math.floor(Math.random() + 1)/100 * (Math.random() >0.5 ? 1: -1);
+    const li2 = Math.floor(Math.random() + 1)/100 * (Math.random() >0.5 ? 1: -1);
+    const po1 = Math.floor(Math.random() + 1)/100 * (Math.random() >0.5 ? 1: -1);
+    const po2 = Math.floor(Math.random() + 1)/100 * (Math.random() >0.5 ? 1: -1);
+    const pe1 = Math.floor(Math.random() + 1)/100 * (Math.random() >0.5 ? 1: -1);
+    const pe2 = Math.floor(Math.random() + 1)/100 * (Math.random() >0.5 ? 1: -1);
+    
     return <Page>
         <div className="trade-options-page">
             <TradeModal currency={currency}></TradeModal>
@@ -63,21 +72,44 @@ export default function TradeOptionsPage (): ReactElement {
                                     <th>Expiry Date</th>
                                     <th>Strike Price</th>
                                     <th>Liquidity</th>
-                                    <th>Your Obligations ({currency.toUpperCase()})</th>
-                                    <th>Your Options ({currency.toUpperCase()})</th>
-                                    <th>Premium</th>
-                                    <th>Potential Performance</th>
+                                    <th>Positions</th>
+                                    <th>Performance</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>{new Date(1603598437527).toDateString().slice(4,15)}</td>
-                                    <td>{Math.floor(Math.random() * 4)}</td>
-                                    <td>{Math.floor(Math.random() * 10000)}$</td>
-                                    <td>{Math.floor(Math.random() * 3)/100}</td>
-                                    <td>{Math.floor(Math.random() * 5)/100}</td>
-                                    <td>{Math.floor(Math.random() * 1000)}$</td>
-                                    <td>{Math.floor(Math.random() * 1000)}$</td>
+                                    <td>10500</td>
+                                    <td>
+                                        <p>{li1}</p>
+                                        <p>{(li1*btcPrice).toFixed(2)}$</p>
+                                    </td>
+                                    <td>
+                                        <p>{po1}</p>
+                                        <p>{(po1*btcPrice).toFixed(2)}$</p>
+                                    </td>
+                                    <td>
+                                        <p>{pe1}</p>
+                                        <p>{(pe1*btcPrice).toFixed(2)}$</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{new Date(1603598437527).toDateString().slice(4,15)}</td>
+                                    <td>11000</td>
+
+                                    <td>
+                                        <p>{li2}</p>
+                                        <p>{(li2*btcPrice).toFixed(2)}$</p>
+                                    </td>
+
+                                    <td>
+                                        <p>{po2}</p>
+                                        <p>{(po2*btcPrice).toFixed(2)}$</p>
+                                    </td>
+                                    <td>
+                                        <p>{pe2}</p>
+                                        <p>{(pe2*btcPrice).toFixed(2)}$</p>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

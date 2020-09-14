@@ -2,10 +2,9 @@ import React, { ReactElement, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import logo from "../../../assets/img/xopts.png";
 import { Link } from "react-router-dom";
-import { changeSelectedPageAction, changeCurrencyAction } from "../../actions/ui.actions";
+import { changeSelectedPageAction } from "../../actions/ui.actions";
 import { AppState } from "../../types/util.types";
 import { updateIsUserConnectedAction } from "../../actions/user.actions";
-import { useHistory } from "react-router-dom";
 import { filterUniqueOptions } from "../../utils/utils";
 
 import "./top-navigation.scss";
@@ -21,7 +20,6 @@ export default function TopNavigation(): ReactElement {
     const btcPrice = useSelector((state: AppState) => state.prices.btc);
     const options = useSelector((state: AppState) => state.options);
     const uniqueOptions = filterUniqueOptions(options);
-    const history = useHistory();
     const currency = useSelector((state: AppState) => state.ui.currency);
     const isConnected = useSelector((state: AppState) => state.user.isConnected);
     const account = useSelector((state: AppState) => state.user.account);
@@ -62,35 +60,38 @@ export default function TopNavigation(): ReactElement {
         }
     };
 
-    const changeTab = (currency: string) => {
-        dispatch(changeCurrencyAction(currency));
-        history.push("/trade-options/" + currency);
-    };
-
     useEffect(()=> {
         connectWallet(false);
     });
 
     return <div className="top-navigation container-fluid">
+        <div className="price">
+            <p>BTC/USD</p>
+            <p>{btcPrice}</p>
+        </div> 
         <div className="row">
-            <div className="col-xl-4 col-lg-4 col-md-5 col-sm-6 col-10">
+            <div className="col-xl-4 col-lg-4 col-md-5 col-sm-6 col-10 logo-section">
                 <Link to="/"
                     onClick={openPage("landing")}>
                     <img src={logo} width="30" height="30" alt="company logo" 
                         className="d-inline-block align-top img-fluid"/>
                     <div className="app-name">XOpts</div>
                 </Link>
-                {(history.location.pathname.indexOf("/trade-options/") !== -1) && <div className="tabs">
-                    <div className={"tab" + (currency==="btc" ? " active" : "")} onClick={()=>changeTab("btc")}>
-                        <p><i className="fab fa-bitcoin"></i>&nbsp;Bitcoin</p>
-                        <p>{btcPrice}</p>
-                    </div>
-                    <div className="tab eth">
-                        <p><i className="fab fa-ethereum"></i>&nbsp;Ethereum</p>
-                        <p>Coming Soon</p>
-                    </div>
-                </div>
-                }
+                <Link className={"nav-item first" + ("exchange" === selectedPage ? " selected-item" : "")} 
+                    to="/exchange" 
+                    onClick={openPage("exchange")}>
+                        Exchange
+                </Link>
+                <Link className={"nav-item" + ("earn" === selectedPage ? " selected-item" : "")} 
+                    to="/earn" 
+                    onClick={openPage("earn")}>
+                        Earn
+                </Link>
+                <Link className={"nav-item" + ("all-expirations" === selectedPage ? " selected-item" : "")} 
+                    to={"/trade-options/" + currency} 
+                    onClick={openPage("all-expirations")}>
+                        Options
+                </Link>
             </div>
             <div className="menu col-xl-8 col-lg-8 col-md-7 col-sm-6 col-2">
                 <div className="bars" onClick={()=>{setIsOpened(!isOpened);}}><i className="fas fa-bars"></i></div>
@@ -103,7 +104,7 @@ export default function TopNavigation(): ReactElement {
                     {hasMetaMask && account &&
                         <div className="dropdown">
                             <button className="nav-item nav-button dropdown-toggle" type="button" id="dropdownMenu" 
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
                                 {account.substring(0,6) + "..." + account.substring(account.length-4, account.length)}
                             </button>
                             <div className="dropdown-menu" aria-labelledby="dropdownMenu">
@@ -119,25 +120,12 @@ export default function TopNavigation(): ReactElement {
                         onClick={openPage("help")}>
                         Help
                     </Link>
-                    <Link className={"nav-item" + ("developers" === selectedPage ? " selected-item" : "")}
-                        onClick={openPage("developers")} to="/">
-                        Developers
-                    </Link>
-                    <Link className={"nav-item" + ("bitcoin" === selectedPage ? " selected-item" : "")} 
-                        to="/bitcoin" 
-                        onClick={openPage("bitcoin")}>
-                            Bitcoin
-                    </Link>
-                    <Link className={"nav-item" + ("trade-options" === selectedPage ? " selected-item" : "")} 
-                        to={"/trade-options/" + currency} 
-                        onClick={openPage("all-expirations")}>
-                            Options
-                    </Link>
-                    <Link className={"nav-item side" + ("all-expirations" === selectedPage ? " selected-item" : "")} 
-                        to="/developers"
-                        onClick={openPage("all-expirations")}>
-                            All Expirations
-                    </Link>
+                    {selectedPage!=="all-expirations" &&
+                        <Link className={"nav-item" + ("developers" === selectedPage ? " selected-item" : "")}
+                            onClick={openPage("developers")} to="/">
+                            Developers
+                        </Link>
+                    }
                     
                     {uniqueOptions.map((option, index) => {
                         return <Link 

@@ -37,7 +37,7 @@
     .nav-item.side{
         display: none;
     }
-
+    
     .nav-button{
         max-height: 30px;
         line-height: 30px;
@@ -47,6 +47,16 @@
         padding: 0px 10px;
         box-shadow: 0 0 5px $brand-color;
         color: $brand-color;
+        &:hover {
+            color: white;
+            background-color: $brand-color;
+            box-shadow: 0 0 10px $brand-color;
+            cursor: pointer;
+        }
+    }
+
+    .nav-button.dropdown-toggle{
+        background-color: white;
         &:hover {
             color: white;
             background-color: $brand-color;
@@ -69,6 +79,23 @@
         color: $brand-color;
         font-weight: 600;
     }
+
+    .price{
+        position: absolute;
+        width: calc(100vw - 30px);
+        text-align: center;
+        line-height: 0.5rem;
+        color: $brand-color;
+    }
+
+    .logo-section{
+        .nav-item{
+            float:none!important;
+        }
+        .first{
+            margin-left: 30px;
+        }
+    }
     
     .tabs{
         display: inline-block;
@@ -85,7 +112,7 @@
             padding: 3px 10px;
             &:hover{
                 cursor: pointer;
-                color: #510101;
+                color: $brand-color;
             }
             p{
                 margin: auto;

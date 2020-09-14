@@ -43,14 +43,24 @@ export default function LandingPage(): ReactElement {
                     </Link>
                 </div>
                 <div className="action-box col-xl-3 col-lg-4 col-md-6 col-sm-11 col-11">
-                    <div className="box-header">Bitcoin</div>
+                    <div className="box-header">Earn</div>
                     <p>
-                        Potentially buy Bitcoin at your desired price by providing liquidity. 
-                        Buy USDT on Ethereum with you Bitcoin to enter DeFi.
+                        Earn interest and potentially buy Bitcoin at your desired price by providing USDT liquidity.
                     </p>
-                    <Link to="/bitcoin">
+                    <Link to="/earn">
                         <div className="action-button">
-                            Trade Bitcoin
+                            Provide Liquidity
+                        </div>
+                    </Link>
+                </div>
+                <div className="action-box col-xl-3 col-lg-4 col-md-6 col-sm-11 col-11">
+                    <div className="box-header">Exchange</div>
+                    <p>
+                        Get access to Ethereum's DeFi with Bitcoin: trade BTC against USDT, DAI or any many more.
+                    </p>
+                    <Link to="/exchange">
+                        <div className="action-button">
+                            Exchange BTC
                         </div>
                     </Link>
                 </div>

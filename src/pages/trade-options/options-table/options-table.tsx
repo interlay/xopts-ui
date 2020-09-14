@@ -1,10 +1,8 @@
-import React, { ReactElement, MouseEvent } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { ReactElement } from "react";
+import { useSelector } from "react-redux";
 import { AppState } from "../../../common/types/util.types";
 import { useParams } from "react-router";
-import {Option} from "../../../common/types/util.types";
-import { findObjByProperty } from "../../../common/utils/utils";
-import {changeClickedOptionAction} from "../../../common/actions/ui.actions";
+import { Option } from "../../../common/types/util.types";
 
 import "./options-table.scss";
 
@@ -16,9 +14,7 @@ type TablePropsType = {
 export default function OptionsTable(props: TablePropsType): ReactElement{
     const btcPrice = useSelector((state: AppState) => state.prices.btc);
     const optionsToShow = props.options.filter((option) => option.expiry.toString() === props.expiry);
-    const dispatch = useDispatch();
     const { currency } = useParams();
-    
 
     const calculateExpiry = () => {
         const period = optionsToShow[0].expiry - Date.now();
@@ -36,11 +32,11 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
         return btcPrice < option.strikePrice ? "green-cell" : "";
     };
 
-    const openTradeModal = (event: MouseEvent) => {
-        const strikePrice = Number(((event.target as HTMLElement).id).split("-")[2]);
-        const clickedOption = findObjByProperty(optionsToShow,strikePrice,"strikePrice");
-        dispatch(changeClickedOptionAction(clickedOption));
-    };
+    // const openTradeModal = (event: MouseEvent) => {
+    //     const strikePrice = Number(((event.target as HTMLElement).id).split("-")[2]);
+    //     const clickedOption = findObjByProperty(optionsToShow,strikePrice,"strikePrice");
+    //     dispatch(changeClickedOptionAction(clickedOption));
+    // };
 
     return <div className="table-box">
         <div className="table-wrapper">
@@ -58,14 +54,15 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                             <th>Strike Price</th>
                             <th>Liquidity</th>
                             <th>Last Price</th>
-                            <th>Your Obligations ({currency.toUpperCase()})</th>
-                            <th>Your Options ({currency.toUpperCase()})</th>
+                            <th>Positions ({currency.toUpperCase()})</th>
+                            <th>Trade</th>
                         </tr>
                     </thead>
-                    <tbody onClick={(event)=>openTradeModal(event)} data-toggle="modal"  data-target="#trade-modal">
+                    <tbody>
                         {optionsToShow.map((option,index) => {
-                            const oblig = Math.floor(Math.random() * 3)/100;
-                            const opt = Math.floor(Math.random() * 5)/100;
+                            const positive = Math.random() > 0.5 ? 1 : -1;
+                            const oblig = (Math.floor(Math.random() * 3)/100)*positive;
+                            
                             return <tr id={createId("tr",index,option)} key={index}>
                                 <td id={createId("td1",index,option)} className="highlight-col">
                                     {option.strikePrice}
@@ -81,7 +78,8 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                                 <td id={createId("td3",index,option)} className={greenCell(option)}>
                                     {Math.floor(Math.random() * 10000)}$
                                 </td>
-                                <td id={createId("td4",index,option)} className={greenCell(option)}>
+                                <td id={createId("td4",index,option)} 
+                                    className={greenCell(option) + (oblig>=0 ? " green-text" : " red-text")}>
                                     <p id={createId("td4p1",index,option)}>
                                         {oblig}
                                     </p>
@@ -90,12 +88,23 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                                     </p>
                                 </td>
                                 <td id={createId("td5",index,option)} className={greenCell(option)}>
-                                    <p id={createId("td5p1",index,option)}>
-                                        {opt}
-                                    </p>
-                                    <p id={createId("td5p2",index,option)}>
-                                        $ {(opt*btcPrice).toFixed(2)}
-                                    </p>
+                                    
+                                    <div className="row">
+                                        <div className="col-12 table-input">
+                                            <div className="quantity-label">Quantity:</div>
+                                            <div className="quantity-wrapper">
+                                                <input id="quantity-input"name="quanity" type="number"></input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-6">
+                                            <button className="buy-button" type="submit">Buy</button>
+                                        </div>
+                                        <div className="col-6">
+                                            <button className="sell-button" type="submit">Sell</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>;
                         })}
