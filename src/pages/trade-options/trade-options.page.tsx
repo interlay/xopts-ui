@@ -71,7 +71,7 @@ export default function TradeOptionsPage (): ReactElement {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{Math.floor(Math.random() * 10000)}</td>
+                                    <td>{new Date(1603598437527).toDateString().slice(4,15)}</td>
                                     <td>{Math.floor(Math.random() * 4)}</td>
                                     <td>{Math.floor(Math.random() * 10000)}$</td>
                                     <td>{Math.floor(Math.random() * 3)/100}</td>

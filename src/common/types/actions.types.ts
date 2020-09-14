@@ -5,10 +5,12 @@ import { Option, Position, Prices } from "../types/util.types";
 
 export const UPDATE_IS_USER_CONNECTED = "UPDATE_IS_USER_CONNECTED";
 export const UPDATE_USER_NETWORK = "UPDATE_USER_NETWORK";
+export const UPDATE_USER_DATA =  "UPDATE_USER_DATA";
 
 export interface UpdateIsUserConnected{
     type: typeof UPDATE_IS_USER_CONNECTED;
     isConnected: boolean;
+    account?: string
 }
 
 export interface UpdateUserNetwork{
@@ -16,7 +18,13 @@ export interface UpdateUserNetwork{
     network: string;
 }
 
-export type UserActions = UpdateIsUserConnected | UpdateUserNetwork | AddPositions;
+export interface UpdateUserData{
+    type: typeof UPDATE_USER_DATA;
+    btcAddress: string;
+    email: string;
+}
+
+export type UserActions = UpdateIsUserConnected | UpdateUserNetwork | AddPositions | UpdateUserData;
 
 
 // OPTIONS

@@ -24,6 +24,7 @@ export default function TopNavigation(): ReactElement {
     const history = useHistory();
     const currency = useSelector((state: AppState) => state.ui.currency);
     const isConnected = useSelector((state: AppState) => state.user.isConnected);
+    const account = useSelector((state: AppState) => state.user.account);
 
     const closeDropDownMenu = () => {
         if (window.innerWidth <= 768) {
@@ -49,14 +50,14 @@ export default function TopNavigation(): ReactElement {
         if (etherProvider && (activeLogin || isUnlocked)) {
             try {
                 const account = await etherProvider.request({ method: "eth_requestAccounts" });
-                console.log(account);
-                dispatch(updateIsUserConnectedAction(true));
+                console.log(account[0]);
+                dispatch(updateIsUserConnectedAction(true,account[0]));
             } catch (error) {
                 console.log(error);
             }
         } else {
             if (isConnected === true){
-                dispatch(updateIsUserConnectedAction(false));
+                dispatch(updateIsUserConnectedAction(false,undefined));
             }
         }
     };
@@ -94,9 +95,22 @@ export default function TopNavigation(): ReactElement {
             <div className="menu col-xl-8 col-lg-8 col-md-7 col-sm-6 col-2">
                 <div className="bars" onClick={()=>{setIsOpened(!isOpened);}}><i className="fas fa-bars"></i></div>
                 <div className={"navigation-items " + (isOpened ? "open" : "")}>
-                    {hasMetaMask && <div className="nav-item nav-button" onClick={() => { connectWallet(true); }}>
-                        Login
-                    </div>}
+                    {hasMetaMask  && account === undefined && 
+                        <div className="nav-item nav-button" onClick={() => { connectWallet(true); }}>
+                            Login
+                        </div>
+                    }
+                    {hasMetaMask && account &&
+                        <div className="dropdown">
+                            <button className="nav-item nav-button dropdown-toggle" type="button" id="dropdownMenu" 
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {account.substring(0,6) + "..." + account.substring(account.length-4, account.length)}
+                            </button>
+                            <div className="dropdown-menu" aria-labelledby="dropdownMenu">
+                                <Link className="dropdown-item" to="/account">My Account</Link>
+                            </div>
+                        </div>
+                    }
                     {!hasMetaMask && <a className="nav-item" href="https://metamask.io/download.html" target="__blank">
                         <div className="nav-button"> Get Metamask</div>
                     </a>}
@@ -120,7 +134,7 @@ export default function TopNavigation(): ReactElement {
                             Options
                     </Link>
                     <Link className={"nav-item side" + ("all-expirations" === selectedPage ? " selected-item" : "")} 
-                        to="/developers" 
+                        to="/developers"
                         onClick={openPage("all-expirations")}>
                             All Expirations
                     </Link>
