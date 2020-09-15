@@ -59,7 +59,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                             <th>Strike Price</th>
                             <th>Liquidity</th>
                             <th>Last Price</th>
-                            <th>Positions ({currency.toUpperCase()})</th>
+                            <th>Positions</th>
                             <th>Trade</th>
                         </tr>
                     </thead>

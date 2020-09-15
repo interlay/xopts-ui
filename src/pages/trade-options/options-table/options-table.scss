@@ -8,6 +8,13 @@
     max-width: fit-content;
     margin: auto;
 
+    table {
+        table-layout: auto;
+        width: 1000px;
+        td:last-child{
+            width: 400px;
+        }
+    }
     th, td{
         padding: 5px 30px;
         border: 1px solid #ddd;
@@ -138,6 +145,7 @@
             border-right: 1px solid #d4d8df;
             margin: 0px;
             position: relative;
+            width: 1000px;
             div {
                 padding: 0px;
             }
