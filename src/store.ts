@@ -10,7 +10,7 @@ export const loadState = (): StoreType => {
         positions: [], 
         options: [], 
         user: { isConnected: false, account: "", network: "", btcAddress: "", email: "" }, 
-        ui: { isSideCollapsed: false, selectedPage: "all-expirations", currency: "btc", clickedOption: undefined },
+        ui: { selectedPage: "all-expirations", currency: "btc", clickedOption: undefined },
         prices: { btc: 0, eth: 0 },
     };
     try {

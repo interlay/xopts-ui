@@ -53,15 +53,9 @@ export type PositionsActions = AddPositions;
 
 // UI
 
-export const TOGGLE_SIDE_MENU = "TOGGLE_SIDE_MENU";
 export const CHANGE_SELECTED_PAGE = "CHANGE_SELECTED_PAGE";
 export const CHANGE_CURRENCY = "CHANGE_CURRENCY";
 export const CHANGE_CLICKED_OPTION = "CHANGE_CLICKED_OPTION";
-
-export interface ToggleSideMenu{
-    type: typeof TOGGLE_SIDE_MENU;
-    isSideCollapsed: boolean;
-}
 
 export interface ChangeSelectedPage{
     type: typeof CHANGE_SELECTED_PAGE;
@@ -78,7 +72,7 @@ export interface ChangeClickedOption{
     clickedOption: Option;
 }
 
-export type UIActions = ToggleSideMenu | ChangeSelectedPage | ChangeCurrency | ChangeClickedOption;
+export type UIActions = ChangeSelectedPage | ChangeCurrency | ChangeClickedOption;
 
 // PRICES
 

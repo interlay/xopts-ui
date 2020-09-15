@@ -1,45 +1,26 @@
-@import "../../mixins";
 @import "../../variables";
 
 .trade-options-page{
     text-align: center;
+    position: relative;
+    background-color: $background-color;
+    #options-section {
+        position: relative;
+        padding-top: 70px;
 
-    .table-box{
-        background-color: white;
-        padding: 30px;
-        margin: auto;
-        margin-bottom: 15px;
-        width: 100%;
-        text-align: center;
-
-        .table-wrapper{
-            margin: auto;
-
-            .table-heading{
-                margin: 0px;
-
-                div {
-                    padding: 0px;
-                }
-            }
-
-            .title {
-                text-align: center;
-                padding-bottom: 30px;
-                font-weight: 600;
-                font-size: 1.15rem;
-            }
-            
-            .highlight-col{
-                background-color: #edf0f1;
-                font-weight: 600;
-            }
-        }
+        
     }
+    #positions-section {
+        padding-bottom: 5rem;
 
-    @include mobile-range {
-        .table-box{
-            padding: 15px;
+        .positions-title{
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+            line-height: 3.15rem;
+            width: 100%;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.3rem;
         }
     }
 }

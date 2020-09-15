@@ -1,4 +1,5 @@
 @import "../../../variables";
+@import "../../../mixins";
 
 .data-table{
     display: block;
@@ -17,23 +18,36 @@
             margin: 0px;
         }
     }
-
     thead{
         background-color: #eaeaea;
     }
 
     .option-type{
+        font-size: 0.9rem;
+        line-height: 50px;
         font-weight: 600;
         text-align: left;
+        padding-left: 30px;
+        p{
+            margin-left: 15px;
+            margin-bottom: 0px;
+        }
     }
 
     .expires-in{
+        font-size: 0.9rem;
+        line-height: 50px;
         text-align: right;
+        p{
+            margin-right: 15px;
+            margin-bottom: 0px;
+        }
     }
 
     .green-cell {
         background-color: rgba(13, 243, 11, 0.05);
     }
+
     tbody{
 
         td {
@@ -89,17 +103,63 @@
                 }
             }
         }
+
         td.green-text{
             color: $active-green!important;
             :nth-child(2){
                 color: $active-green;
             }
         }
+
         td.red-text{
             color: $error-color!important;
             :nth-child(2){
                 color: $error-color;
             }
         }
+
+        tr td:last-child{
+            min-width: 347px;
+        }
+    }
+}
+
+.table-box{
+    background-color: white;
+    margin: auto;
+    width: 100%;
+    text-align: center;
+
+    .table-wrapper{
+        margin: auto;
+
+        .table-heading{
+            border-left: 1px solid #d4d8df;
+            border-right: 1px solid #d4d8df;
+            margin: 0px;
+            position: relative;
+            div {
+                padding: 0px;
+            }
+            .title {
+                line-height: 3.15rem;
+                width: 100%;
+                position: absolute;
+                text-align: center;
+                font-weight: 600;
+                font-size: 1.15rem;
+            }
+        }
+        
+        .highlight-col{
+            background-color: #edf0f1;
+            font-weight: 600;
+        }
+    }
+}
+
+@include mobile-range {
+    .table-box{
+        padding: 15px;
     }
 }

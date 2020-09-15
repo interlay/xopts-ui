@@ -40,13 +40,18 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
 
     return <div className="table-box">
         <div className="table-wrapper">
-            <div className="title">
-                <b>{new Date(Number(props.expiry)).toDateString().slice(4,15)}</b>
-            </div>
+            
             <div className="data-table">
                 <div className="row table-heading justify-content-right">
-                    <div className="col-xl-6 option-type">Puts</div>
-                    <div className="col-xl-6 expires-in">Expires in {calculateExpiry()}</div>
+                    <div className="title">
+                        <b>{new Date(Number(props.expiry)).toDateString().slice(4,15)}</b>
+                    </div>
+                    <div className="col-6 option-type">
+                        <p>Puts</p>
+                    </div>
+                    <div className="col-6 expires-in">
+                        <p>Expires in {calculateExpiry()}</p>
+                    </div>
                 </div>
                 <table>
                     <thead>

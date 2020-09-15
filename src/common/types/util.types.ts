@@ -4,7 +4,6 @@ import { AddOptions,
     UpdateIsUserConnected, 
     UpdateUserNetwork, 
     AddPositions, 
-    ToggleSideMenu, 
     ChangeSelectedPage, 
     ChangeCurrency,
     UpdatePrices,
@@ -40,7 +39,6 @@ export interface Position {
 }
 
 export type UIState = {
-    isSideCollapsed: boolean;
     selectedPage: string;
     currency: string;
     clickedOption?: Option;
@@ -62,6 +60,6 @@ export type dispatcher = {
 }
 
 export type StoreState = Store<CombinedState<StoreType>, 
-AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ToggleSideMenu | ChangeSelectedPage | 
+AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ChangeSelectedPage | 
 ChangeCurrency | UpdatePrices | ChangeClickedOption | UpdateUserData> 
 & dispatcher
