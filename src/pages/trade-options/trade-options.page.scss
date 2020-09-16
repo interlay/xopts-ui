@@ -9,9 +9,21 @@
 
     #options-section {
         position: relative;
-        min-width: fit-content;
+        min-width: 1300px;
         padding: 15px;
         padding-top: 70px;
+
+        .left-options-section{
+            display: inline-block;
+            position: relative;
+            min-width: 1000px;
+        }
+
+        .right-options-section{
+            display: inline-block;
+            position: relative;
+            min-width: 300px;
+        }
     }
 
     #positions-section{
@@ -34,14 +46,11 @@
             white-space: nowrap;
             max-width: fit-content;
             margin: auto;
-            width: 1000px;
+            width: 800px;
         
             table {
                 table-layout: auto;
-                width: 1000px;
-                td:last-child{
-                    width: 400px;
-                }
+                width: 800px;
             }
         }
     }

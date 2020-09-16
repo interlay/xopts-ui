@@ -9,10 +9,7 @@
 
     table {
         table-layout: auto;
-        width: 1000px;
-        td:last-child{
-            width: 400px;
-        }
+        width: 800px;
     }
     th, td{
         padding: 5px 30px;
@@ -72,37 +69,6 @@
                 margin-right: 0px;
             }
 
-            .trade-buttons {
-                color: white;
-                padding: 5px 30px;
-                line-height: 1rem;
-                margin: 5px 0px;
-                border-radius: 5px;
-                span{
-                    font-size: 0.7rem;
-                }
-            }
-            
-            .buy-button {
-                @extend .trade-buttons;
-                background-color: #35aa47;
-            }
-            
-            .sell-button {
-                @extend .trade-buttons;
-                background-color: #d84a38;
-            }
-
-            .quantity-label{
-                display: inline-block;
-                position: relative;
-                left: 15px;
-            }
-
-            .quantity-wrapper{
-                display: inline-block;
-            }
-
             .table-input{
                 position: relative;
                 #quantity-input{
@@ -127,8 +93,13 @@
             }
         }
 
-        tr td:last-child{
-            min-width: 347px;
+        tr {
+            &:hover{
+                cursor: pointer;
+                td{
+                    background-color: #f1f3fa!important;
+                }
+            }
         }
     }
 }
@@ -147,7 +118,7 @@
             border-right: 1px solid #d4d8df;
             margin: 0px;
             position: relative;
-            width: 1000px;
+            width: 800px;
             div {
                 padding: 0px;
             }

@@ -13,6 +13,7 @@ import OptionTabs from "./option-tabs/option-tabs";
 // import { XOpts } from "@interlay/xopts/lib/xopts";
 
 import "./trade-options.page.scss";
+import TradingForm from "./trading-form/trading-form";
 
 // eslint-disable-next-line
 const detectEthereumProvider = require("@metamask/detect-provider");
@@ -66,12 +67,18 @@ export default function TradeOptionsPage (): ReactElement {
         <div className="trade-options-page">
             <TradeModal currency={currency}></TradeModal>
             <section id="options-section">
-                <OptionTabs></OptionTabs>
-                {optionsToShow.map((option,index)=>{
-                    return (
-                        <OptionsTable expiry={option.expiry.toString()} options={options} key={index}></OptionsTable>
-                    );
-                })}
+                <div className="left-options-section">
+                    <OptionTabs></OptionTabs>
+                    {optionsToShow.map((option,index)=>{
+                        return (
+                            <OptionsTable expiry={option.expiry.toString()} 
+                                options={options} key={index}></OptionsTable>
+                        );
+                    })}
+                </div>
+                <div className="right-options-section">
+                    <TradingForm></TradingForm>
+                </div> 
             </section>
             <section id="positions-section">
                 <div className="table-box">

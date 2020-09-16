@@ -1,14 +1,12 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, MouseEvent } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../../common/types/util.types";
 import { useParams } from "react-router";
 import { Option } from "../../../common/types/util.types";
-import { updateIsUserConnectedAction } from "../../../common/actions/user.actions";
+import { findObjByProperty } from "../../../common/utils/utils";
+import { changeClickedOptionAction } from "../../../common/actions/ui.actions";
 
 import "./options-table.scss";
-
-// eslint-disable-next-line
-const detectEthereumProvider = require("@metamask/detect-provider");
 
 type TablePropsType = {
     expiry: string,
@@ -18,9 +16,8 @@ type TablePropsType = {
 export default function OptionsTable(props: TablePropsType): ReactElement{
     const btcPrice = useSelector((state: AppState) => state.prices.btc);
     const optionsToShow = props.options.filter((option) => option.expiry.toString() === props.expiry);
-    const isConnected = useSelector((state: AppState) => state.user.isConnected);
-    const { currency } = useParams();
     const dispatch = useDispatch();
+    const { currency } = useParams();
 
     const calculateExpiry = () => {
         const period = optionsToShow[0].expiry - Date.now();
@@ -38,30 +35,14 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
         return btcPrice < option.strikePrice ? "green-cell" : "";
     };
 
-    const connectWallet = async (activeLogin: boolean) => {
-        const etherProvider = await detectEthereumProvider();
-        const isUnlocked = await etherProvider._metamask.isUnlocked();
-
-        if (etherProvider && (activeLogin || isUnlocked)) {
-            try {
-                const account = await etherProvider.request({ method: "eth_requestAccounts" });
-                console.log(account[0]);
-                dispatch(updateIsUserConnectedAction(true,account[0]));
-            } catch (error) {
-                console.log(error);
-            }
-        }
+    const openTradeModal = (event: MouseEvent) => {
+        const strikePrice = Number(((event.target as HTMLElement).id).split("-")[2]);
+        const clickedOption = findObjByProperty(optionsToShow,strikePrice,"strikePrice");
+        dispatch(changeClickedOptionAction(clickedOption));
     };
-
-    // const openTradeModal = (event: MouseEvent) => {
-    //     const strikePrice = Number(((event.target as HTMLElement).id).split("-")[2]);
-    //     const clickedOption = findObjByProperty(optionsToShow,strikePrice,"strikePrice");
-    //     dispatch(changeClickedOptionAction(clickedOption));
-    // };
 
     return <div className="table-box">
         <div className="table-wrapper">
-            
             <div className="data-table">
                 <div className="row table-heading justify-content-right">
                     <div className="title">
@@ -81,10 +62,9 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                             <th>Liquidity</th>
                             <th>Last Price</th>
                             <th>Positions</th>
-                            <th>Trade</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody onClick={openTradeModal}>
                         {optionsToShow.map((option,index) => {
                             const positive = Math.random() > 0.5 ? 1 : -1;
                             const oblig = (Math.floor(Math.random() * 3)/100)*positive;
@@ -112,39 +92,6 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                                     <p id={createId("td4p2",index,option)}>
                                         $ {(oblig*btcPrice).toFixed(2)}
                                     </p>
-                                </td>
-                                <td id={createId("td5",index,option)} className={greenCell(option)}>
-                                    {isConnected ? 
-                                        <React.Fragment>
-                                            <div className="row">
-                                                <div className="col-12 table-input">
-                                                    <div className="quantity-label">Quantity:</div>
-                                                    <div className="quantity-wrapper">
-                                                        <input id="quantity-input"name="quanity" type="number" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="row">
-                                                <div className="col-6">
-                                                    <button className="buy-button" type="submit">
-                                                    Buy &nbsp;&nbsp; <span>573 USDT</span>
-                                                    </button>
-                                                </div>
-                                                <div className="col-6">
-                                                    <button className="sell-button" type="submit">
-                                                    Sell &nbsp;&nbsp; <span>1875 USDT</span>
-                                                    </button>
-                                                </div>
-                                            </div> 
-                                        </React.Fragment>:
-                                        <div className="row justify-content-center">
-                                            <div className="col-6">
-                                                <button className="confirm-button" onClick={()=>connectWallet(true)}>
-                                                    Start trading
-                                                </button>
-                                            </div>
-                                        </div>
-                                    }
                                 </td>
                             </tr>;
                         })}

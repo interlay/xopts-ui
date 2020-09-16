@@ -1,0 +1,41 @@
+@import "../../../variables";
+
+.trading-form{
+    position: fixed;
+    top: 130px;
+    max-width: 300px;
+    min-width: 200px;
+    background-color: #eaeaea;
+
+    .trade-buttons {
+        color: white;
+        padding: 5px 15px;
+        line-height: 1rem;
+        margin: 5px 0px;
+        border-radius: 5px;
+        span{
+            font-size: 0.7rem;
+        }
+    }
+    
+    .buy-button {
+        @extend .trade-buttons;
+        background-color: #35aa47;
+    }
+    
+    .sell-button {
+        @extend .trade-buttons;
+        background-color: #d84a38;
+    }
+
+    .quantity-label{
+        display: inline-block;
+        position: relative;
+    }
+
+    .quantity-wrapper{
+        display: inline-block;
+        margin-left: 15px;
+        width: 30%;
+    }
+}
