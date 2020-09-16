@@ -10,8 +10,12 @@ import OptionsTable from "./options-table/options-table";
 import { useParams } from "react-router";
 import TradeModal from "./trade-modal/trade-modal";
 import OptionTabs from "./option-tabs/option-tabs";
+// import { XOpts } from "@interlay/xopts/lib/xopts";
 
 import "./trade-options.page.scss";
+
+// eslint-disable-next-line
+const detectEthereumProvider = require("@metamask/detect-provider");
 
 const filterOptions = (selectedPage: string, options: Option[]): Option[] => {
     let optionsToShow: Option[] = [];
@@ -40,6 +44,11 @@ export default function TradeOptionsPage (): ReactElement {
     useEffect(()=>{
         const fetchOptions = async () => {
             const options = await getOptions<Option[]>();
+            // const etherProvider = await detectEthereumProvider();
+            // const xopts = await XOpts.load(etherProvider);
+            // const test = await xopts.options.list();
+            // console.log(xopts);
+            // console.log(test);
             dispatch(addOptionsAction(options));
         };
         fetchOptions();
@@ -67,52 +76,54 @@ export default function TradeOptionsPage (): ReactElement {
             <section id="positions-section">
                 <div className="table-box">
                     <div className="table-wrapper">
-                        <div className="positions-title">Positions</div>
-                        <table className="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Expiry Date</th>
-                                    <th>Strike Price</th>
-                                    <th>Liquidity</th>
-                                    <th>Positions</th>
-                                    <th>Performance</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>{new Date(1603598437527).toDateString().slice(4,15)}</td>
-                                    <td>10500</td>
-                                    <td>
-                                        <p>{li1}</p>
-                                        <p>{(li1*btcPrice).toFixed(2)}$</p>
-                                    </td>
-                                    <td className={po1>=0 ? "green-text" : "red-text"}>
-                                        <p>{po1}</p>
-                                        <p>{(po1*btcPrice).toFixed(2)}$</p>
-                                    </td>
-                                    <td className={li1>=0 ? "green-text" : "red-text"}>
-                                        <p>{pe1}</p>
-                                        <p>{(pe1*btcPrice).toFixed(2)}$</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{new Date(1603598437527).toDateString().slice(4,15)}</td>
-                                    <td>11000</td>
-                                    <td>
-                                        <p>{li2}</p>
-                                        <p>{(li2*btcPrice).toFixed(2)}$</p>
-                                    </td>
-                                    <td className={po2>=0 ? "green-text" : "red-text"}>
-                                        <p>{po2}</p>
-                                        <p>{(po2*btcPrice).toFixed(2)}$</p>
-                                    </td>
-                                    <td className={pe2>=0 ? "green-text" : "red-text"}>
-                                        <p>{pe2}</p>
-                                        <p>{(pe2*btcPrice).toFixed(2)}$</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div className="data-table">
+                            <div className="positions-title">Positions</div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Expiry Date</th>
+                                        <th>Strike Price</th>
+                                        <th>Liquidity</th>
+                                        <th>Positions</th>
+                                        <th>Performance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{new Date(1603598437527).toDateString().slice(4,15)}</td>
+                                        <td>10500</td>
+                                        <td>
+                                            <p>{li1}</p>
+                                            <p>{(li1*btcPrice).toFixed(2)}$</p>
+                                        </td>
+                                        <td className={po1>=0 ? "green-text" : "red-text"}>
+                                            <p>{po1}</p>
+                                            <p>{(po1*btcPrice).toFixed(2)}$</p>
+                                        </td>
+                                        <td className={li1>=0 ? "green-text" : "red-text"}>
+                                            <p>{pe1}</p>
+                                            <p>{(pe1*btcPrice).toFixed(2)}$</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{new Date(1603598437527).toDateString().slice(4,15)}</td>
+                                        <td>11000</td>
+                                        <td>
+                                            <p>{li2}</p>
+                                            <p>{(li2*btcPrice).toFixed(2)}$</p>
+                                        </td>
+                                        <td className={po2>=0 ? "green-text" : "red-text"}>
+                                            <p>{po2}</p>
+                                            <p>{(po2*btcPrice).toFixed(2)}$</p>
+                                        </td>
+                                        <td className={pe2>=0 ? "green-text" : "red-text"}>
+                                            <p>{pe2}</p>
+                                            <p>{(pe2*btcPrice).toFixed(2)}$</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>

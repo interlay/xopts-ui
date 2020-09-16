@@ -22,5 +22,22 @@
             font-weight: 600;
             font-size: 1.3rem;
         }
+
+        .data-table{
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+            max-width: fit-content;
+            margin: auto;
+            width: 1000px;
+        
+            table {
+                table-layout: auto;
+                width: 1000px;
+                td:last-child{
+                    width: 400px;
+                }
+            }
+        }
     }
 }

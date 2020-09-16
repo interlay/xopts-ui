@@ -8,7 +8,8 @@ import { AddOptions,
     ChangeCurrency,
     UpdatePrices,
     ChangeClickedOption,
-    UpdateUserData
+    UpdateUserData,
+    UpdateUserNotifications
 } from "./actions.types";
 
 export interface Prices {
@@ -22,6 +23,13 @@ export interface User {
     account?: string;
     btcAddress: string;
     email: string;
+    notifications: {
+        hour: boolean;
+        day: boolean;
+        threedays: boolean;
+        week: boolean;
+        confirmed: boolean;
+    }
 }
 
 export interface Option {
@@ -61,5 +69,5 @@ export type dispatcher = {
 
 export type StoreState = Store<CombinedState<StoreType>, 
 AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ChangeSelectedPage | 
-ChangeCurrency | UpdatePrices | ChangeClickedOption | UpdateUserData> 
+ChangeCurrency | UpdatePrices | ChangeClickedOption | UpdateUserData | UpdateUserNotifications> 
 & dispatcher

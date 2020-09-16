@@ -19,7 +19,6 @@ export default function TopNavigation(): ReactElement {
     const dispatch = useDispatch();
     const btcPrice = useSelector((state: AppState) => state.prices.btc);
     const options = useSelector((state: AppState) => state.options);
-    const uniqueOptions = filterUniqueOptions(options);
     const currency = useSelector((state: AppState) => state.ui.currency);
     const isConnected = useSelector((state: AppState) => state.user.isConnected);
     const account = useSelector((state: AppState) => state.user.account);
@@ -70,7 +69,7 @@ export default function TopNavigation(): ReactElement {
             <p>{btcPrice}</p>
         </div> 
         <div className="row">
-            <div className="col-xl-5 col-lg-5 col-md-5 col-sm-6 col-10 logo-section">
+            <div className="col-xl-5 col-lg-5 col-md-6 col-sm-6 col-10 logo-section">
                 <Link to="/"
                     onClick={openPage("landing")}>
                     <img src={logo} width="30" height="30" alt="company logo" 
@@ -93,7 +92,7 @@ export default function TopNavigation(): ReactElement {
                         Exchange
                 </Link>
             </div>
-            <div className="menu col-xl-7 col-lg-7 col-md-7 col-sm-6 col-2">
+            <div className="menu col-xl-7 col-lg-7 col-md-6 col-sm-6 col-2">
                 <div className="bars" onClick={()=>{setIsOpened(!isOpened);}}><i className="fas fa-bars"></i></div>
                 <div className={"navigation-items " + (isOpened ? "open" : "")}>
                     {hasMetaMask  && account === undefined && 
@@ -126,18 +125,22 @@ export default function TopNavigation(): ReactElement {
                             Developers
                         </Link>
                     }
-                    
-                    {uniqueOptions.map((option, index) => {
-                        return <Link 
-                            className={"nav-item side"+(option.expiry === Number(selectedPage) ? " selected-item" :"")}
-                            to={"/trade-options/" + currency}
-                            key={index} 
-                            onClick={openPage(option.expiry.toString())}>
-                            {new Date(option.expiry).toDateString().slice(4,15)}
-                        </Link>;
-                    })
-                    }
-
+                    <Link className={"nav-item only-in-menu" + 
+                        ("all-expirations" === selectedPage ? " selected-item" : "")}
+                    to={"/trade-options/" + currency} 
+                    onClick={openPage("all-expirations")}>
+                            Options
+                    </Link>
+                    <Link className={"nav-item only-in-menu" + ("earn" === selectedPage ? " selected-item" : "")} 
+                        to="/earn" 
+                        onClick={openPage("earn")}>
+                            Earn
+                    </Link>
+                    <Link className={"nav-item only-in-menu" + ("exchange" === selectedPage ? " selected-item" : "")} 
+                        to="/exchange" 
+                        onClick={openPage("exchange")}>
+                            Exchange
+                    </Link>
                 </div>
             </div>
         </div>
