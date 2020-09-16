@@ -3,7 +3,6 @@
 
 .data-table{
     display: block;
-    overflow-x: auto;
     white-space: nowrap;
     max-width: fit-content;
     margin: auto;
@@ -75,10 +74,13 @@
 
             .trade-buttons {
                 color: white;
-                padding: 5px 60px;
+                padding: 5px 30px;
                 line-height: 1rem;
                 margin: 5px 0px;
                 border-radius: 5px;
+                span{
+                    font-size: 0.7rem;
+                }
             }
             
             .buy-button {
@@ -163,11 +165,5 @@
             background-color: #edf0f1;
             font-weight: 600;
         }
-    }
-}
-
-@include mobile-range {
-    .table-box{
-        padding: 15px;
     }
 }

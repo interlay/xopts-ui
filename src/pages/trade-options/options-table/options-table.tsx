@@ -1,10 +1,14 @@
 import React, { ReactElement } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../../common/types/util.types";
 import { useParams } from "react-router";
 import { Option } from "../../../common/types/util.types";
+import { updateIsUserConnectedAction } from "../../../common/actions/user.actions";
 
 import "./options-table.scss";
+
+// eslint-disable-next-line
+const detectEthereumProvider = require("@metamask/detect-provider");
 
 type TablePropsType = {
     expiry: string,
@@ -14,7 +18,9 @@ type TablePropsType = {
 export default function OptionsTable(props: TablePropsType): ReactElement{
     const btcPrice = useSelector((state: AppState) => state.prices.btc);
     const optionsToShow = props.options.filter((option) => option.expiry.toString() === props.expiry);
+    const isConnected = useSelector((state: AppState) => state.user.isConnected);
     const { currency } = useParams();
+    const dispatch = useDispatch();
 
     const calculateExpiry = () => {
         const period = optionsToShow[0].expiry - Date.now();
@@ -30,6 +36,21 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
 
     const greenCell = (option: Option):string => {
         return btcPrice < option.strikePrice ? "green-cell" : "";
+    };
+
+    const connectWallet = async (activeLogin: boolean) => {
+        const etherProvider = await detectEthereumProvider();
+        const isUnlocked = await etherProvider._metamask.isUnlocked();
+
+        if (etherProvider && (activeLogin || isUnlocked)) {
+            try {
+                const account = await etherProvider.request({ method: "eth_requestAccounts" });
+                console.log(account[0]);
+                dispatch(updateIsUserConnectedAction(true,account[0]));
+            } catch (error) {
+                console.log(error);
+            }
+        }
     };
 
     // const openTradeModal = (event: MouseEvent) => {
@@ -93,23 +114,37 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                                     </p>
                                 </td>
                                 <td id={createId("td5",index,option)} className={greenCell(option)}>
-                                    
-                                    <div className="row">
-                                        <div className="col-12 table-input">
-                                            <div className="quantity-label">Quantity:</div>
-                                            <div className="quantity-wrapper">
-                                                <input id="quantity-input"name="quanity" type="number"></input>
+                                    {isConnected ? 
+                                        <React.Fragment>
+                                            <div className="row">
+                                                <div className="col-12 table-input">
+                                                    <div className="quantity-label">Quantity:</div>
+                                                    <div className="quantity-wrapper">
+                                                        <input id="quantity-input"name="quanity" type="number" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="row">
+                                                <div className="col-6">
+                                                    <button className="buy-button" type="submit">
+                                                    Buy &nbsp;&nbsp; <span>573 USDT</span>
+                                                    </button>
+                                                </div>
+                                                <div className="col-6">
+                                                    <button className="sell-button" type="submit">
+                                                    Sell &nbsp;&nbsp; <span>1875 USDT</span>
+                                                    </button>
+                                                </div>
+                                            </div> 
+                                        </React.Fragment>:
+                                        <div className="row justify-content-center">
+                                            <div className="col-6">
+                                                <button className="confirm-button" onClick={()=>connectWallet(true)}>
+                                                    Start trading
+                                                </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-6">
-                                            <button className="buy-button" type="submit">Buy</button>
-                                        </div>
-                                        <div className="col-6">
-                                            <button className="sell-button" type="submit">Sell</button>
-                                        </div>
-                                    </div>
+                                    }
                                 </td>
                             </tr>;
                         })}

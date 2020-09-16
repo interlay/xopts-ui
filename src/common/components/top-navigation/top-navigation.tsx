@@ -18,7 +18,6 @@ export default function TopNavigation(): ReactElement {
     const dispatch = useDispatch();
     const btcPrice = useSelector((state: AppState) => state.prices.btc);
     const currency = useSelector((state: AppState) => state.ui.currency);
-    const isConnected = useSelector((state: AppState) => state.user.isConnected);
     const account = useSelector((state: AppState) => state.user.account);
 
     const closeDropDownMenu = () => {
@@ -49,10 +48,6 @@ export default function TopNavigation(): ReactElement {
                 dispatch(updateIsUserConnectedAction(true,account[0]));
             } catch (error) {
                 console.log(error);
-            }
-        } else {
-            if (isConnected === true){
-                dispatch(updateIsUserConnectedAction(false,undefined));
             }
         }
     };
@@ -119,7 +114,7 @@ export default function TopNavigation(): ReactElement {
                     </Link>
                     {selectedPage!=="all-expirations" &&
                         <Link className={"nav-item" + ("developers" === selectedPage ? " selected-item" : "")}
-                            onClick={openPage("developers")} to="/">
+                            onClick={openPage("developers")} to="/help">
                             Developers
                         </Link>
                     }

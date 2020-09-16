@@ -1,16 +1,22 @@
 @import "../../variables";
+@import "../../mixins";
 
 .trade-options-page{
     text-align: center;
     position: relative;
+    overflow-x: scroll;
     background-color: $background-color;
+
     #options-section {
         position: relative;
+        min-width: fit-content;
+        padding: 15px;
         padding-top: 70px;
-
-        
     }
-    #positions-section {
+
+    #positions-section{
+        min-width: fit-content;
+        padding: 15px;
         padding-bottom: 5rem;
 
         .positions-title{
@@ -25,7 +31,6 @@
 
         .data-table{
             display: block;
-            overflow-x: auto;
             white-space: nowrap;
             max-width: fit-content;
             margin: auto;
