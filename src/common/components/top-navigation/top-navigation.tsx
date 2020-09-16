@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { changeSelectedPageAction } from "../../actions/ui.actions";
 import { AppState } from "../../types/util.types";
 import { updateIsUserConnectedAction } from "../../actions/user.actions";
-import { filterUniqueOptions } from "../../utils/utils";
 
 import "./top-navigation.scss";
 
@@ -18,7 +17,6 @@ export default function TopNavigation(): ReactElement {
     const [hasMetaMask, setHasMetaMask] = useState(null);
     const dispatch = useDispatch();
     const btcPrice = useSelector((state: AppState) => state.prices.btc);
-    const options = useSelector((state: AppState) => state.options);
     const currency = useSelector((state: AppState) => state.ui.currency);
     const isConnected = useSelector((state: AppState) => state.user.isConnected);
     const account = useSelector((state: AppState) => state.user.account);
