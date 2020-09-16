@@ -47,6 +47,9 @@
         p{
             margin-right: 15px;
             margin-bottom: 0px;
+            span{
+                color: #d84a38;
+            }
         }
     }
 
@@ -73,11 +76,12 @@
             }
 
             .trade-buttons {
-                color: white;
+                background-color: $background-color;
                 padding: 5px 30px;
                 line-height: 1rem;
                 margin: 5px 0px;
                 border-radius: 5px;
+                min-width: 174.3px;
                 span{
                     font-size: 0.7rem;
                 }
@@ -85,12 +89,26 @@
             
             .buy-button {
                 @extend .trade-buttons;
-                background-color: #35aa47;
+                color: #35aa47;
+                border: 1px solid #35aa47; 
             }
             
             .sell-button {
                 @extend .trade-buttons;
-                background-color: #d84a38;
+                color: #d84a38;
+                border: 1px solid #d84a38; 
+            }
+
+            .buy-button.active {
+                @extend .trade-buttons;
+                color: white;
+                background-color: #35aa47; 
+            }
+            
+            .sell-button.active {
+                @extend .trade-buttons;
+                color: white;
+                background-color: #d84a38; 
             }
 
             .quantity-label{
@@ -105,6 +123,11 @@
 
             .table-input{
                 position: relative;
+
+                .input-error{
+                    margin-top: 0px;
+                }
+
                 #quantity-input{
                     margin: 5px -30px;
                     width: 50%;

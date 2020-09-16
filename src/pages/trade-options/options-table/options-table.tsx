@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, ChangeEvent } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../../common/types/util.types";
 import { useParams } from "react-router";
@@ -21,6 +21,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
     const isConnected = useSelector((state: AppState) => state.user.isConnected);
     const { currency } = useParams();
     const dispatch = useDispatch();
+    const price = useSelector((state: AppState) => state.prices.btc);
 
     const calculateExpiry = () => {
         const period = optionsToShow[0].expiry - Date.now();
@@ -52,6 +53,30 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
             }
         }
     };
+    const onChange = (event: ChangeEvent,index: number,option: Option) => {
+        const target = event.target as HTMLInputElement;
+        const value = Number(target.value);
+        const errorDiv = (target.parentElement as HTMLElement).nextSibling as HTMLElement; 
+        const buyElement = (document.getElementById(createId("buy",index,option)) as HTMLElement);
+        const sellElement = (document.getElementById(createId("sell",index,option)) as HTMLElement);
+
+        if(value < option.liquidity) {
+            buyElement.innerHTML = "Buy &nbsp;&nbsp; <span>" + (value*price).toFixed(2) + " USDT</span>";
+            sellElement.innerHTML = "Sell &nbsp;&nbsp; <span>" + (value*price).toFixed(2) + " USDT</span>";
+            buyElement.classList.add("active");
+            sellElement.classList.add("active");
+            target.classList.remove("error-borders");
+            errorDiv.innerHTML = "";
+        } else {
+            target.classList.add("error-borders");
+            errorDiv.innerHTML = "value must be less than liquidity";
+            buyElement.innerHTML = "Buy";
+            sellElement.innerHTML = "Sell";
+            buyElement.classList.remove("active");
+            sellElement.classList.remove("active");
+        }
+        console.log(event,option);
+    };
 
     // const openTradeModal = (event: MouseEvent) => {
     //     const strikePrice = Number(((event.target as HTMLElement).id).split("-")[2]);
@@ -71,7 +96,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                         <p>Puts</p>
                     </div>
                     <div className="col-6 expires-in">
-                        <p>Expires in {calculateExpiry()}</p>
+                        <p><span>Expires in</span> {calculateExpiry()}</p>
                     </div>
                 </div>
                 <table>
@@ -95,7 +120,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                                 </td>
                                 <td id={createId("td2",index,option)} className={greenCell(option)}>
                                     <p id={createId("td2p1",index,option)}>
-                                        {option.liquidity}
+                                        {option.liquidity.toFixed(2)}
                                     </p>
                                     <p id={createId("td2p2",index,option)}>
                                         $ {(option.liquidity * btcPrice).toFixed(2)}
@@ -107,7 +132,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                                 <td id={createId("td4",index,option)} 
                                     className={greenCell(option) + (oblig>=0 ? " green-text" : " red-text")}>
                                     <p id={createId("td4p1",index,option)}>
-                                        {oblig}
+                                        {oblig.toFixed(2)}
                                     </p>
                                     <p id={createId("td4p2",index,option)}>
                                         $ {(oblig*btcPrice).toFixed(2)}
@@ -120,19 +145,23 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                                                 <div className="col-12 table-input">
                                                     <div className="quantity-label">Quantity:</div>
                                                     <div className="quantity-wrapper">
-                                                        <input id="quantity-input"name="quanity" type="number" />
+                                                        <input id="quantity-input"name="quanity" type="number" 
+                                                            onChange={(val)=>{onChange(val,index,option);}}/>
                                                     </div>
+                                                    <div className="input-error"></div>
                                                 </div>
                                             </div>
                                             <div className="row">
                                                 <div className="col-6">
-                                                    <button className="buy-button" type="submit">
-                                                    Buy &nbsp;&nbsp; <span>573 USDT</span>
+                                                    <button id={createId("buy",index,option)} className="buy-button" 
+                                                        type="submit">
+                                                        Buy 
                                                     </button>
                                                 </div>
                                                 <div className="col-6">
-                                                    <button className="sell-button" type="submit">
-                                                    Sell &nbsp;&nbsp; <span>1875 USDT</span>
+                                                    <button id={createId("sell",index,option)} className="sell-button" 
+                                                        type="submit">
+                                                        Sell
                                                     </button>
                                                 </div>
                                             </div> 

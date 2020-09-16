@@ -9,6 +9,8 @@ export const fetchPrices = async (store: StoreState) => {
     return fetch(priceBaseURL + priceParams + priceApiKey)
         .then(response => response.json())
         .then(result => {
-            store.dispatch(updatePricesAction({btc: result.BTC.USD, eth: 0}));            
+            store.dispatch(updatePricesAction({btc: result.BTC.USD, eth: 0}));
+            const title = "$ " + result.BTC.USD + " | BTC Options - XOpts: Trustless, Non-Custodial Bitcoin Options";
+            (document.getElementById("app-title") as HTMLElement).innerHTML = title;
         });
 }
