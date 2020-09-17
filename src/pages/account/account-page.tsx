@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { updateUserDataAction } from "../../common/actions/user.actions";
 import InputError from "../../common/components/input-error/input-error";
+import { AppState } from "../../common/types/util.types";
+import { successToast } from "../../common/utils/toast";
+import i18n from "i18next";
 
 import "./account-page.scss";
-import { AppState } from "../../common/types/util.types";
 
 type UserForm = {
     btcAddress: string;
@@ -37,12 +39,15 @@ export default function AccountPage (): ReactElement {
 
     const onSubmit = handleSubmit(({btcAddress,email,hour,day,threedays,week,confirmed}) => {
         dispatch(updateUserDataAction(btcAddress,email,hour,day,threedays,week,confirmed));
+        successToast(i18n.t("account_updated"));
     });
 
     const checkNotification = (event: MouseEvent) => {
         const isChecked = (event.target as HTMLInputElement).checked;
         if (isChecked) {
             (document.getElementsByName("never")[0] as HTMLInputElement).checked = false;
+        } else {
+            (document.getElementsByName("all")[0] as HTMLInputElement).checked = false;
         }
     };
 
@@ -89,8 +94,10 @@ export default function AccountPage (): ReactElement {
                         </div>
                     </div>
                     <div className="row justify-content-center">
-                        <div className="col-xl-2 col-lg-3 col-md-5">Notification preferences</div>
-                        <div className="col-xl-3 col-lg-4 col-md-5">
+                        <div className="col-xl-2 col-lg-3 col-md-5 col-sm-12 col-xs-12 notifications">
+                            Notification preferences
+                        </div>
+                        <div className="col-xl-3 col-lg-4 col-md-5 col-sm-12 col-xs-12">
                             <div className="check-input-field">
                                 <input name="never" type="checkbox" ref={register} onClick={deselectAll}/>
                             </div>

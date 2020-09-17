@@ -53,6 +53,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
             }
         }
     };
+
     const onChange = (event: ChangeEvent,index: number,option: Option) => {
         const target = event.target as HTMLInputElement;
         const value = Number(target.value);
@@ -60,7 +61,16 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
         const buyElement = (document.getElementById(createId("buy",index,option)) as HTMLElement);
         const sellElement = (document.getElementById(createId("sell",index,option)) as HTMLElement);
 
-        if(value < option.liquidity) {
+        if(value === 0) {
+            buyElement.innerHTML = "Buy";
+            sellElement.innerHTML = "Sell";
+            buyElement.classList.remove("active");
+            sellElement.classList.remove("active");
+            target.classList.remove("error-borders");
+            errorDiv.innerHTML = "";
+            return;
+        }
+        if(value < option.liquidity && value > 0) {
             buyElement.innerHTML = "Buy &nbsp;&nbsp; <span>" + (value*price).toFixed(2) + " USDT</span>";
             sellElement.innerHTML = "Sell &nbsp;&nbsp; <span>" + (value*price).toFixed(2) + " USDT</span>";
             buyElement.classList.add("active");
@@ -76,6 +86,20 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
             sellElement.classList.remove("active");
         }
         console.log(event,option);
+    };
+
+    const buyClick = () => {
+        if(!isConnected){
+            connectWallet(true);
+            return;
+        }
+    };
+
+    const sellClick = () => {
+        if(!isConnected){
+            connectWallet(true);
+            return;
+        }
     };
 
     // const openTradeModal = (event: MouseEvent) => {
@@ -139,41 +163,31 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                                     </p>
                                 </td>
                                 <td id={createId("td5",index,option)} className={greenCell(option)}>
-                                    {isConnected ? 
-                                        <React.Fragment>
-                                            <div className="row">
-                                                <div className="col-12 table-input">
-                                                    <div className="quantity-label">Quantity:</div>
-                                                    <div className="quantity-wrapper">
-                                                        <input id="quantity-input"name="quanity" type="number" 
-                                                            onChange={(val)=>{onChange(val,index,option);}}/>
-                                                    </div>
-                                                    <div className="input-error"></div>
-                                                </div>
+                                    <div className="row">
+                                        <div className="col-12 table-input">
+                                            <div className="quantity-label">Quantity:</div>
+                                            <div className="quantity-wrapper">
+                                                <input id={createId("quantity",index,option)} name="quanity" 
+                                                    className="quantity-input" type="number" 
+                                                    onChange={(val)=>{onChange(val,index,option);}}/>
                                             </div>
-                                            <div className="row">
-                                                <div className="col-6">
-                                                    <button id={createId("buy",index,option)} className="buy-button" 
-                                                        type="submit">
-                                                        Buy 
-                                                    </button>
-                                                </div>
-                                                <div className="col-6">
-                                                    <button id={createId("sell",index,option)} className="sell-button" 
-                                                        type="submit">
-                                                        Sell
-                                                    </button>
-                                                </div>
-                                            </div> 
-                                        </React.Fragment>:
-                                        <div className="row justify-content-center">
-                                            <div className="col-6">
-                                                <button className="confirm-button" onClick={()=>connectWallet(true)}>
-                                                    Start trading
-                                                </button>
-                                            </div>
+                                            <div className="input-error"></div>
                                         </div>
-                                    }
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-6">
+                                            <button id={createId("buy",index,option)} className="buy-button" 
+                                                onClick={()=>buyClick()}>
+                                                Buy 
+                                            </button>
+                                        </div>
+                                        <div className="col-6">
+                                            <button id={createId("sell",index,option)} className="sell-button" 
+                                                onClick={()=>sellClick()}>
+                                                Sell
+                                            </button>
+                                        </div>
+                                    </div> 
                                 </td>
                             </tr>;
                         })}

@@ -64,10 +64,7 @@ export default function TradeOptionsPage (): ReactElement {
     
     return <Page>
         <div className="trade-options-page">
-            <h3>BTC Options</h3>
-            {/* <div className="row options-title">
-                <div className="title">BTC Options</div>
-            </div> */}
+            <div className="main-title">BTC Options</div>
             <TradeModal currency={currency}></TradeModal>
             <section id="options-section">
                 <OptionTabs></OptionTabs>

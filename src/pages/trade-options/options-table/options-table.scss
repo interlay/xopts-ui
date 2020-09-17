@@ -128,9 +128,10 @@
                     margin-top: 0px;
                 }
 
-                #quantity-input{
+                .quantity-input{
                     margin: 5px -30px;
-                    width: 50%;
+                    width: 50%!important;
+                    margin-bottom: 0px!important;
                     position: relative;
                 }
             }

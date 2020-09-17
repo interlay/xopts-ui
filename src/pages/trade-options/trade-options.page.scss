@@ -7,8 +7,12 @@
     overflow-x: scroll;
     background-color: $background-color;
 
-    h3 {
+    .main-title {
+        min-width: 1000px;
+        width: 100%;
+        text-align: center;
         margin-top: 2rem;
+        font-size: 2rem;
     }
 
     #options-section {

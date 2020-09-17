@@ -70,4 +70,4 @@ export type dispatcher = {
 export type StoreState = Store<CombinedState<StoreType>, 
 AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ChangeSelectedPage | 
 ChangeCurrency | UpdatePrices | ChangeClickedOption | UpdateUserData | UpdateUserNotifications> 
-& dispatcher
+& dispatcher;
