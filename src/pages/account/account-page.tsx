@@ -17,13 +17,12 @@ type UserForm = {
     hour: boolean;
     day: boolean;
     threedays: boolean;
-    week: boolean;
     confirmed: boolean;
 }
 
 export default function AccountPage (): ReactElement {
     const { btcAddress,email } = useSelector((state: AppState) => state.user);
-    const { hour,day,threedays,week,confirmed } = useSelector((state: AppState) => state.user.notifications);
+    const { hour,day,threedays,confirmed } = useSelector((state: AppState) => state.user.notifications);
     const {register,handleSubmit,errors} = useForm<UserForm>({
         defaultValues: {
             btcAddress,
@@ -31,14 +30,13 @@ export default function AccountPage (): ReactElement {
             hour,
             day,
             threedays,
-            week,
             confirmed
         }
     });
     const dispatch = useDispatch();
 
-    const onSubmit = handleSubmit(({btcAddress,email,hour,day,threedays,week,confirmed}) => {
-        dispatch(updateUserDataAction(btcAddress,email,hour,day,threedays,week,confirmed));
+    const onSubmit = handleSubmit(({btcAddress,email,hour,day,threedays,confirmed}) => {
+        dispatch(updateUserDataAction(btcAddress,email,hour,day,threedays,confirmed));
         successToast(i18n.t("account_updated"));
     });
 
@@ -46,8 +44,6 @@ export default function AccountPage (): ReactElement {
         const isChecked = (event.target as HTMLInputElement).checked;
         if (isChecked) {
             (document.getElementsByName("never")[0] as HTMLInputElement).checked = false;
-        } else {
-            (document.getElementsByName("all")[0] as HTMLInputElement).checked = false;
         }
     };
 
@@ -57,21 +53,7 @@ export default function AccountPage (): ReactElement {
             (document.getElementsByName("hour")[0] as HTMLInputElement).checked = false;
             (document.getElementsByName("day")[0] as HTMLInputElement).checked = false;
             (document.getElementsByName("threedays")[0] as HTMLInputElement).checked = false;
-            (document.getElementsByName("week")[0] as HTMLInputElement).checked = false;
             (document.getElementsByName("confirmed")[0] as HTMLInputElement).checked = false;
-            (document.getElementsByName("all")[0] as HTMLInputElement).checked = false;
-        }
-    };
-
-    const selectAll = (event: MouseEvent) => {
-        const isChecked = (event.target as HTMLInputElement).checked;
-        if (isChecked){
-            (document.getElementsByName("hour")[0] as HTMLInputElement).checked = true;
-            (document.getElementsByName("day")[0] as HTMLInputElement).checked = true;
-            (document.getElementsByName("threedays")[0] as HTMLInputElement).checked = true;
-            (document.getElementsByName("week")[0] as HTMLInputElement).checked = true;
-            (document.getElementsByName("confirmed")[0] as HTMLInputElement).checked = true;
-            (document.getElementsByName("never")[0] as HTMLInputElement).checked = false;
         }
     };
 
@@ -143,32 +125,10 @@ export default function AccountPage (): ReactElement {
                         <div className="col-xl-2 col-lg-3 col-md-5"></div>
                         <div className="col-xl-3 col-lg-4 col-md-5">
                             <div className="check-input-field">
-                                <input name="week" type="checkbox" ref={register} onClick={checkNotification} />
-                            </div>
-                            <div className="check-input-field">
-                                1 week before expiry
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row justify-content-center">
-                        <div className="col-xl-2 col-lg-3 col-md-5"></div>
-                        <div className="col-xl-3 col-lg-4 col-md-5">
-                            <div className="check-input-field">
                                 <input name="confirmed" type="checkbox" ref={register} onClick={checkNotification} />
                             </div>
                             <div className="check-input-field">
                                 When BTC payment confirmed
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row justify-content-center">
-                        <div className="col-xl-2 col-lg-3 col-md-5"></div>
-                        <div className="col-xl-3 col-lg-4 col-md-5">
-                            <div className="check-input-field">
-                                <input name="all" type="checkbox" ref={register} onClick={selectAll}/>
-                            </div>
-                            <div className="check-input-field">
-                                All
                             </div>
                         </div>
                     </div>

@@ -8,8 +8,7 @@ import { AddOptions,
     ChangeCurrency,
     UpdatePrices,
     ChangeClickedOption,
-    UpdateUserData,
-    UpdateUserNotifications
+    UpdateUserData
 } from "./actions.types";
 
 export interface Prices {
@@ -27,7 +26,6 @@ export interface User {
         hour: boolean;
         day: boolean;
         threedays: boolean;
-        week: boolean;
         confirmed: boolean;
     }
 }
@@ -69,5 +67,5 @@ export type dispatcher = {
 
 export type StoreState = Store<CombinedState<StoreType>, 
 AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ChangeSelectedPage | 
-ChangeCurrency | UpdatePrices | ChangeClickedOption | UpdateUserData | UpdateUserNotifications> 
+ChangeCurrency | UpdatePrices | ChangeClickedOption | UpdateUserData> 
 & dispatcher;

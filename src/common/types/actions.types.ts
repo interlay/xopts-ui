@@ -6,7 +6,6 @@ import { Option, Position, Prices } from "../types/util.types";
 export const UPDATE_IS_USER_CONNECTED = "UPDATE_IS_USER_CONNECTED";
 export const UPDATE_USER_NETWORK = "UPDATE_USER_NETWORK";
 export const UPDATE_USER_DATA =  "UPDATE_USER_DATA";
-export const UPDATE_USER_NOTIFICATIONS = "UPDATE_USER_NOTIFICATIONS";
 
 export interface UpdateIsUserConnected{
     type: typeof UPDATE_IS_USER_CONNECTED;
@@ -26,21 +25,10 @@ export interface UpdateUserData{
     hour: boolean;
     day: boolean;
     threedays: boolean;
-    week: boolean;
     confirmed: boolean;
 }
 
-export interface UpdateUserNotifications{
-    type: typeof UPDATE_USER_NOTIFICATIONS;
-    hour: boolean;
-    day: boolean;
-    threedays: boolean;
-    week: boolean;
-    confirmed: boolean;
-}
-
-export type UserActions = UpdateIsUserConnected | UpdateUserNetwork | AddPositions | UpdateUserData 
-| UpdateUserNotifications;
+export type UserActions = UpdateIsUserConnected | UpdateUserNetwork | AddPositions | UpdateUserData;
 
 
 // OPTIONS
