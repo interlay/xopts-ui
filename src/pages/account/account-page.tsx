@@ -21,7 +21,7 @@ type UserForm = {
 }
 
 export default function AccountPage (): ReactElement {
-    const { btcAddress,email } = useSelector((state: AppState) => state.user);
+    const { btcAddress,email,account } = useSelector((state: AppState) => state.user);
     const { hour,day,threedays,confirmed } = useSelector((state: AppState) => state.user.notifications);
     const { register,handleSubmit,errors } = useForm<UserForm>({
         defaultValues: {
@@ -60,19 +60,28 @@ export default function AccountPage (): ReactElement {
     return <Page>
         <div className="container-fluid">
             <div className="account-page">
+                <div className="account-title">Your Account</div>
+                <div className="account">{account}</div>
                 <form onSubmit={onSubmit} className="user-data">
                     <div className="row justify-content-center">
                         <div className="col-xl-2 col-lg-3 col-md-5">Preferred BTC address</div>
                         <div className="col-xl-3 col-lg-4 col-md-5">
                             <input name="btcAddress" placeholder="Preferred BTC Address" type="text" 
-                                ref={register({required: true})} className={errors.btcAddress ? "error-borders" : ""}/>
+                                ref={register({required: true, pattern: {
+                                    value: /^[13][a-km-zA-HJ-NP-Z0-9]{26,33}$/,
+                                    message: "Please enter valid BTC address"
+                                }})} className={errors.btcAddress ? "error-borders" : ""}/>
                             <InputError inputName="btcAddress" errors={errors}></InputError>
                         </div>
                     </div>
                     <div className="row justify-content-center">
                         <div className="col-xl-2 col-lg-3 col-md-5">Email (optional)</div>
                         <div className="col-xl-3 col-lg-4 col-md-5">
-                            <input name="email" placeholder="Email" type="text" ref={register} />
+                            <input name="email" placeholder="Email" type="text" ref={register({pattern: {
+                                value: /\S+@\S+\.\S+/,
+                                message: "Please enter valid email address"
+                            }})} className={errors.email ? "error-borders" : ""}/>
+                            <InputError inputName="email" errors={errors}></InputError>
                         </div>
                     </div>
                     <div className="row justify-content-center">

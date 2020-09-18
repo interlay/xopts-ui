@@ -43,6 +43,7 @@ export default function TradeOptionsPage (): ReactElement {
     // this function will be removed after real options are pulled from contracts
     useEffect(()=>{
         const fetchOptions = async () => {
+            // TODO: call to lib -
             const options = await getOptions<Option[]>();
             // const etherProvider = await detectEthereumProvider();
             // const xopts = await XOpts.load(etherProvider);
@@ -86,7 +87,10 @@ export default function TradeOptionsPage (): ReactElement {
                                         <th>Strike Price</th>
                                         <th>Liquidity</th>
                                         <th>Positions</th>
-                                        <th>Performance</th>
+                                        <th title="Earned/paid premium + option performance">
+                                            Performance &nbsp;&nbsp;
+                                            <i className="fas fa-info"></i>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
