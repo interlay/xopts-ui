@@ -24,15 +24,14 @@ export default function ConfirmationModal(props: ConfirmationModalProps): ReactE
     };
 
     useEffect(()=>{
-        // $("#" + props.modalId).modal("toggle");
         dispatch(addModalAction(props.modalName));
-    },[]);
+    },[dispatch,props.modalName]);
 
     useEffect(()=>{
         if (show) {
             $("#" + props.modalId).modal("toggle");
         }
-    },[show]);
+    },[show,props.modalId]);
 
     return <React.Fragment>
         <div className="modal fade in" id={props.modalId} role="dialog" aria-labelledby={props.modalName} 
