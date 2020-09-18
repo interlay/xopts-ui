@@ -1,0 +1,50 @@
+.withdraw-tab {
+    margin-top: 2rem;
+
+    .label{
+        font-weight: 600;
+    }
+    
+    .explanation{
+        font-size: 0.8rem;
+    }
+
+    p {
+        margin-bottom: 0px;
+    }
+
+    .total-funds{
+        font-weight: 600;
+    }
+
+    .row{
+        margin-bottom: 1rem;
+
+        .input-group{
+            width: 50%;
+        }
+    }
+
+    .curenlty-locked{
+        margin-top: 5rem;
+    }
+
+    table {
+        table-layout: auto;
+        width: 300px;
+        margin: 2rem 0px;
+    }
+    th, td{
+        padding: 5px 30px;
+        border: 1px solid #ddd;
+        i{
+            color: rgba(0, 0, 0, 0.5);
+        }
+        p{
+            margin: 0px;
+        }
+    }
+    thead{
+        background-color: #eaeaea;
+    }
+}

@@ -23,7 +23,7 @@ type UserForm = {
 export default function AccountPage (): ReactElement {
     const { btcAddress,email } = useSelector((state: AppState) => state.user);
     const { hour,day,threedays,confirmed } = useSelector((state: AppState) => state.user.notifications);
-    const {register,handleSubmit,errors} = useForm<UserForm>({
+    const { register,handleSubmit,errors } = useForm<UserForm>({
         defaultValues: {
             btcAddress,
             email,

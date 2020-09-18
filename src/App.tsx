@@ -39,7 +39,7 @@ function App(): ReactElement {
                             <TradeOptionsPage />
                         </Route>
 
-                        <Route path="/earn">
+                        <Route path="/earn/:tab">
                             <EarnPage></EarnPage>
                         </Route>
 

@@ -1,0 +1,22 @@
+@import "../../variables";
+
+.earn-page{
+    background-color: $background-color;
+    padding: 15px;
+    margin-top: 1rem;
+
+    h3{
+        margin-top: 2rem;
+        text-align: center;
+    }
+
+    .stats{
+        margin-top: 2rem;
+        text-align: center;
+    }
+
+    .nav-tabs{
+        width: 100%;
+        margin-top: 2rem;
+    }
+}

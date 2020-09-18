@@ -1,0 +1,39 @@
+.deposit-tab{
+    margin-top: 2rem;
+    
+    .description{
+        text-align: center;
+    }
+
+    .deposit-form{
+        margin-top: 3rem;
+
+        p {
+            margin-bottom: 0px;
+        }
+        
+        .label{
+            font-weight: 600;
+        }
+
+        .explanation{
+            font-size: 0.8rem;
+        }
+
+        .row{
+            margin-bottom: 1rem;
+
+            .confirm-button{
+                margin-top: 2rem;
+            }
+            .input-group input{
+                width: 1%;
+                margin-bottom: 0px;
+            }
+            .form-control:focus{
+                outline: none!important;
+            }
+        }
+    }
+
+}

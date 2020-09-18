@@ -60,6 +60,8 @@ export type PositionsActions = AddPositions;
 export const CHANGE_SELECTED_PAGE = "CHANGE_SELECTED_PAGE";
 export const CHANGE_CURRENCY = "CHANGE_CURRENCY";
 export const CHANGE_CLICKED_OPTION = "CHANGE_CLICKED_OPTION";
+export const TOGGLE_MODAL = "TOGGLE_MODAL";
+export const ADD_MODAL = "ADD_MODAL";
 
 export interface ChangeSelectedPage{
     type: typeof CHANGE_SELECTED_PAGE;
@@ -76,7 +78,18 @@ export interface ChangeClickedOption{
     clickedOption: Option;
 }
 
-export type UIActions = ChangeSelectedPage | ChangeCurrency | ChangeClickedOption;
+export interface ToggleModal{
+    type: typeof TOGGLE_MODAL;
+    show: boolean;
+    name: string;
+}
+
+export interface AddModal{
+    type: typeof ADD_MODAL;
+    name: string;
+}
+
+export type UIActions = ChangeSelectedPage | ChangeCurrency | ChangeClickedOption | ToggleModal | AddModal;
 
 // PRICES
 
