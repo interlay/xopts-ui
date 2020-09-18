@@ -79,7 +79,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
             errorDiv.innerHTML = "";
         } else {
             target.classList.add("error-borders");
-            errorDiv.innerHTML = "value must be less than liquidity";
+            errorDiv.innerHTML = "Quantity exceeds available liquidity";
             buyElement.innerHTML = "Buy";
             sellElement.innerHTML = "Sell";
             buyElement.classList.remove("active");
@@ -92,6 +92,8 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
         if(!isConnected){
             connectWallet(true);
             return;
+        } else {
+            // TODO: call to lib -
         }
     };
 
@@ -99,6 +101,8 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
         if(!isConnected){
             connectWallet(true);
             return;
+        } else {
+            // TODO: call to lib -
         }
     };
 
@@ -151,7 +155,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement{
                                     </p>
                                 </td>
                                 <td id={createId("td3",index,option)} className={greenCell(option)}>
-                                    {Math.floor(Math.random() * 10000)}$
+                                    $ &nbsp;{Math.floor(Math.random() * 10000).toFixed(2)}
                                 </td>
                                 <td id={createId("td4",index,option)} 
                                     className={greenCell(option) + (oblig>=0 ? " green-text" : " red-text")}>

@@ -21,8 +21,10 @@ export default function InputError(props: InputErrorProps) {
             return "This field is required";
         case "maxLength":
             return "Exceed maximum input length";
+        case "pattern":
+            return props.errors[props.inputName].message;
+        default: return "";
         }
-        return "";
     };
 
     return <div className="input-error">

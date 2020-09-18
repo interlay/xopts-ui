@@ -77,14 +77,11 @@
 
             .trade-buttons {
                 background-color: $background-color;
-                padding: 5px 30px;
+                padding: 5px 15px;
                 line-height: 1rem;
                 margin: 5px 0px;
                 border-radius: 5px;
                 min-width: 174.3px;
-                span{
-                    font-size: 0.7rem;
-                }
             }
             
             .buy-button {
@@ -114,7 +111,7 @@
             .quantity-label{
                 display: inline-block;
                 position: relative;
-                left: 15px;
+                font-weight: 600;
             }
 
             .quantity-wrapper{
@@ -130,7 +127,7 @@
 
                 .quantity-input{
                     margin: 5px -30px;
-                    width: 50%!important;
+                    width: 90%!important;
                     margin-bottom: 0px!important;
                     position: relative;
                 }

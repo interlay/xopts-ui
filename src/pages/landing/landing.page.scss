@@ -15,8 +15,12 @@
         text-align: center;
         margin-top: 4rem;
         .stat{
+
             :first-child{
                 color: $brand-color;
+            }
+            :last-child{
+                font-size: 1.5rem;
             }
         }
     }
@@ -31,6 +35,7 @@
             overflow: visible;
             min-height: 200px;
             .box-header{
+                font-size: 1.7rem;
                 padding: 15px;
                 font-weight: 600;
                 color: $brand-color;
