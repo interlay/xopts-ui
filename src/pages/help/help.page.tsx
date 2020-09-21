@@ -8,7 +8,7 @@ import Page from "../page/page";
 
 export default function HelpPage(): ReactElement{
     return (
-        <Page sideBar={false}>
+        <Page>
             <React.Fragment>
                 <section className="center-text">
                     <h2 className="brand-color">XOpts User Guide</h2>

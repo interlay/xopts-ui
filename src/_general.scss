@@ -28,6 +28,24 @@ a{
         text-decoration: none;
     }
 }
+button {
+    border: 0;
+}
+
+button:focus {outline:0!important;}
+input:focus {outline: 0!important;}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
 
 .center-text {
     text-align: center;
@@ -53,5 +71,59 @@ a{
         background-color: $brand-color;
         box-shadow: 0 0 10px $brand-color;
         cursor: pointer;
+    }
+}
+
+.cancel-button{
+    width: 100%;
+    text-align: center;
+    font-size: 1rem;
+    padding: 0px 15px;
+    box-shadow: 0 0 5px $text-color;
+    border-radius: 5px;
+    color: $text-color;
+    background-color: white;
+    margin-top: 5px;
+    &:hover {
+        color: white;
+        background-color: $brand-color;
+        box-shadow: 0 0 10px $brand-color;
+        cursor: pointer;
+    }
+}
+
+.confirm-button{
+    width: 100%;
+    border: 0;
+    text-align: center;
+    font-size: 1rem;
+    padding: 0px 15px;
+    box-shadow: 0 0 5px $brand-color;
+    border-radius: 5px;
+    color: $brand-color;
+    background-color: white;
+    margin-top: 5px;
+    &:hover {
+        color: white;
+        background-color: $brand-color;
+        box-shadow: 0 0 10px $brand-color;
+        cursor: pointer;
+    }
+}
+
+body{
+    #root{
+        .error-borders{
+            border-color: $error-color;
+        }
+
+        input {
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            color: #495057;
+            padding: .375rem .75rem;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
     }
 }

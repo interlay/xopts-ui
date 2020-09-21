@@ -1,12 +1,19 @@
 @import "../../../variables";
+@import "../../../mixins";
 
 .data-table{
     display: block;
-    overflow-x: auto;
     white-space: nowrap;
     max-width: fit-content;
     margin: auto;
 
+    table {
+        table-layout: auto;
+        width: 1000px;
+        td:last-child{
+            width: 400px;
+        }
+    }
     th, td{
         padding: 5px 30px;
         border: 1px solid #ddd;
@@ -17,27 +24,40 @@
             margin: 0px;
         }
     }
-
     thead{
         background-color: #eaeaea;
     }
 
     .option-type{
+        font-size: 0.9rem;
+        line-height: 50px;
         font-weight: 600;
         text-align: left;
+        padding-left: 30px;
+        p{
+            margin-left: 15px;
+            margin-bottom: 0px;
+        }
     }
 
     .expires-in{
+        font-size: 0.9rem;
+        line-height: 50px;
         text-align: right;
+        p{
+            margin-right: 15px;
+            margin-bottom: 0px;
+            span{
+                color: #d84a38;
+            }
+        }
     }
 
     .green-cell {
-        background-color: $green-color;
+        background-color: rgba(13, 243, 11, 0.05);
     }
+
     tbody{
-        &:hover{
-            cursor: pointer;
-        }
 
         td {
             margin: 0px;
@@ -49,7 +69,122 @@
                 font-size: 0.9rem;
                 color:rgb(153, 153, 153)
             }
+
+            .row{
+                margin-left: 0px;
+                margin-right: 0px;
+            }
+
+            .trade-buttons {
+                background-color: $background-color;
+                padding: 5px 15px;
+                line-height: 1rem;
+                margin: 5px 0px;
+                border-radius: 5px;
+                min-width: 174.3px;
+            }
+            
+            .buy-button {
+                @extend .trade-buttons;
+                color: #35aa47;
+                border: 1px solid #35aa47; 
+            }
+            
+            .sell-button {
+                @extend .trade-buttons;
+                color: #d84a38;
+                border: 1px solid #d84a38; 
+            }
+
+            .buy-button.active {
+                @extend .trade-buttons;
+                color: white;
+                background-color: #35aa47; 
+            }
+            
+            .sell-button.active {
+                @extend .trade-buttons;
+                color: white;
+                background-color: #d84a38; 
+            }
+
+            .quantity-label{
+                display: inline-block;
+                position: relative;
+                font-weight: 600;
+            }
+
+            .quantity-wrapper{
+                display: inline-block;
+            }
+
+            .table-input{
+                position: relative;
+
+                .input-error{
+                    margin-top: 0px;
+                }
+
+                .quantity-input{
+                    margin: 5px -30px;
+                    width: 90%!important;
+                    margin-bottom: 0px!important;
+                    position: relative;
+                }
+            }
+        }
+
+        td.green-text{
+            color: $active-green!important;
+            :nth-child(2){
+                color: $active-green;
+            }
+        }
+
+        td.red-text{
+            color: $error-color!important;
+            :nth-child(2){
+                color: $error-color;
+            }
+        }
+
+        tr td:last-child{
+            min-width: 347px;
+        }
+    }
+}
+
+.table-box{
+    background-color: white;
+    margin: auto;
+    width: 100%;
+    text-align: center;
+
+    .table-wrapper{
+        margin: auto;
+
+        .table-heading{
+            border-left: 1px solid #d4d8df;
+            border-right: 1px solid #d4d8df;
+            margin: 0px;
+            position: relative;
+            width: 1000px;
+            div {
+                padding: 0px;
+            }
+            .title {
+                line-height: 3.15rem;
+                width: 100%;
+                position: absolute;
+                text-align: center;
+                font-weight: 600;
+                font-size: 1.15rem;
+            }
         }
         
+        .highlight-col{
+            background-color: #edf0f1;
+            font-weight: 600;
+        }
     }
 }

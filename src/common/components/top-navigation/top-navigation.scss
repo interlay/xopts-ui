@@ -37,7 +37,7 @@
     .nav-item.side{
         display: none;
     }
-
+    
     .nav-button{
         max-height: 30px;
         line-height: 30px;
@@ -47,6 +47,16 @@
         padding: 0px 10px;
         box-shadow: 0 0 5px $brand-color;
         color: $brand-color;
+        &:hover {
+            color: white;
+            background-color: $brand-color;
+            box-shadow: 0 0 10px $brand-color;
+            cursor: pointer;
+        }
+    }
+
+    .nav-button.dropdown-toggle{
+        background-color: white;
         &:hover {
             color: white;
             background-color: $brand-color;
@@ -69,46 +79,27 @@
         color: $brand-color;
         font-weight: 600;
     }
-    
-    .tabs{
-        display: inline-block;
+
+    .price{
         position: absolute;
-        left: 10vw;
-        top: -3px;
-        color: $text-color;
-        .tab{
-            
-            display: inline-block;
-            max-height: 50px;
-            line-height: 50px;
-            text-align: center;
-            padding: 3px 10px;
-            &:hover{
-                cursor: pointer;
-                color: #510101;
-            }
-            p{
-                margin: auto;
-                margin-top: 0px;
-                margin-bottom: 0px;
-                line-height: 20px;       
-            }
-            p:nth-child(2) {
-                font-size: 0.8rem;
-            }    
-        }
+        width: calc(100vw - 30px);
+        text-align: center;
+        line-height: 0.5rem;
+        color: $brand-color;
+    }
 
-        .tab.eth{
-            p:nth-child(2) {
-                font-size: 0.7rem;
-            }    
+    .logo-section{
+        .nav-item{
+            float:none!important;
         }
+        .first{
+            margin-left: 30px;
+        }
+    }
 
-        .tab.active{
-            color: $brand-color;
-            border-top: 4px solid $brand-color;
-            // border-left: 1px solid $brand-color;
-            // border-right: 1px solid $brand-color;
+    .navigation-items{
+        .only-in-menu{
+            display: none;
         }
     }
 
@@ -126,6 +117,15 @@
         background-color: white;
         z-index: 10;
 
+        .nav-button.dropdown-toggle{
+            background-color: white;
+            &:hover {
+                color: $text-color;
+                background-color: none;
+                box-shadow: none;
+            }
+        }
+        
         .menu{
             font-size: 1.3rem;
             .bars {
@@ -141,6 +141,9 @@
         .navigation-items{
             max-height: 0;
             overflow: hidden;
+            .only-in-menu{
+                display: block;
+            }
         }
     
         .navigation-items.open{
@@ -182,6 +185,12 @@
             left: 15vw;
             top: -3px;
             color: $text-color;
+        }
+
+        .logo-section {
+            .nav-item {
+                display: none;
+            }
         }
     }
 }   

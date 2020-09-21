@@ -1,4 +1,5 @@
 {
     "connect_wallet": "Connect Wallet",
-    "enable_localstorage": "Local storage is disabled. In order to use platform please enable local storage"
+    "enable_localstorage": "Local storage is disabled. In order to use platform please enable local storage",
+    "account_updated": "Account details updated"
 }

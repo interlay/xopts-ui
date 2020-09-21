@@ -3,9 +3,8 @@
 
 .page {
     background-color: #f1f3fa;
-    padding: 15px;
     margin-top: 60px;
-    min-height: 100vh;
+    min-height: calc(100vh - 60px);
     .page-content {
         margin-left: 0;
     }

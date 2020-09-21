@@ -4,11 +4,11 @@ import { AddOptions,
     UpdateIsUserConnected, 
     UpdateUserNetwork, 
     AddPositions, 
-    ToggleSideMenu, 
     ChangeSelectedPage, 
     ChangeCurrency,
     UpdatePrices,
-    ChangeClickedOption
+    ChangeClickedOption,
+    UpdateUserData
 } from "./actions.types";
 
 export interface Prices {
@@ -19,6 +19,15 @@ export interface Prices {
 export interface User {
     isConnected: boolean;
     network: string;
+    account?: string;
+    btcAddress: string;
+    email: string;
+    notifications: {
+        hour: boolean;
+        day: boolean;
+        threedays: boolean;
+        confirmed: boolean;
+    }
 }
 
 export interface Option {
@@ -36,7 +45,6 @@ export interface Position {
 }
 
 export type UIState = {
-    isSideCollapsed: boolean;
     selectedPage: string;
     currency: string;
     clickedOption?: Option;
@@ -58,6 +66,6 @@ export type dispatcher = {
 }
 
 export type StoreState = Store<CombinedState<StoreType>, 
-AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ToggleSideMenu | ChangeSelectedPage | 
-ChangeCurrency | UpdatePrices | ChangeClickedOption> 
-& dispatcher
+AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ChangeSelectedPage | 
+ChangeCurrency | UpdatePrices | ChangeClickedOption | UpdateUserData> 
+& dispatcher;
