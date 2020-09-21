@@ -87,9 +87,10 @@ export default function TradeOptionsPage (): ReactElement {
                                         <th>Strike Price</th>
                                         <th>Liquidity</th>
                                         <th>Positions</th>
-                                        <th title="Earned/paid premium + option performance">
+                                        <th>
                                             Performance &nbsp;&nbsp;
-                                            <i className="fas fa-info"></i>
+                                            <i className="fas fa-info-circle" 
+                                                data-tip="Earned/paid premium + option performance"></i>
                                         </th>
                                     </tr>
                                 </thead>
