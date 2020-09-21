@@ -14,15 +14,17 @@ type DepositForm = {
 export default function DepositTab(): ReactElement {
     const btcAddress = useSelector((state: AppState) => state.user.btcAddress);
     const price = useSelector((state: AppState) => state.prices.btc);
-    const {register,handleSubmit} = useForm<DepositForm>({defaultValues: {
+    const {register,handleSubmit,errors} = useForm<DepositForm>({defaultValues: {
         BTClimit: price,
         btcAddress
     }});
 
-    const onSubmit = handleSubmit(({BTClimit,btcAddress}) => {
+    const onSubmit = handleSubmit(({BTClimit,btcAddress,liquidity}) => {
         // TO DO SUBMIT TO SMART CONTRACTS
-        console.log(BTClimit,btcAddress);
+        console.log(BTClimit,btcAddress,liquidity);
     });
+
+    console.log(errors);
 
     return <div className="deposit-tab">
         <div className="row justify-content-center">
@@ -38,9 +40,9 @@ export default function DepositTab(): ReactElement {
                     <p className="label">Liquidity</p>
                     <p className="explanation">The amount of liquidity you want to provide.</p>
                 </div>
-                <div className="col-xl-3 col-lg-4 col-md-5 col-12">
+                <div className="col-xl-4 col-lg-5 col-md-5 col-12">
                     <div className="input-group">
-                        <input type="number" className="form-control custom-input"
+                        <input type="number" className="form-control custom-input" step="any"
                             name="liquidity" aria-describedby="basic-addon2" ref={register({required: true})}/>
                         <div className="input-group-append">
                             <span className="input-group-text" id="basic-addon2">USDT</span>
@@ -53,10 +55,10 @@ export default function DepositTab(): ReactElement {
                     <p className="label">BTC Price Limit</p>
                     <p className="explanation">Select the highest price at which you want to buy Bitcoin.</p>
                 </div>
-                <div className="col-xl-3 col-lg-4 col-md-5 col-12">
+                <div className="col-xl-4 col-lg-5 col-md-5 col-12">
                     <div className="input-group">
-                        <input type="number" className="form-control custom-input" name="BTClimit" 
-                            aria-describedby="basic-addon2" />
+                        <input type="number" className="form-control custom-input" name="BTClimit" step="any"
+                            aria-describedby="basic-addon2" ref={register({required: true})}/>
                         <div className="input-group-append">
                             <span className="input-group-text" id="basic-addon2">USDT</span>
                         </div>
@@ -68,8 +70,9 @@ export default function DepositTab(): ReactElement {
                     <p className="label">BTC Address</p>
                     <p className="explanation">Your BTC address.</p>
                 </div>
-                <div className="col-xl-3 col-lg-4 col-md-5 col-12">
-                    <input className="custom-input" name="btcAddress" placeholder="" type="text" ref={register} />
+                <div className="col-xl-4 col-lg-5 col-md-5 col-12">
+                    <input className="custom-input" name="btcAddress" placeholder="" type="text" 
+                        ref={register({required: true})} />
                 </div>
             </div>
             <div className="row justify-content-center">
@@ -79,7 +82,7 @@ export default function DepositTab(): ReactElement {
                         The minimum amount of BTC you receive if someone exercises your position.
                     </p>
                 </div>
-                <div className="col-xl-3 col-lg-4 col-md-5 col-12">
+                <div className="col-xl-4 col-lg-5 col-md-5 col-12">
                     0.45 BTC
                 </div>
             </div>
@@ -88,13 +91,13 @@ export default function DepositTab(): ReactElement {
                     <p className="label">APY</p>
                     <p className="explanation">The interest you will earn.</p>
                 </div>
-                <div className="col-xl-3 col-lg-4 col-md-5 col-12">
+                <div className="col-xl-4 col-lg-5 col-md-5 col-12">
                     1.5%
                 </div>
             </div>
             <div className="row justify-content-center">
                 <div className="col-xl-3 col-lg-4 col-md-4 col-6">
-                    <button className="confirm-button">Provide Liquidity</button>
+                    <button className="green-button">Provide Liquidity</button>
                 </div>
             </div>
         </form>

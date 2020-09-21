@@ -111,6 +111,24 @@ input[type=number] {
     }
 }
 
+.green-button{
+    width: 100%;
+    border: 0;
+    text-align: center;
+    font-size: 1rem;
+    padding: 2px 15px;
+    border: 1px solid $active-green;
+    border-radius: 5px;
+    color: $active-green;
+    background-color: white;
+    margin-top: 5px;
+    &:hover {
+        color: white;
+        background-color: $active-green;
+        cursor: pointer;
+    }
+}
+
 body{
     #root{
         .error-borders{

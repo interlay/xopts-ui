@@ -14,7 +14,7 @@ export default function EarnPage(): ReactElement{
         <div className="earn-page container">
             <div className="row">
                 <div className="col">
-                    <h3>Provide Liquiditys</h3>
+                    <h3>Provide Liquidity</h3>
                 </div>
             </div>
             <div className="row stats justify-content-center">
@@ -28,7 +28,7 @@ export default function EarnPage(): ReactElement{
                 </div>
                 <div className="col-xl-3">
                     <p>Fees earned</p>
-                    <p>89.1 USDT</p>
+                    <p>89.1 USDT <span className="apy">2.4% APY</span></p>
                 </div>
             </div>
             <div className="row">
