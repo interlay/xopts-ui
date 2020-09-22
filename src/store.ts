@@ -11,7 +11,7 @@ export const loadState = (): StoreType => {
         options: [], 
         user: { isConnected: false, account: undefined, network: "", btcAddress: "", email: "",
         notifications: { hour: false, day: false, threedays: false, confirmed: false}},
-        ui: { selectedPage: "all-expirations", currency: "btc", clickedOption: undefined },
+        ui: { selectedPage: "all-expirations", currency: "btc", clickedOption: undefined, modals: [] },
         prices: { btc: 0, eth: 0 },
     };
     try {

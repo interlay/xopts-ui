@@ -23,7 +23,7 @@ type UserForm = {
 export default function AccountPage (): ReactElement {
     const { btcAddress,email,account } = useSelector((state: AppState) => state.user);
     const { hour,day,threedays,confirmed } = useSelector((state: AppState) => state.user.notifications);
-    const {register,handleSubmit,errors} = useForm<UserForm>({
+    const { register,handleSubmit,errors } = useForm<UserForm>({
         defaultValues: {
             btcAddress,
             email,
@@ -68,9 +68,9 @@ export default function AccountPage (): ReactElement {
                         <div className="col-xl-3 col-lg-4 col-md-5">
                             <input name="btcAddress" placeholder="Preferred BTC Address" type="text" 
                                 ref={register({required: true, pattern: {
-                                    value: /^[13][a-km-zA-HJ-NP-Z0-9]{26,33}$/,
+                                    value: /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/,
                                     message: "Please enter valid BTC address"
-                                }})} className={errors.btcAddress ? "error-borders" : ""}/>
+                                }})} className={"custom-input" + (errors.btcAddress ? " error-borders" : "")}/>
                             <InputError inputName="btcAddress" errors={errors}></InputError>
                         </div>
                     </div>
@@ -80,7 +80,7 @@ export default function AccountPage (): ReactElement {
                             <input name="email" placeholder="Email" type="text" ref={register({pattern: {
                                 value: /\S+@\S+\.\S+/,
                                 message: "Please enter valid email address"
-                            }})} className={errors.email ? "error-borders" : ""}/>
+                            }})} className={"custom-input" + (errors.email ? " error-borders" : "")}/>
                             <InputError inputName="email" errors={errors}></InputError>
                         </div>
                     </div>

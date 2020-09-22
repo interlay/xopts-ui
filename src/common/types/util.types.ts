@@ -8,7 +8,9 @@ import { AddOptions,
     ChangeCurrency,
     UpdatePrices,
     ChangeClickedOption,
-    UpdateUserData
+    UpdateUserData,
+    ToggleModal,
+    AddModal
 } from "./actions.types";
 
 export interface Prices {
@@ -44,10 +46,16 @@ export interface Position {
     premium: string;
 }
 
+export type ModalDataType = {
+    name: string;
+    show: boolean;
+}
+
 export type UIState = {
     selectedPage: string;
     currency: string;
     clickedOption?: Option;
+    modals: ModalDataType[];
 }
 
 export type AppState = ReturnType<typeof rootReducer>
@@ -67,5 +75,5 @@ export type dispatcher = {
 
 export type StoreState = Store<CombinedState<StoreType>, 
 AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ChangeSelectedPage | 
-ChangeCurrency | UpdatePrices | ChangeClickedOption | UpdateUserData> 
+ChangeCurrency | UpdatePrices | ChangeClickedOption | UpdateUserData | ToggleModal | AddModal> 
 & dispatcher;

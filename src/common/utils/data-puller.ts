@@ -3,6 +3,6 @@ import { fetchPrices } from "../api/prices.api";
 
 export default async function startDataPuller(store: StoreState){
     fetchPrices(store).then(()=>{
-        setInterval(()=>fetchPrices(store),10000);
+        setInterval(()=>fetchPrices(store),100000);
     });
 }

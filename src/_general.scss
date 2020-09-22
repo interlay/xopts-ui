@@ -97,7 +97,7 @@ input[type=number] {
     border: 0;
     text-align: center;
     font-size: 1rem;
-    padding: 0px 15px;
+    padding: 2px 15px;
     box-shadow: 0 0 5px $brand-color;
     border-radius: 5px;
     color: $brand-color;
@@ -111,19 +111,37 @@ input[type=number] {
     }
 }
 
+.green-button{
+    width: 100%;
+    border: 0;
+    text-align: center;
+    font-size: 1rem;
+    padding: 2px 15px;
+    border: 1px solid $active-green;
+    border-radius: 5px;
+    color: $active-green;
+    background-color: white;
+    margin-top: 5px;
+    &:hover {
+        color: white;
+        background-color: $active-green;
+        cursor: pointer;
+    }
+}
+
 body{
     #root{
         .error-borders{
             border-color: $error-color;
         }
-
-        input {
-            border: 1px solid #ced4da;
-            border-radius: .25rem;
-            color: #495057;
-            padding: .375rem .75rem;
-            width: 100%;
-            margin-bottom: 1rem;
-        }
     }
+}
+
+.custom-input {
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    color: #495057;
+    padding: .375rem .75rem;
+    width: 100%;
+    margin-bottom: 1rem;
 }

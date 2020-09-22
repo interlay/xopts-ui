@@ -75,7 +75,7 @@ export default function TopNavigation(): ReactElement {
                         Options
                 </Link>
                 <Link className={"nav-item" + ("earn" === selectedPage ? " selected-item" : "")} 
-                    to="/earn" 
+                    to="/earn/deposit" 
                     onClick={openPage("earn")}>
                         Earn
                 </Link>
