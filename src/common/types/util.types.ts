@@ -1,79 +1,90 @@
 import { rootReducer } from "../reducers/index";
+import { Currency, ERC20, Option as LibOption } from "@interlay/xopts";
 import { Store, CombinedState } from "redux";
-import { AddOptions, 
-    UpdateIsUserConnected, 
-    UpdateUserNetwork, 
-    AddPositions, 
-    ChangeSelectedPage, 
+import {
+    AddOptions,
+    UpdateIsUserConnected,
+    UpdateUserNetwork,
+    AddPositions,
+    ChangeSelectedPage,
     ChangeCurrency,
     UpdatePrices,
     ChangeClickedOption,
     UpdateUserData,
     ToggleModal,
-    AddModal
+    AddModal,
 } from "./actions.types";
 
 export interface Prices {
-    btc: number;
-    eth: number;
+  btc: number;
+  eth: number;
 }
 
 export interface User {
-    isConnected: boolean;
-    network: string;
-    account?: string;
-    btcAddress: string;
-    email: string;
-    notifications: {
-        hour: boolean;
-        day: boolean;
-        threedays: boolean;
-        confirmed: boolean;
-    }
+  isConnected: boolean;
+  network: string;
+  account?: string;
+  btcAddress: string;
+  email: string;
+  notifications: {
+    hour: boolean;
+    day: boolean;
+    threedays: boolean;
+    confirmed: boolean;
+  };
 }
 
-export interface Option {
-    contract: string;
-    expiry: number;
-    strikePrice: number;
-    spotPrice: number;
-    liquidity: number;
+export interface Option<Underlying extends Currency, Collateral extends ERC20>
+  extends LibOption<Underlying, Collateral> {
+  spotPrice: number;
+  liquidity: number;
 }
 
 export interface Position {
-    contract: string;
-    expiry: string;
-    premium: string;
+  contract: string;
+  expiry: string;
+  premium: string;
 }
 
 export type ModalDataType = {
-    name: string;
-    show: boolean;
-}
+  name: string;
+  show: boolean;
+};
 
 export type UIState = {
-    selectedPage: string;
-    currency: string;
-    clickedOption?: Option;
-    modals: ModalDataType[];
-}
+  selectedPage: string;
+  currency: string;
+  clickedOption?: Option<Currency, ERC20>;
+  modals: ModalDataType[];
+};
 
-export type AppState = ReturnType<typeof rootReducer>
+export type AppState = ReturnType<typeof rootReducer>;
 
 export type StoreType = {
-    options: Option[];
-    user: User;
-    positions: Position[];
-    ui: UIState;
-    prices: Prices;
-}
+  options: Option<Currency, ERC20>[];
+  user: User;
+  positions: Position[];
+  ui: UIState;
+  prices: Prices;
+};
 
 export type dispatcher = {
-    // eslint-disable-next-line
-    dispatch: {}; 
-}
+  // eslint-disable-next-line
+  dispatch: {};
+};
 
-export type StoreState = Store<CombinedState<StoreType>, 
-AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ChangeSelectedPage | 
-ChangeCurrency | UpdatePrices | ChangeClickedOption | UpdateUserData | ToggleModal | AddModal> 
-& dispatcher;
+export type StoreState = Store<
+  CombinedState<StoreType>,
+  | AddOptions
+  | UpdateIsUserConnected
+  | UpdateUserNetwork
+  | AddPositions
+  | ChangeSelectedPage
+  | ChangeCurrency
+  | UpdatePrices
+  | ChangeClickedOption
+  | UpdateUserData
+  | ToggleModal
+  | AddModal
+> &
+  dispatcher;

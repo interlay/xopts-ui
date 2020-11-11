@@ -6,12 +6,28 @@ import { AppState, StoreType, StoreState } from "./common/types/util.types";
 import i18n from "i18next";
 
 export const loadState = (): StoreType => {
-    const emptyStore : StoreType = {
-        positions: [], 
-        options: [], 
-        user: { isConnected: false, account: undefined, network: "", btcAddress: "", email: "",
-        notifications: { hour: false, day: false, threedays: false, confirmed: false}},
-        ui: { selectedPage: "all-expirations", currency: "btc", clickedOption: undefined, modals: [] },
+    const emptyStore: StoreType = {
+        positions: [],
+        options: [],
+        user: {
+            isConnected: false,
+            account: undefined,
+            network: "",
+            btcAddress: "",
+            email: "",
+            notifications: {
+                hour: false,
+                day: false,
+                threedays: false,
+                confirmed: false,
+            },
+        },
+        ui: {
+            selectedPage: "all-expirations",
+            currency: "btc",
+            clickedOption: undefined,
+            modals: [],
+        },
         prices: { btc: 0, eth: 0 },
     };
     try {
@@ -20,8 +36,8 @@ export const loadState = (): StoreType => {
             return emptyStore;
         }
         return JSON.parse(serializedState);
-    } catch(error) {
-        setTimeout(()=>errorToast(i18n.t("enable_localstorage")), 2000);
+    } catch (error) {
+        setTimeout(() => errorToast(i18n.t("enable_localstorage")), 2000);
         return emptyStore;
     }
 };
@@ -30,16 +46,21 @@ export const saveState = (store: AppState): void => {
     try {
         const serializedState = JSON.stringify(store);
         localStorage.setItem("store", serializedState);
-    } catch(error) {
-        setTimeout(()=>errorToast(i18n.t("enable_localstorage")), 2000);
+    } catch (error) {
+        setTimeout(() => errorToast(i18n.t("enable_localstorage")), 2000);
     }
 };
 
 export const configureStore = (): StoreState => {
     const storeLogger = createLogger();
-    const store = createStore(rootReducer,loadState(),applyMiddleware(storeLogger));
+    const store = createStore(
+        rootReducer,
+        loadState(),
+        applyMiddleware(storeLogger)
+    );
     store.subscribe(() => {
         saveState(store.getState());
     });
     return store;
 };
+
