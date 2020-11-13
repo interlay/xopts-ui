@@ -3,7 +3,7 @@ import Big from "big.js";
 import { useSelector, useDispatch } from "react-redux";
 import { AppState, Option } from "../../../common/types/util.types";
 import { useParams } from "react-router";
-import { Currency, ERC20, MonetaryAmount, BTCAmount } from "@interlay/xopts";
+import { Currency, ERC20 } from "@interlay/xopts";
 import { updateIsUserConnectedAction } from "../../../common/actions/user.actions";
 
 import "./options-table.scss";
@@ -18,13 +18,11 @@ type TablePropsType = {
 
 export default function OptionsTable(props: TablePropsType): ReactElement {
     const btcPrice = useSelector((state: AppState) => state.prices.btc);
-    console.log("props.options: ", props.options);
     const optionsToShow = props.options.filter(
         (option) => {
             return option.expiry.toString() === props.expiry;
         }
     );
-    console.log("Expiry: ", props.expiry);
     const isConnected = useSelector((state: AppState) => state.user.isConnected);
     const { currency } = useParams();
     const dispatch = useDispatch();

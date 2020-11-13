@@ -38,26 +38,18 @@ const filterOptions = (
 export default function TradeOptionsPage(): ReactElement {
     const dispatch = useDispatch();
     const options = useSelector((state: AppState) => state.options);
-    console.log("[TRADE-OPTIONS-PAGE.TSX] (main) options: ", options);
     const selectedPage = useSelector((state: AppState) => state.ui.selectedPage);
     const optionsToShow = filterOptions(selectedPage, options);
     const { currency } = useParams();
     const btcPrice = useSelector((state: AppState) => state.prices.btc);
-
-    console.log("OPTIONS:");
-    console.log(options);
 
     // this function will be removed after real options are pulled from contracts
     useEffect(() => {
         const fetchOptions = async () => {
             const web3 = await detectEthereumProvider();
             const provider = new ethers.providers.Web3Provider(web3);
-            console.log("PROVIDER: ", provider);
             const xopts: XOpts<SignerOrProvider> = await XOpts.load(provider);
-            console.log("Loaded XOPTS...");
             const options = (await xopts.options.list()) as Option<Currency, ERC20>[];
-            console.log("RECEIVED OPTIONS: ");
-            console.log(options);
             // TODO: change this once liquidity is implemented
             options.map(option => {
                 option.liquidity = 0;
@@ -66,8 +58,6 @@ export default function TradeOptionsPage(): ReactElement {
                     .toCounter(BTCAmount.fromBTC(1))
                     .toWholeBig();
             });
-            console.log(xopts);
-            console.log(options);
             dispatch(addOptionsAction(options));
         };
         fetchOptions();
