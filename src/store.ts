@@ -30,16 +30,17 @@ export const loadState = (): StoreType => {
         },
         prices: { btc: 0, eth: 0 },
     };
-    try {
-        const serializedState = localStorage.getItem("store");
-        if (serializedState === null) {
-            return emptyStore;
-        }
-        return JSON.parse(serializedState);
-    } catch (error) {
-        setTimeout(() => errorToast(i18n.t("enable_localstorage")), 2000);
-        return emptyStore;
-    }
+    return emptyStore; // disable localStorage loading for now
+    // try {
+    //     const serializedState = localStorage.getItem("store");
+    //     if (serializedState === null) {
+    //         return emptyStore;
+    //     }
+    //     return JSON.parse(serializedState);
+    // } catch (error) {
+    //     setTimeout(() => errorToast(i18n.t("enable_localstorage")), 2000);
+    //     return emptyStore;
+    // }
 };
 
 export const saveState = (store: AppState): void => {

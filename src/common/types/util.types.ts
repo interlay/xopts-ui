@@ -1,3 +1,4 @@
+import Big from "big.js";
 import { rootReducer } from "../reducers/index";
 import { Currency, ERC20, Option as LibOption } from "@interlay/xopts";
 import { Store, CombinedState } from "redux";
@@ -38,6 +39,7 @@ export interface Option<Underlying extends Currency, Collateral extends ERC20>
   extends LibOption<Underlying, Collateral> {
   spotPrice: number;
   liquidity: number;
+  strikeNum: Big;
 }
 
 export interface Position {
