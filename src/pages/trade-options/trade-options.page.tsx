@@ -10,7 +10,7 @@ import OptionsTable from "./options-table/options-table";
 import { useParams } from "react-router";
 import TradeModal from "./trade-modal/trade-modal";
 import OptionTabs from "./option-tabs/option-tabs";
-import { XOpts, SignerOrProvider, Currency, ERC20, ethers, BTCAmount } from "@interlay/xopts/";
+import { XOpts, SignerOrProvider, Currency, ERC20, ethers, BTCAmount, CreateXOpts } from "@interlay/xopts/";
 
 import "./trade-options.page.scss";
 
@@ -48,7 +48,7 @@ export default function TradeOptionsPage(): ReactElement {
         const fetchOptions = async () => {
             const web3 = await detectEthereumProvider();
             const provider = new ethers.providers.Web3Provider(web3);
-            const xopts: XOpts<SignerOrProvider> = await XOpts.load(provider);
+            const xopts: XOpts<SignerOrProvider> = await CreateXOpts(provider);
             const options = (await xopts.options.list()) as Option<Currency, ERC20>[];
             // TODO: change this once liquidity is implemented
             options.map(option => {
@@ -56,7 +56,7 @@ export default function TradeOptionsPage(): ReactElement {
                 option.spotPrice = 0;
                 option.strikeNum = option.strikePrice
                     .toCounter(BTCAmount.fromBTC(1))
-                    .toWholeBig();
+                    .toBig(0);
             });
             dispatch(addOptionsAction(options));
         };
