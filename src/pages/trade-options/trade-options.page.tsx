@@ -54,6 +54,7 @@ export default function TradeOptionsPage(): ReactElement {
                 option.strikeNum = option.strikePrice
                     .toCounter(BTCAmount.fromBTC(1))
                     .toBig(0);
+                return option;
             });
             dispatch(addOptionsAction(options));
         };
