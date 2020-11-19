@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://xopts.io/",
   "dependencies": {
-    "@interlay/xopts": "link:/home/void/interlay/xopts/",
+    "@interlay/xopts": "^0.2.16",
     "@metamask/detect-provider": "^1.1.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -34,6 +34,7 @@
     "react-toastify": "^6.0.8",
     "react-tooltip": "^4.2.10",
     "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
     "redux-logger": "^3.0.6",
     "typescript": "^3.8.3"
   },

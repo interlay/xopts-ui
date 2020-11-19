@@ -1471,18 +1471,16 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@interlay/xopts@file:../xopts":
-  version "0.2.15"
+"@interlay/xopts@^0.2.16":
+  version "0.2.16"
+  resolved "https://registry.yarnpkg.com/@interlay/xopts/-/xopts-0.2.16.tgz#e6d60e0efb639c96f7dd12e09814bc21c8fede32"
+  integrity sha512-c2IDhGg/vQB5F/zUmNRquTvWej8l05h1GgBnodsNPp0C+g6U9jvB0x+5JJk2eHZimgWnLbbxkN4zjCS2prcQ5g==
   dependencies:
     "@uniswap/sdk" "^2.0.6"
     "@uniswap/v2-core" "^1.0.1"
     "@uniswap/v2-periphery" "^1.1.0-beta.0"
     bitcoinjs-lib "^5.1.10"
     ethers "^5.0.8"
-
-"@interlay/xopts@link:/home/void/interlay/xopts/":
-  version "0.0.0"
-  uid ""
 
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
@@ -10144,6 +10142,11 @@ redent@^3.0.0:
   dependencies:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
+
+redux-devtools-extension@^2.13.8:
+  version "2.13.8"
+  resolved "https://registry.yarnpkg.com/redux-devtools-extension/-/redux-devtools-extension-2.13.8.tgz#37b982688626e5e4993ff87220c9bbb7cd2d96e1"
+  integrity sha512-8qlpooP2QqPtZHQZRhx3x3OP5skEV1py/zUdMY28WNAocbafxdG2tRD1MWE7sp8obGMNYuLWanhhQ7EQvT1FBg==
 
 redux-logger@^3.0.6:
   version "3.0.6"

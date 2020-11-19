@@ -10,12 +10,9 @@ import OptionsTable from "./options-table/options-table";
 import { useParams } from "react-router";
 import TradeModal from "./trade-modal/trade-modal";
 import OptionTabs from "./option-tabs/option-tabs";
-import { XOpts, SignerOrProvider, Currency, ERC20, ethers, BTCAmount, CreateXOpts } from "@interlay/xopts/";
+import { Currency, ERC20, BTCAmount} from "@interlay/xopts/";
 
 import "./trade-options.page.scss";
-
-// eslint-disable-next-line
-const detectEthereumProvider = require("@metamask/detect-provider");
 
 const filterOptions = (
     selectedPage: string,
@@ -36,6 +33,7 @@ const filterOptions = (
 };
 
 export default function TradeOptionsPage(): ReactElement {
+    const libLoaded = useSelector((state: AppState) => state.lib.isLoaded);
     const dispatch = useDispatch();
     const options = useSelector((state: AppState) => state.options);
     const selectedPage = useSelector((state: AppState) => state.ui.selectedPage);
@@ -45,11 +43,10 @@ export default function TradeOptionsPage(): ReactElement {
 
     // this function will be removed after real options are pulled from contracts
     useEffect(() => {
+        if (!libLoaded) return;
+
         const fetchOptions = async () => {
-            const web3 = await detectEthereumProvider();
-            const provider = new ethers.providers.Web3Provider(web3);
-            const xopts: XOpts<SignerOrProvider> = await CreateXOpts(provider);
-            const options = (await xopts.options.list()) as Option<Currency, ERC20>[];
+            const options = (await window.xopts.options.list()) as Option<Currency, ERC20>[];
             // TODO: change this once liquidity is implemented
             options.map(option => {
                 option.liquidity = 0;
@@ -61,7 +58,7 @@ export default function TradeOptionsPage(): ReactElement {
             dispatch(addOptionsAction(options));
         };
         fetchOptions();
-    }, [currency, dispatch]);
+    }, [currency, dispatch, libLoaded]);
 
     // these objects will be removed once we have real data
     const li1 =

@@ -1,4 +1,4 @@
-import { Option, Position, Prices } from "../types/util.types";
+import { Option, Position, Prices, LibState } from "../types/util.types";
 import { Currency, ERC20 } from "@interlay/xopts";
 
 // USER
@@ -44,6 +44,16 @@ export interface AddOptions {
 }
 
 export type OptionsActions = AddOptions;
+
+// LIB_LOADED
+export const LIB_LOADED = "LIB_LOADED";
+
+export interface SetLibLoaded {
+    type: typeof LIB_LOADED;
+    state: LibState;
+}
+
+export type LibActions = SetLibLoaded;
 
 // POSITIONS
 

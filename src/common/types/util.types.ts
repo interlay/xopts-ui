@@ -14,6 +14,7 @@ import {
     UpdateUserData,
     ToggleModal,
     AddModal,
+    SetLibLoaded,
 } from "./actions.types";
 
 export interface Prices {
@@ -60,6 +61,12 @@ export type UIState = {
   modals: ModalDataType[];
 };
 
+export type LibState = {
+    isLoaded: boolean;
+    isMock: boolean;
+    isSigner: boolean;
+}
+
 export type AppState = ReturnType<typeof rootReducer>;
 
 export type StoreType = {
@@ -68,6 +75,7 @@ export type StoreType = {
   positions: Position[];
   ui: UIState;
   prices: Prices;
+  lib: LibState;
 };
 
 export type dispatcher = {
@@ -88,5 +96,6 @@ export type StoreState = Store<
   | UpdateUserData
   | ToggleModal
   | AddModal
+  | SetLibLoaded
 > &
   dispatcher;
