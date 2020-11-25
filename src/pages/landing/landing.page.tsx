@@ -3,11 +3,6 @@ import React, { ReactElement } from "react";
 import "./landing.page.scss";
 import { Link } from "react-router-dom";
 
-declare global {
-    // eslint-disable-next-line
-    interface Window { web3: any; ethereum: any; }
-}
-
 export default function LandingPage(): ReactElement {
     return (
         <div className="landing-page container-fluid">

@@ -1,18 +1,21 @@
-import {ethers, CreateXOpts, Deployments} from "@interlay/xopts";
+import {ethers, createXOpts, Deployments} from "@interlay/xopts";
 import {loadLibAction} from "../actions/lib.actions";
-import {Signer} from "@interlay/xopts/dist/lib/core";
-import {Dispatch} from "react";
+import globals from "../globals";
+import detectEthereumProvider from "@metamask/detect-provider";
+import {StoreState} from "../types/util.types";
 
-// eslint-disable-next-line
-const detectEthereumProvider = require("@metamask/detect-provider");
-
-export const fireLoading = async (dispatch: Dispatch<any>, useMock: boolean): Promise<void> => {
+export const getProvider = async (): Promise<void> => {
     const web3 = await detectEthereumProvider();
-    window.provider = new ethers.providers.Web3Provider(web3);
-    const isSigner = window.provider instanceof Signer;
+    const provider = new ethers.providers.Web3Provider(web3 as ethers.providers.ExternalProvider);
+    globals.provider = provider;
+};
 
+export const loadLib = async (store: StoreState, readWrite: boolean, useMock = false): Promise<void> => {
     const addresses = useMock ? Deployments.mock : undefined;
-    window.xopts = await CreateXOpts(window.provider, addresses);
+    if (readWrite) await globals.metamaskProvider.enable();
+    const providerOrSigner = readWrite ? globals.signer : globals.provider;
 
-    dispatch(loadLibAction(true, isSigner, useMock));
+    const xopts = await createXOpts(providerOrSigner, addresses);
+    globals.xopts = xopts;
+    store.dispatch(loadLibAction(readWrite));
 };

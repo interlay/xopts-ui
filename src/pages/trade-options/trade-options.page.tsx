@@ -11,6 +11,7 @@ import { useParams } from "react-router";
 import TradeModal from "./trade-modal/trade-modal";
 import OptionTabs from "./option-tabs/option-tabs";
 import { Currency, ERC20, BTCAmount} from "@interlay/xopts/";
+import globals from "../../common/globals";
 
 import "./trade-options.page.scss";
 
@@ -33,7 +34,7 @@ const filterOptions = (
 };
 
 export default function TradeOptionsPage(): ReactElement {
-    const libLoaded = useSelector((state: AppState) => state.lib.isLoaded);
+    const libLoaded = useSelector((state: AppState) => state.lib.isRWConnected);
     const dispatch = useDispatch();
     const options = useSelector((state: AppState) => state.options);
     const selectedPage = useSelector((state: AppState) => state.ui.selectedPage);
@@ -46,10 +47,10 @@ export default function TradeOptionsPage(): ReactElement {
         if (!libLoaded) return;
 
         const fetchOptions = async () => {
-            const options = (await window.xopts.options.list()) as Option<Currency, ERC20>[];
+            const options = (await globals.xoptsRW.options.list()) as Option<Currency, ERC20>[];
             // TODO: change this once liquidity is implemented
             options.map(option => {
-                option.liquidity = 0;
+                option.liquidity = 10;
                 option.spotPrice = 0;
                 option.strikeNum = option.strikePrice
                     .toCounter(BTCAmount.fromBTC(1))

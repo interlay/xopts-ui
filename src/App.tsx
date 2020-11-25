@@ -11,10 +11,10 @@ import ExchangePage from "./pages/exchange/exchange.page";
 import {Provider} from "react-redux";
 import {configureStore} from "./store";
 import startDataPuller from "./common/utils/data-puller";
-import subscribeOnEvents from "./common/utils/subscriber";
 
 import "./_general.scss";
-import {fireLoading} from "./common/utils/reloadLib";
+import {getProvider, loadLib} from "./common/utils/reloadLib";
+import subscribeOnProviderEvents from "./common/utils/subscriber";
 
 const USE_MOCK_LIB = false;
 
@@ -22,10 +22,14 @@ const store = configureStore();
 
 function App(): ReactElement {
     startDataPuller(store);
-    subscribeOnEvents(store);
 
     useEffect(() => {
-        fireLoading(store.dispatch, USE_MOCK_LIB); //and forget
+        const fireLoading = async () => {
+            await getProvider();
+            await loadLib(store, true, USE_MOCK_LIB);
+            subscribeOnProviderEvents(store);
+        };
+        fireLoading();
     }, []);
 
     return (

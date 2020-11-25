@@ -1,10 +1,11 @@
 import { StoreState } from "../types/util.types";
 import { updateIsUserConnectedAction } from "../actions/user.actions";
-import {fireLoading} from "./reloadLib";
+import {loadLib} from "./reloadLib";
+import globals from "../globals";
 
-export default function subscribeOnEvents(store: StoreState): void {
-    window.ethereum.on("accountsChanged", (accounts: string[]) => {
+export default function subscribeOnProviderEvents(store: StoreState, useMockLib = false): void {
+    globals.metamaskProvider.on("accountsChanged", (accounts: string[]) => {
         store.dispatch(updateIsUserConnectedAction(accounts.length > 0,accounts[0]));
-        fireLoading(store.dispatch, store.getState().lib.isMock);
+        loadLib(store, true, useMockLib);
     });
 }

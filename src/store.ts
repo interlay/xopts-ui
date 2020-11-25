@@ -5,14 +5,6 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { errorToast } from "./common/utils/toast";
 import { AppState, StoreType, StoreState } from "./common/types/util.types";
 import i18n from "i18next";
-import {XOpts, SignerOrProvider} from "@interlay/xopts";
-
-declare global {
-    interface Window {
-        provider: SignerOrProvider;
-        xopts: XOpts<SignerOrProvider>;
-    }
-}
 
 export const loadState = (): StoreType => {
     const emptyStore: StoreType = {
@@ -38,7 +30,7 @@ export const loadState = (): StoreType => {
             modals: [],
         },
         prices: { btc: 0, eth: 0 },
-        lib: {isLoaded: false, isMock: false, isSigner: false},
+        lib: {isROConnected: false, isRWConnected: false},
     };
     return emptyStore; // disable localStorage loading for now
     // try {

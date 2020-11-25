@@ -62,9 +62,8 @@ export type UIState = {
 };
 
 export type LibState = {
-    isLoaded: boolean;
-    isMock: boolean;
-    isSigner: boolean;
+    isROConnected: boolean;
+    isRWConnected: boolean;
 }
 
 export type AppState = ReturnType<typeof rootReducer>;

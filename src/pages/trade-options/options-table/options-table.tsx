@@ -3,13 +3,11 @@ import Big from "big.js";
 import { useSelector, useDispatch } from "react-redux";
 import { AppState, Option } from "../../../common/types/util.types";
 import { useParams } from "react-router";
-import { Currency, ERC20 } from "@interlay/xopts";
+import { Currency, ERC20, MonetaryAmount } from "@interlay/xopts";
 import { updateIsUserConnectedAction } from "../../../common/actions/user.actions";
 
 import "./options-table.scss";
-
-// eslint-disable-next-line
-const detectEthereumProvider = require("@metamask/detect-provider");
+import globals from "../../../common/globals";
 
 type TablePropsType = {
   expiry: string;
@@ -27,6 +25,8 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
     const { currency } = useParams();
     const dispatch = useDispatch();
     const price = useSelector((state: AppState) => state.prices.btc);
+
+    if (!useSelector((state: AppState) => state.lib.isROConnected)) return (<div></div>);
 
     const calculateExpiry = () => {
         const period = optionsToShow[0].expiry.getTime() - Date.now();
@@ -62,8 +62,11 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
     };
 
     const connectWallet = async (activeLogin: boolean) => {
-        const etherProvider = await detectEthereumProvider();
+        const etherProvider = globals.metamaskProvider;
+        console.log("Connecting wallet, checking if it's unloced...");
         const isUnlocked = await etherProvider._metamask.isUnlocked();
+
+        console.log("Connecting wallet...");
 
         if (etherProvider && (activeLogin || isUnlocked)) {
             try {
@@ -75,6 +78,8 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
             } catch (error) {
                 console.log(error);
             }
+        } else {
+            console.log("etherProvider: ", etherProvider, "; activeLogin: ", activeLogin, "; isUnlocked: ", isUnlocked);
         }
     };
 
@@ -125,16 +130,25 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
         console.log(event, option);
     };
 
-    const buyClick = () => {
+    const buyClick = (option: Option<Currency, ERC20>, index: number) => {
         if (!isConnected) {
+            console.log("Not connected, connecting wallet");
             connectWallet(true);
             return;
         } else {
-            // TODO: call to lib -
+            console.log("Connected, buying");
+            const valueElement = document.getElementById(createId("quantity", index, option)) as HTMLInputElement;
+            const value = valueElement.value;
+            console.log(value);
+            console.log(typeof value);
+            globals.xoptsRW.options.buy(
+                option,
+                new MonetaryAmount(option.collateral, value),
+                new MonetaryAmount(option.collateral, value));
         }
     };
 
-    const sellClick = () => {
+    const sellClick = (option: Option<Currency, ERC20>, index: number) => {
         if (!isConnected) {
             connectWallet(true);
             return;
@@ -248,7 +262,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                                     <button
                                                         id={createId("buy", index, option)}
                                                         className="buy-button"
-                                                        onClick={() => buyClick()}
+                                                        onClick={() => buyClick(option, index)}
                                                     >
                             Buy
                                                     </button>
@@ -257,7 +271,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                                     <button
                                                         id={createId("sell", index, option)}
                                                         className="sell-button"
-                                                        onClick={() => sellClick()}
+                                                        onClick={() => sellClick(option, index)}
                                                     >
                             Sell
                                                     </button>
