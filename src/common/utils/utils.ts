@@ -1,10 +1,13 @@
-import { Option } from "../types/util.types";
+import { Option } from "../../common/types/util.types";
+import { Currency, ERC20 } from "@interlay/xopts";
 
-export const filterUniqueOptions = (options: Option[]): Option[] => {
-    const uniqueOpts: Option[] = [];
-    options.forEach((option)=>{
+export const filterUniqueOptions = (
+    options: Option<Currency, ERC20>[]
+): Option<Currency, ERC20>[] => {
+    const uniqueOpts: Option<Currency, ERC20>[] = [];
+    options.forEach((option) => {
         let isUnique = true;
-        uniqueOpts.forEach((unique)=>{
+        uniqueOpts.forEach((unique) => {
             if (unique.expiry === option.expiry) {
                 isUnique = false;
             }
@@ -16,12 +19,16 @@ export const filterUniqueOptions = (options: Option[]): Option[] => {
     return uniqueOpts;
 };
 
-export const findObjByProperty = (array: any[], value: any, property: string): any => {
-    var result = null;
-    array.forEach((element)=>{
-        if (element[property] === value){
+export const findObjByProperty = <T, K extends keyof T, P extends T[K]>(
+    array: T[],
+    value: P,
+    property: K
+): T | null => {
+    let result = null;
+    array.forEach((element) => {
+        if (element[property] === value) {
             result = element;
         }
-    })
+    });
     return result;
-}
+};

@@ -1,16 +1,20 @@
+import Big from "big.js";
 import { rootReducer } from "../reducers/index";
+import { Currency, ERC20, Option as LibOption } from "@interlay/xopts";
 import { Store, CombinedState } from "redux";
-import { AddOptions, 
-    UpdateIsUserConnected, 
-    UpdateUserNetwork, 
-    AddPositions, 
-    ChangeSelectedPage, 
+import {
+    AddOptions,
+    UpdateIsUserConnected,
+    UpdateUserNetwork,
+    AddPositions,
+    ChangeSelectedPage,
     ChangeCurrency,
     UpdatePrices,
     ChangeClickedOption,
     UpdateUserData,
     ToggleModal,
-    AddModal
+    AddModal,
+    SetLibLoaded,
 } from "./actions.types";
 
 export interface Prices {
@@ -29,16 +33,15 @@ export interface User {
         day: boolean;
         threedays: boolean;
         confirmed: boolean;
-    }
+    };
 }
 
-export interface Option {
-    contract: string;
-    expiry: number;
-    strikePrice: number;
-    spotPrice: number;
-    liquidity: number;
-}
+export interface Option<Underlying extends Currency, Collateral extends ERC20>
+    extends LibOption<Underlying, Collateral> {
+        spotPrice: number;
+        liquidity: number;
+        strikeNum: Big;
+    }
 
 export interface Position {
     contract: string;
@@ -49,31 +52,50 @@ export interface Position {
 export type ModalDataType = {
     name: string;
     show: boolean;
-}
+};
 
 export type UIState = {
     selectedPage: string;
     currency: string;
-    clickedOption?: Option;
+    clickedOption?: Option<Currency, ERC20>;
     modals: ModalDataType[];
+};
+
+export type LibState = {
+    isLoaded: boolean;
+    isMock: boolean;
+    isSigner: boolean;
 }
 
-export type AppState = ReturnType<typeof rootReducer>
+export type AppState = ReturnType<typeof rootReducer>;
 
 export type StoreType = {
-    options: Option[];
+    options: Option<Currency, ERC20>[];
     user: User;
     positions: Position[];
     ui: UIState;
     prices: Prices;
-}
+    lib: LibState;
+};
 
 export type dispatcher = {
     // eslint-disable-next-line
-    dispatch: {}; 
-}
+    dispatch: {};
+};
 
-export type StoreState = Store<CombinedState<StoreType>, 
-AddOptions | UpdateIsUserConnected | UpdateUserNetwork | AddPositions | ChangeSelectedPage | 
-ChangeCurrency | UpdatePrices | ChangeClickedOption | UpdateUserData | ToggleModal | AddModal> 
-& dispatcher;
+export type StoreState = Store<
+    CombinedState<StoreType>,
+    | AddOptions
+    | UpdateIsUserConnected
+    | UpdateUserNetwork
+    | AddPositions
+    | ChangeSelectedPage
+    | ChangeCurrency
+    | UpdatePrices
+    | ChangeClickedOption
+    | UpdateUserData
+    | ToggleModal
+    | AddModal
+    | SetLibLoaded
+> &
+    dispatcher;
