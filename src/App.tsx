@@ -1,22 +1,21 @@
 import React, { ReactElement, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import TopNavigation from "./common/components/top-navigation/top-navigation";
+import startDataPuller from "./common/utils/data-puller";
+import { fireLoading } from "./common/utils/reloadLib";
+import subscribeOnEvents from "./common/utils/subscriber";
+import { USE_MOCK_LIB } from "./config";
+import AccountPage from "./pages/account/account-page";
+import EarnPage from "./pages/earn/earn.page";
+import ExchangePage from "./pages/exchange/exchange.page";
 import HelpPage from "./pages/help/help.page";
 import LandingPage from "./pages/landing/landing.page";
+import PositionsList from "./pages/positions/positions-list.page";
 import TradeOptionsPage from "./pages/trade-options/trade-options.page";
-import { ToastContainer } from "react-toastify";
-import EarnPage from "./pages/earn/earn.page";
-import AccountPage from "./pages/account/account-page";
-import ExchangePage from "./pages/exchange/exchange.page";
-import {Provider} from "react-redux";
-import {configureStore} from "./store";
-import startDataPuller from "./common/utils/data-puller";
-import subscribeOnEvents from "./common/utils/subscriber";
-
+import { configureStore } from "./store";
 import "./_general.scss";
-import {fireLoading} from "./common/utils/reloadLib";
-
-const USE_MOCK_LIB = false;
 
 const store = configureStore();
 
@@ -33,7 +32,7 @@ function App(): ReactElement {
             <Router>
                 <div className="main d-flex flex-column min-vh-100">
                     <ToastContainer></ToastContainer>
-                    <TopNavigation/>
+                    <TopNavigation />
                     <Switch>
                         <Route exact path="/">
                             <LandingPage />
@@ -48,17 +47,20 @@ function App(): ReactElement {
                         </Route>
 
                         <Route path="/earn/:tab">
-                            <EarnPage></EarnPage>
+                            <EarnPage />
                         </Route>
 
-                        <Route path="exchange">
-                            <ExchangePage></ExchangePage>
+                        <Route path="/exchange">
+                            <ExchangePage />
+                        </Route>
+
+                        <Route path="/positions">
+                            <PositionsList />
                         </Route>
 
                         <Route path="/account">
-                            <AccountPage></AccountPage>
+                            <AccountPage />
                         </Route>
-
                     </Switch>
                     {/* <Footer /> */}
                 </div>

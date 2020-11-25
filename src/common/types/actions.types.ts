@@ -61,7 +61,7 @@ export const ADD_POSITIONS = "ADD_POSITIONS";
 
 export interface AddPositions {
     type: typeof ADD_POSITIONS;
-    positions: Position[];
+    positions: Position<Currency, ERC20>[];
 }
 
 export type PositionsActions = AddPositions;

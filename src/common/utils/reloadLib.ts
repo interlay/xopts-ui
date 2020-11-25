@@ -1,4 +1,4 @@
-import {ethers, CreateXOpts, Deployments} from "@interlay/xopts";
+import { ethers, createXOpts, Deployments } from "@interlay/xopts";
 import {loadLibAction} from "../actions/lib.actions";
 import {Signer} from "@interlay/xopts/dist/lib/core";
 import {Dispatch} from "react";
@@ -12,7 +12,7 @@ export const fireLoading = async (dispatch: Dispatch<any>, useMock: boolean): Pr
     const isSigner = window.provider instanceof Signer;
 
     const addresses = useMock ? Deployments.mock : undefined;
-    window.xopts = await CreateXOpts(window.provider, addresses);
+    window.xopts = await createXOpts(window.provider, addresses);
 
     dispatch(loadLibAction(true, isSigner, useMock));
 };
