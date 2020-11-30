@@ -3,8 +3,8 @@ import { rootReducer } from "../reducers/index";
 import {
     Currency,
     ERC20,
-    MonetaryAmount,
     Option as LibOption,
+    Position,
 } from "@interlay/xopts";
 import { Store, CombinedState } from "redux";
 import {
@@ -46,15 +46,6 @@ export interface Option<Underlying extends Currency, Collateral extends ERC20>
     spotPrice: number;
     liquidity: number;
     strikeNum: Big;
-}
-
-export interface Position<
-    Underlying extends Currency,
-    Collateral extends ERC20
-> {
-    option: LibOption<Underlying, Collateral>;
-    writtenAmount: MonetaryAmount<Underlying>;
-    boughtAmount: MonetaryAmount<Underlying>;
 }
 
 export type ModalDataType = {

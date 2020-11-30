@@ -1,6 +1,5 @@
-import { Position } from "../types/util.types";
 import { PositionsActions, ADD_POSITIONS } from "../types/actions.types";
-import { Currency, ERC20 } from "@interlay/xopts";
+import { Currency, ERC20, Position } from "@interlay/xopts";
 
 const initialState: Position<Currency, ERC20>[] = [];
 

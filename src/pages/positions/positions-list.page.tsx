@@ -1,10 +1,9 @@
+import { Currency, ERC20, Position } from "@interlay/xopts";
 import React, { ReactElement, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppState, Position } from "../../common/types/util.types";
-
-import { Currency, ERC20, MonetaryAmount } from "@interlay/xopts";
-import Page from "../page/page";
 import { addPositionsAction } from "../../common/actions/user.actions";
+import { AppState } from "../../common/types/util.types";
+import Page from "../page/page";
 
 type PositionRowProps = {
     key: number;
@@ -17,7 +16,6 @@ function PositionRow(props: PositionRowProps): ReactElement {
     return (
         <tr key={props.key}>
             <td>{option.expiry.toDateString()}</td>
-            {/* TODO: add toHuman to exchangeRate */}
             <td>{option.strikePrice.rate.toString()}</td>
             <td>{position.writtenAmount.toString()}</td>
             <td>{position.boughtAmount.toString()}</td>
@@ -31,25 +29,20 @@ function PositionRow(props: PositionRowProps): ReactElement {
 export default function PositionsList(): ReactElement {
     const libLoaded = useSelector((state: AppState) => state.lib.isLoaded);
     const positions = useSelector((state: AppState) => state.positions);
+    const userAccount = useSelector((state: AppState) => state.user.account);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!libLoaded) return;
+        if (!libLoaded || !userAccount) return;
+        const postionsActions = window.xopts.positions;
+        if (!postionsActions) return;
 
         const fetchPositions = async () => {
-            const options = await window.xopts.options.list();
-            // TODO: add logic to fetch positions in the library
-            const positions = options.map((option) => {
-                return {
-                    writtenAmount: new MonetaryAmount(option.underlying, 10),
-                    boughtAmount: new MonetaryAmount(option.underlying, 20),
-                    option,
-                };
-            });
+            const positions = await postionsActions.list(userAccount);
             dispatch(addPositionsAction(positions));
         };
         fetchPositions();
-    }, [dispatch, libLoaded]);
+    }, [dispatch, libLoaded, userAccount]);
 
     return (
         <Page>

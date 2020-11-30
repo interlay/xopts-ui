@@ -20,6 +20,7 @@ export default function TopNavigation(): ReactElement {
     const btcPrice = useSelector((state: AppState) => state.prices.btc);
     const currency = useSelector((state: AppState) => state.ui.currency);
     const account = useSelector((state: AppState) => state.user.account);
+    const isSigner = useSelector((state: AppState) => state.lib.isSigner);
 
     const closeDropDownMenu = () => {
         if (window.innerWidth <= 768) {
@@ -101,14 +102,16 @@ export default function TopNavigation(): ReactElement {
                     >
                         Exchange
                     </TopNavigationLink>
-                    <TopNavigationLink
-                        to="/positions"
-                        pageName="positions"
-                        openPage={openPage}
-                        selectedPage={selectedPage}
-                    >
-                        Positions
-                    </TopNavigationLink>
+                    {isSigner && (
+                        <TopNavigationLink
+                            to="/positions"
+                            pageName="positions"
+                            openPage={openPage}
+                            selectedPage={selectedPage}
+                        >
+                            Positions
+                        </TopNavigationLink>
+                    )}
                 </div>
                 <div className="menu col-xl-7 col-lg-7 col-md-6 col-sm-6 col-2">
                     <div

@@ -1,15 +1,14 @@
-import { Currency, ERC20 } from "@interlay/xopts";
+import { Currency, ERC20, Position } from "@interlay/xopts";
 import {
-    UpdateIsUserConnected,
-    UpdateUserNetwork,
     AddPositions,
-    UpdateUserData,
-    UPDATE_IS_USER_CONNECTED,
-    UPDATE_USER_NETWORK,
     ADD_POSITIONS,
+    UpdateIsUserConnected,
+    UpdateUserData,
+    UpdateUserNetwork,
+    UPDATE_IS_USER_CONNECTED,
     UPDATE_USER_DATA,
+    UPDATE_USER_NETWORK,
 } from "../types/actions.types";
-import { Position } from "../types/util.types";
 
 export const updateIsUserConnectedAction = (
     isConnected: boolean,

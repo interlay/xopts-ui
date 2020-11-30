@@ -1,5 +1,5 @@
-import { Option, Position, Prices, LibState } from "../types/util.types";
-import { Currency, ERC20 } from "@interlay/xopts";
+import { Option, Prices, LibState } from "../types/util.types";
+import { Currency, ERC20, Position } from "@interlay/xopts";
 
 // USER
 
