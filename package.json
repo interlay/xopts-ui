@@ -69,5 +69,8 @@
     "hooks": {
       "pre-commit": "npm run lint"
     }
+  },
+  "prettier": {
+    "tabWidth": 4
   }
 }
