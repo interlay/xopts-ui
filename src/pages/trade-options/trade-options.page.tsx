@@ -54,14 +54,22 @@ export default function TradeOptionsPage(): ReactElement {
                 ERC20
             >[];
             // TODO: change this once liquidity is implemented
-            options.map((option) => {
-                option.liquidity = 10;
-                option.spotPrice = 0;
-                option.strikeNum = option.strikePrice
-                    .toCounter(BTCAmount.fromBTC(1))
-                    .toBig(0);
-                return option;
-            });
+            await Promise.all(
+                options.map(async (option) => {
+                    option.liquidity = 10;
+                    option.spotPrice = 0;
+                    option.balance = (
+                        await globals.xopts.options.getUserBalance(
+                            await globals.signer.getAddress(),
+                            option
+                        )
+                    ).toBig(0);
+                    option.strikeNum = option.strikePrice
+                        .toCounter(BTCAmount.fromBTC(1))
+                        .toBig(0);
+                    return option;
+                })
+            );
             dispatch(addOptionsAction(options));
         };
         fetchOptions();

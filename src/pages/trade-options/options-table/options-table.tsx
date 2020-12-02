@@ -61,10 +61,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
 
     const connectWallet = async (activeLogin: boolean) => {
         const etherProvider = globals.metamaskProvider;
-        console.log("Connecting wallet, checking if it's unloced...");
         const isUnlocked = await etherProvider._metamask.isUnlocked();
-
-        console.log("Connecting wallet...");
 
         if (etherProvider && (activeLogin || isUnlocked)) {
             try {
@@ -77,14 +74,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                 console.log(error);
             }
         } else {
-            console.log(
-                "etherProvider: ",
-                etherProvider,
-                "; activeLogin: ",
-                activeLogin,
-                "; isUnlocked: ",
-                isUnlocked
-            );
+            console.log("User did not unlock wallet");
         }
     };
 
@@ -137,47 +127,74 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
         console.log(event, option);
     };
 
+    const getEnteredOptionAmount = (
+        option: Option<Currency, ERC20>,
+        index: number
+    ): Big => {
+        const valueElement = document.getElementById(
+            createId("quantity", index, option)
+        ) as HTMLInputElement;
+        const value = Number(valueElement.value);
+        return option.strikeNum.mul(value);
+    };
+
     const buyClick = (option: Option<Currency, ERC20>, index: number) => {
         if (!isConnected) {
-            console.log("Not connected, connecting wallet");
             connectWallet(true);
-            return;
-        } else {
-            console.log("Connected, buying");
-            const valueElement = document.getElementById(
-                createId("quantity", index, option)
-            ) as HTMLInputElement;
-            const value = Number(valueElement.value);
-            globals.xoptsRW.options
-                .buy(
-                    option,
-                    new MonetaryAmount(option.collateral, new Big(value), 0),
-                    new MonetaryAmount(
-                        option.collateral,
-                        new Big(value * price + 100),
-                        0
-                    )
-                )
-                .then((notifier) => {
-                    notifier.on("error", (err: any) => {
-                        console.log("Transaction error!");
-                        console.log(err);
-                    });
-                    notifier.on("confirmation", (ret: any) => {
-                        console.log("Transaction success!");
-                        console.log(ret);
-                    });
-                });
+            if (!isConnected) {
+                return;
+            }
         }
+        console.log("Connected, buying");
+        const amount = getEnteredOptionAmount(option, index);
+        globals.xoptsRW.options
+            .buy(
+                option,
+                new MonetaryAmount(option.collateral, amount, 0),
+                new MonetaryAmount(option.collateral, amount.mul(price), 0)
+            )
+            .then((notifier) => {
+                notifier.on("error", (err: any) => {
+                    console.log("Transaction error!");
+                    console.log(err);
+                });
+                notifier.on("confirmation", (ret: any) => {
+                    console.log("Transaction success!");
+                    console.log(ret);
+                });
+            });
     };
 
     const sellClick = (option: Option<Currency, ERC20>, index: number) => {
         if (!isConnected) {
             connectWallet(true);
-            return;
-        } else {
-            // TODO: call to lib -
+            if (!isConnected) {
+                return;
+            }
         }
+        console.log("Connected, selling");
+        const amount = getEnteredOptionAmount(option, index);
+        globals.xoptsRW.options
+            .sell(
+                option,
+                new MonetaryAmount(option.collateral, amount, 0),
+                new MonetaryAmount(
+                    option.collateral,
+                    0, //amount.mul(price),
+                    0
+                )
+            )
+            .then((notifier) => {
+                notifier.on("error", (err: any) => {
+                    console.log("Transaction error!");
+                    console.log(err);
+                });
+                notifier.on("confirmation", (ret: any) => {
+                    console.log("Transaction success!");
+                    console.log(ret);
+                });
+            });
+        // TODO: call to lib -
     };
 
     // const openTradeModal = (event: MouseEvent) => {
@@ -213,13 +230,26 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                 <th>Strike Price</th>
                                 <th>Liquidity</th>
                                 <th>Last Price</th>
-                                <th>Positions</th>
+                                <th>Positions?</th>
+                                <th>Position</th>
                                 <th>Trade</th>
                             </tr>
                         </thead>
                         <tbody>
                             {optionsToShow.map((option, index) => {
                                 const positive = Math.random() > 0.5 ? 1 : -1;
+                                const position = option.balance.div(
+                                    option.strikeNum
+                                );
+                                console.log(
+                                    "Balance: ",
+                                    option.balance.toString()
+                                );
+                                console.log(
+                                    "Strike: ",
+                                    option.strikeNum.toString()
+                                );
+                                console.log("Position: ", position.toString());
                                 const oblig =
                                     (Math.floor(Math.random() * 3) / 100) *
                                     positive;
@@ -301,6 +331,32 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                         </td>
                                         <td
                                             id={createId("td5", index, option)}
+                                            className={greenCell(option)}
+                                        >
+                                            <p
+                                                id={createId(
+                                                    "td5p1",
+                                                    index,
+                                                    option
+                                                )}
+                                            >
+                                                {position.toFixed(4)}
+                                            </p>
+                                            <p
+                                                id={createId(
+                                                    "td5p2",
+                                                    index,
+                                                    option
+                                                )}
+                                            >
+                                                ${" "}
+                                                {position
+                                                    .mul(btcPrice)
+                                                    .toFixed(2)}
+                                            </p>
+                                        </td>
+                                        <td
+                                            id={createId("td6", index, option)}
                                             className={greenCell(option)}
                                         >
                                             <div className="row">
