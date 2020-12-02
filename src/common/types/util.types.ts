@@ -38,8 +38,8 @@ export interface User {
 
 export interface Option<Underlying extends Currency, Collateral extends ERC20>
     extends LibOption<Underlying, Collateral> {
-    spotPrice: number;
-    liquidity: number;
+    spotPrice: Big;
+    liquidity: Big;
     strikeNum: Big;
     balance: Big;
 }

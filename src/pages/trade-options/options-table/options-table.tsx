@@ -103,7 +103,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
             errorDiv.innerHTML = "";
             return;
         }
-        if (value < option.liquidity && value > 0) {
+        if (option.liquidity.gte(value) && value > 0) {
             buyElement.innerHTML =
                 "Buy &nbsp;&nbsp; <span>" +
                 (value * price).toFixed(2) +
@@ -241,15 +241,6 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                 const position = option.balance.div(
                                     option.strikeNum
                                 );
-                                console.log(
-                                    "Balance: ",
-                                    option.balance.toString()
-                                );
-                                console.log(
-                                    "Strike: ",
-                                    option.strikeNum.toString()
-                                );
-                                console.log("Position: ", position.toString());
                                 const oblig =
                                     (Math.floor(Math.random() * 3) / 100) *
                                     positive;
@@ -286,9 +277,9 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                                 )}
                                             >
                                                 ${" "}
-                                                {(
-                                                    option.liquidity * btcPrice
-                                                ).toFixed(2)}
+                                                {option.liquidity
+                                                    .mul(btcPrice)
+                                                    .toFixed(2)}
                                             </p>
                                         </td>
                                         <td
@@ -296,9 +287,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                             className={greenCell(option)}
                                         >
                                             $ &nbsp;
-                                            {Math.floor(
-                                                Math.random() * 10000
-                                            ).toFixed(2)}
+                                            {option.spotPrice.toFixed(2)}
                                         </td>
                                         <td
                                             id={createId("td4", index, option)}

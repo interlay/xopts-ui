@@ -1,3 +1,4 @@
+import { Big } from "big.js";
 import React, { ReactElement, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Page from "../page/page";
@@ -10,7 +11,7 @@ import OptionsTable from "./options-table/options-table";
 import { useParams } from "react-router";
 import TradeModal from "./trade-modal/trade-modal";
 import OptionTabs from "./option-tabs/option-tabs";
-import { Currency, ERC20, BTCAmount } from "@interlay/xopts/";
+import { Currency, ERC20, BTCAmount, MonetaryAmount } from "@interlay/xopts/";
 import globals from "../../common/globals";
 
 import "./trade-options.page.scss";
@@ -56,8 +57,13 @@ export default function TradeOptionsPage(): ReactElement {
             // TODO: change this once liquidity is implemented
             await Promise.all(
                 options.map(async (option) => {
-                    option.liquidity = 10;
-                    option.spotPrice = 0;
+                    option.liquidity = new Big(10);
+                    option.spotPrice = (
+                        await globals.xopts.options.estimatePoolBuyPrice(
+                            option,
+                            new MonetaryAmount(option.collateral, 1, 0)
+                        )
+                    ).toBig(0);
                     option.balance = (
                         await globals.xopts.options.getUserBalance(
                             await globals.signer.getAddress(),
@@ -67,6 +73,12 @@ export default function TradeOptionsPage(): ReactElement {
                     option.strikeNum = option.strikePrice
                         .toCounter(BTCAmount.fromBTC(1))
                         .toBig(0);
+                    console.log(
+                        "Option balance: ",
+                        option.balance.toString(),
+                        "; spot price: ",
+                        option.spotPrice.toString()
+                    );
                     return option;
                 })
             );
