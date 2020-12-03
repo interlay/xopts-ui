@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://xopts.io/",
   "dependencies": {
-    "@interlay/xopts": "^0.2.16",
+    "@interlay/xopts": "interlay/xopts#dev",
     "@metamask/detect-provider": "^1.1.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
