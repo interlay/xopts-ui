@@ -1,6 +1,11 @@
 import Big from "big.js";
 import { rootReducer } from "../reducers/index";
-import { Currency, ERC20, Option as LibOption } from "@interlay/xopts";
+import {
+    Currency,
+    ERC20,
+    Option as LibOption,
+    Position,
+} from "@interlay/xopts";
 import { Store, CombinedState } from "redux";
 import {
     AddOptions,
@@ -38,15 +43,9 @@ export interface User {
 
 export interface Option<Underlying extends Currency, Collateral extends ERC20>
     extends LibOption<Underlying, Collateral> {
-        spotPrice: number;
-        liquidity: number;
-        strikeNum: Big;
-    }
-
-export interface Position {
-    contract: string;
-    expiry: string;
-    premium: string;
+    spotPrice: number;
+    liquidity: number;
+    strikeNum: Big;
 }
 
 export type ModalDataType = {
@@ -65,14 +64,14 @@ export type LibState = {
     isLoaded: boolean;
     isMock: boolean;
     isSigner: boolean;
-}
+};
 
 export type AppState = ReturnType<typeof rootReducer>;
 
 export type StoreType = {
     options: Option<Currency, ERC20>[];
     user: User;
-    positions: Position[];
+    positions: Position<Currency, ERC20>[];
     ui: UIState;
     prices: Prices;
     lib: LibState;
