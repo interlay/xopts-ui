@@ -1519,10 +1519,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@interlay/xopts@^0.2.16":
-  version "0.2.17"
-  resolved "https://registry.yarnpkg.com/@interlay/xopts/-/xopts-0.2.17.tgz#e7365fa69bb9f9c96b7a549f8aa74ade3244bf34"
-  integrity sha512-u5q6tL3KymiLKCHEmDWPvy5sQ9wbwm21B6yUFbEwZ67HtY6fiZysaDtfDuZVabmMiC1P/ML8dwoYp3vkmiXgMw==
+"@interlay/xopts@^0.2.18":
+  version "0.2.18"
+  resolved "https://registry.yarnpkg.com/@interlay/xopts/-/xopts-0.2.18.tgz#533612a9868736761618c3191125a8e68f4cb95c"
+  integrity sha512-Jc8YluuQp25ZNAELiDl0gh6Z5Zvp/Zhh2/Xx3OQRl1WPo4wUcXXpMWl3b0RyotlmbuKXGdP743loQJlGIMgkJw==
   dependencies:
     "@uniswap/v2-core" "^1.0.1"
     bitcoinjs-lib "^5.1.10"
