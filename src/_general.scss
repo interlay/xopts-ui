@@ -1,30 +1,47 @@
 @import "_variables";
 @import "_mixins";
-  
-@include font-fam("airbnb-cereal-light", "./assets/fonts/airbnb-cereal/AirbnbCerealLight");
+
+@include font-fam(
+    "airbnb-cereal-light",
+    "./assets/fonts/airbnb-cereal/AirbnbCerealLight"
+);
 // @include font-fam("airbnb-cereal-medium", "./assets/fonts/airbnb-cereal/AirbnbCerealMedium");
 // @include font-fam("airbnb-cereal-book", "./assets/fonts/airbnb-cereal/AirbnbCerealBook");
 
-html, body, div, p, a, span, button, i, form, table, tr, td, th, li, ul{
+html,
+body,
+div,
+p,
+a,
+span,
+button,
+i,
+form,
+table,
+tr,
+td,
+th,
+li,
+ul {
     font-family: airbnb-cereal-light, "Comic Sans MS", Arial;
 }
 
-#root{
+#root {
     background-color: white;
 }
 
-a{
+a {
     text-decoration: none;
-    &:hover{
+    &:hover {
         text-decoration: none;
     }
-    &:link{
+    &:link {
         text-decoration: none;
     }
-    &:visited{
+    &:visited {
         text-decoration: none;
     }
-    &:active{
+    &:active {
         text-decoration: none;
     }
 }
@@ -32,19 +49,23 @@ button {
     border: 0;
 }
 
-button:focus {outline:0!important;}
-input:focus {outline: 0!important;}
+button:focus {
+    outline: 0 !important;
+}
+input:focus {
+    outline: 0 !important;
+}
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
+input[type="number"] {
+    -moz-appearance: textfield;
 }
 
 .center-text {
@@ -57,7 +78,7 @@ input[type=number] {
 
 // Buttons
 
-.action-button{
+.action-button {
     max-height: 30px;
     line-height: 30px;
     text-align: center;
@@ -74,7 +95,7 @@ input[type=number] {
     }
 }
 
-.cancel-button{
+.cancel-button {
     width: 100%;
     text-align: center;
     font-size: 1rem;
@@ -92,7 +113,7 @@ input[type=number] {
     }
 }
 
-.confirm-button{
+.confirm-button {
     width: 100%;
     border: 0;
     text-align: center;
@@ -111,7 +132,7 @@ input[type=number] {
     }
 }
 
-.green-button{
+.green-button {
     width: 100%;
     border: 0;
     text-align: center;
@@ -129,9 +150,9 @@ input[type=number] {
     }
 }
 
-body{
-    #root{
-        .error-borders{
+body {
+    #root {
+        .error-borders {
             border-color: $error-color;
         }
     }
@@ -139,9 +160,20 @@ body{
 
 .custom-input {
     border: 1px solid #ced4da;
-    border-radius: .25rem;
+    border-radius: 0.25rem;
     color: #495057;
-    padding: .375rem .75rem;
+    padding: 0.375rem 0.75rem;
     width: 100%;
     margin-bottom: 1rem;
+}
+
+main {
+    background-color: $background-color;
+    padding: 15px;
+    margin-top: 1rem;
+
+    h3 {
+        margin-top: 2rem;
+        text-align: center;
+    }
 }
