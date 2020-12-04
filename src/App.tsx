@@ -8,12 +8,12 @@ import { ToastContainer } from "react-toastify";
 import EarnPage from "./pages/earn/earn.page";
 import AccountPage from "./pages/account/account-page";
 import ExchangePage from "./pages/exchange/exchange.page";
-import {Provider} from "react-redux";
-import {configureStore} from "./store";
+import { Provider } from "react-redux";
+import { configureStore } from "./store";
 import startDataPuller from "./common/utils/data-puller";
 
 import "./_general.scss";
-import {getProvider, loadLib} from "./common/utils/reloadLib";
+import { getProvider, loadLib } from "./common/utils/reloadLib";
 import subscribeOnProviderEvents from "./common/utils/subscriber";
 
 const USE_MOCK_LIB = false;
@@ -37,7 +37,7 @@ function App(): ReactElement {
             <Router>
                 <div className="main d-flex flex-column min-vh-100">
                     <ToastContainer></ToastContainer>
-                    <TopNavigation/>
+                    <TopNavigation />
                     <Switch>
                         <Route exact path="/">
                             <LandingPage />
@@ -62,7 +62,6 @@ function App(): ReactElement {
                         <Route path="/account">
                             <AccountPage></AccountPage>
                         </Route>
-
                     </Switch>
                     {/* <Footer /> */}
                 </div>

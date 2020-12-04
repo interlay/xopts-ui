@@ -68,7 +68,6 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                 const account = await etherProvider.request({
                     method: "eth_requestAccounts",
                 });
-                console.log(account[0]);
                 dispatch(updateIsUserConnectedAction(true, account[0]));
             } catch (error) {
                 console.log(error);
@@ -138,7 +137,8 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
         return option.strikeNum.mul(value);
     };
 
-    const buyClick = (option: Option<Currency, ERC20>, index: number) => {
+    const buyClick = async (option: Option<Currency, ERC20>, index: number) => {
+        Big.PE = 40;
         if (!isConnected) {
             connectWallet(true);
             if (!isConnected) {
@@ -147,25 +147,36 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
         }
         console.log("Connected, buying");
         const amount = getEnteredOptionAmount(option, index);
-        globals.xoptsRW.options
-            .buy(
-                option,
-                new MonetaryAmount(option.collateral, amount, 0),
-                new MonetaryAmount(option.collateral, amount.mul(price), 0)
-            )
-            .then((notifier) => {
-                notifier.on("error", (err: any) => {
-                    console.log("Transaction error!");
-                    console.log(err);
-                });
-                notifier.on("confirmation", (ret: any) => {
-                    console.log("Transaction success!");
-                    console.log(ret);
-                });
-            });
+        const colIn = await globals.xopts.options.estimatePoolBuyPrice(
+            option,
+            new MonetaryAmount(option.collateral, amount, 0)
+        );
+        console.log(
+            "Buying ",
+            amount.toString(),
+            " options for ",
+            colIn.toString(),
+            " collateral"
+        );
+        const notifier = await globals.xoptsRW.options.buy(
+            option,
+            new MonetaryAmount(option.collateral, amount, 0),
+            colIn
+        );
+        notifier.on("error", (err: any) => {
+            console.log("Transaction error!");
+            console.log(err);
+        });
+        notifier.on("confirmation", (ret: any) => {
+            console.log("Transaction success!");
+            console.log(ret);
+        });
     };
 
-    const sellClick = (option: Option<Currency, ERC20>, index: number) => {
+    const sellClick = async (
+        option: Option<Currency, ERC20>,
+        index: number
+    ) => {
         if (!isConnected) {
             connectWallet(true);
             if (!isConnected) {
@@ -174,27 +185,30 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
         }
         console.log("Connected, selling");
         const amount = getEnteredOptionAmount(option, index);
-        globals.xoptsRW.options
-            .sell(
-                option,
-                new MonetaryAmount(option.collateral, amount, 0),
-                new MonetaryAmount(
-                    option.collateral,
-                    0, //amount.mul(price),
-                    0
-                )
-            )
-            .then((notifier) => {
-                notifier.on("error", (err: any) => {
-                    console.log("Transaction error!");
-                    console.log(err);
-                });
-                notifier.on("confirmation", (ret: any) => {
-                    console.log("Transaction success!");
-                    console.log(ret);
-                });
-            });
-        // TODO: call to lib -
+        const colOut = await globals.xopts.options.estimatePoolSellPrice(
+            option,
+            new MonetaryAmount(option.collateral, amount, 0)
+        );
+        console.log(
+            "Selling ",
+            amount.toString(),
+            " options for ",
+            colOut.toString(),
+            " collateral"
+        );
+        const notifier = await globals.xoptsRW.options.sell(
+            option,
+            new MonetaryAmount(option.collateral, amount, 0),
+            colOut
+        );
+        notifier.on("error", (err: any) => {
+            console.log("Transaction error!");
+            console.log(err);
+        });
+        notifier.on("confirmation", (ret: any) => {
+            console.log("Transaction success!");
+            console.log(ret);
+        });
     };
 
     // const openTradeModal = (event: MouseEvent) => {
@@ -230,20 +244,15 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                 <th>Strike Price</th>
                                 <th>Liquidity</th>
                                 <th>Last Price</th>
-                                <th>Positions?</th>
                                 <th>Position</th>
                                 <th>Trade</th>
                             </tr>
                         </thead>
                         <tbody>
                             {optionsToShow.map((option, index) => {
-                                const positive = Math.random() > 0.5 ? 1 : -1;
-                                const position = option.balance.div(
+                                const position = option.position.div(
                                     option.strikeNum
                                 );
-                                const oblig =
-                                    (Math.floor(Math.random() * 3) / 100) *
-                                    positive;
 
                                 return (
                                     <tr
@@ -293,7 +302,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                             id={createId("td4", index, option)}
                                             className={
                                                 greenCell(option) +
-                                                (oblig >= 0
+                                                (position.gte(0)
                                                     ? " green-text"
                                                     : " red-text")
                                             }
@@ -305,35 +314,11 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                                     option
                                                 )}
                                             >
-                                                {oblig.toFixed(2)}
+                                                {position.toFixed(2)}
                                             </p>
                                             <p
                                                 id={createId(
                                                     "td4p2",
-                                                    index,
-                                                    option
-                                                )}
-                                            >
-                                                ${" "}
-                                                {(oblig * btcPrice).toFixed(2)}
-                                            </p>
-                                        </td>
-                                        <td
-                                            id={createId("td5", index, option)}
-                                            className={greenCell(option)}
-                                        >
-                                            <p
-                                                id={createId(
-                                                    "td5p1",
-                                                    index,
-                                                    option
-                                                )}
-                                            >
-                                                {position.toFixed(4)}
-                                            </p>
-                                            <p
-                                                id={createId(
-                                                    "td5p2",
                                                     index,
                                                     option
                                                 )}
@@ -345,7 +330,7 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                             </p>
                                         </td>
                                         <td
-                                            id={createId("td6", index, option)}
+                                            id={createId("td5", index, option)}
                                             className={greenCell(option)}
                                         >
                                             <div className="row">

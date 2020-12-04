@@ -64,8 +64,8 @@ export default function TradeOptionsPage(): ReactElement {
                             new MonetaryAmount(option.collateral, 1, 0)
                         )
                     ).toBig(0);
-                    option.balance = (
-                        await globals.xopts.options.getUserBalance(
+                    option.position = (
+                        await globals.xopts.options.getUserPosition(
                             await globals.signer.getAddress(),
                             option
                         )
@@ -74,8 +74,10 @@ export default function TradeOptionsPage(): ReactElement {
                         .toCounter(BTCAmount.fromBTC(1))
                         .toBig(0);
                     console.log(
-                        "Option balance: ",
-                        option.balance.toString(),
+                        "Option address: ",
+                        option.address,
+                        "; balance: ",
+                        option.position.toString(),
                         "; spot price: ",
                         option.spotPrice.toString()
                     );

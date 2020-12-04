@@ -41,7 +41,7 @@ export interface Option<Underlying extends Currency, Collateral extends ERC20>
     spotPrice: Big;
     liquidity: Big;
     strikeNum: Big;
-    balance: Big;
+    position: Big;
 }
 
 export interface Position {
