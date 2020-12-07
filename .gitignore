@@ -9,3 +9,4 @@ docs/build
 build
 .env
 .vscode/*
+yarn-error.log

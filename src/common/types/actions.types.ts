@@ -1,5 +1,5 @@
-import { Option, Position, Prices } from "../types/util.types";
-import { Currency, ERC20 } from "@interlay/xopts";
+import { Option, Prices } from "../types/util.types";
+import { Currency, ERC20, Position } from "@interlay/xopts";
 
 // USER
 
@@ -61,7 +61,7 @@ export const ADD_POSITIONS = "ADD_POSITIONS";
 
 export interface AddPositions {
     type: typeof ADD_POSITIONS;
-    positions: Position[];
+    positions: Position<Currency, ERC20>[];
 }
 
 export type PositionsActions = AddPositions;

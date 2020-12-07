@@ -1,5 +1,5 @@
-import {ethers, XOpts} from "@interlay/xopts";
-import {Signer, Provider, SignerOrProvider} from "@interlay/xopts/dist/lib/core";
+import { ethers, XOpts } from "@interlay/xopts";
+import { Signer, SignerOrProvider } from "@interlay/xopts/dist/lib/core";
 
 class Globals {
     private _xopts: XOpts<SignerOrProvider> | undefined;

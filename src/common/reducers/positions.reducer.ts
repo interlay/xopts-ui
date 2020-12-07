@@ -1,13 +1,16 @@
-import { Position } from "../types/util.types";
 import { PositionsActions, ADD_POSITIONS } from "../types/actions.types";
+import { Currency, ERC20, Position } from "@interlay/xopts";
 
-const initialState: Position[] = [];
+const initialState: Position<Currency, ERC20>[] = [];
 
-export const positionsReducer = (state: Position[] = initialState, action: PositionsActions) : Position[] => {
-    switch(action.type) {
+export const positionsReducer = (
+    state: Position<Currency, ERC20>[] = initialState,
+    action: PositionsActions
+): Position<Currency, ERC20>[] => {
+    switch (action.type) {
     case ADD_POSITIONS:
-        return {...state, ...action.positions};
-    default: return state;
+        return action.positions;
+    default:
+        return state;
     }
 };
-
