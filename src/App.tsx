@@ -11,7 +11,6 @@ import HelpPage from "./pages/help/help.page";
 import LandingPage from "./pages/landing/landing.page";
 import PositionsList from "./pages/positions/positions-list.page";
 import TradeOptionsPage from "./pages/trade-options/trade-options.page";
-
 import { getProvider, loadLib } from "./common/utils/reloadLib";
 import subscribeOnProviderEvents from "./common/utils/subscriber";
 
