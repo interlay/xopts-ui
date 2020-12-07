@@ -3,30 +3,31 @@ import Big from "big.js";
 import { useSelector, useDispatch } from "react-redux";
 import { AppState, Option } from "../../../common/types/util.types";
 import { useParams } from "react-router";
-import { Currency, ERC20 } from "@interlay/xopts";
+import { Currency, ERC20, MonetaryAmount } from "@interlay/xopts";
 import { updateIsUserConnectedAction } from "../../../common/actions/user.actions";
 
 import "./options-table.scss";
-
-// eslint-disable-next-line
-const detectEthereumProvider = require("@metamask/detect-provider");
+import globals from "../../../common/globals";
 
 type TablePropsType = {
-  expiry: string;
-  options: Option<Currency, ERC20>[];
+    expiry: string;
+    options: Option<Currency, ERC20>[];
 };
 
 export default function OptionsTable(props: TablePropsType): ReactElement {
     const btcPrice = useSelector((state: AppState) => state.prices.btc);
-    const optionsToShow = props.options.filter(
-        (option) => {
-            return option.expiry.toString() === props.expiry;
-        }
+    const optionsToShow = props.options.filter((option) => {
+        return option.expiry.toString() === props.expiry;
+    });
+    const isConnected = useSelector(
+        (state: AppState) => state.user.isConnected
     );
-    const isConnected = useSelector((state: AppState) => state.user.isConnected);
     const { currency } = useParams();
     const dispatch = useDispatch();
     const price = useSelector((state: AppState) => state.prices.btc);
+
+    if (!useSelector((state: AppState) => state.lib.isROConnected))
+        return <div></div>;
 
     const calculateExpiry = () => {
         const period = optionsToShow[0].expiry.getTime() - Date.now();
@@ -45,24 +46,21 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
     ): string => {
         return (
             prefix +
-      index +
-      currency +
-      "-" +
-      option.expiry.getTime() +
-      "-" +
-      option.strikeNum.toString()
+            index +
+            currency +
+            "-" +
+            option.expiry.getTime() +
+            "-" +
+            option.strikeNum.toString()
         );
     };
 
     const greenCell = (option: Option<Currency, ERC20>): string => {
-        return new Big(btcPrice) <
-            option.strikeNum
-            ? "green-cell"
-            : "";
+        return new Big(btcPrice) < option.strikeNum ? "green-cell" : "";
     };
 
     const connectWallet = async (activeLogin: boolean) => {
-        const etherProvider = await detectEthereumProvider();
+        const etherProvider = globals.metamaskProvider;
         const isUnlocked = await etherProvider._metamask.isUnlocked();
 
         if (etherProvider && (activeLogin || isUnlocked)) {
@@ -70,11 +68,12 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                 const account = await etherProvider.request({
                     method: "eth_requestAccounts",
                 });
-                console.log(account[0]);
                 dispatch(updateIsUserConnectedAction(true, account[0]));
             } catch (error) {
                 console.log(error);
             }
+        } else {
+            console.log("User did not unlock wallet");
         }
     };
 
@@ -103,13 +102,15 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
             errorDiv.innerHTML = "";
             return;
         }
-        if (value < option.liquidity && value > 0) {
+        if (option.liquidity.gte(value) && value > 0) {
             buyElement.innerHTML =
-        "Buy &nbsp;&nbsp; <span>" + (value * price).toFixed(2) + " USDT</span>";
+                "Buy &nbsp;&nbsp; <span>" +
+                (value * price).toFixed(2) +
+                " USDT</span>";
             sellElement.innerHTML =
-        "Sell &nbsp;&nbsp; <span>" +
-        (value * price).toFixed(2) +
-        " USDT</span>";
+                "Sell &nbsp;&nbsp; <span>" +
+                (value * price).toFixed(2) +
+                " USDT</span>";
             buyElement.classList.add("active");
             sellElement.classList.add("active");
             target.classList.remove("error-borders");
@@ -125,22 +126,89 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
         console.log(event, option);
     };
 
-    const buyClick = () => {
-        if (!isConnected) {
-            connectWallet(true);
-            return;
-        } else {
-            // TODO: call to lib -
-        }
+    const getEnteredOptionAmount = (
+        option: Option<Currency, ERC20>,
+        index: number
+    ): Big => {
+        const valueElement = document.getElementById(
+            createId("quantity", index, option)
+        ) as HTMLInputElement;
+        const value = Number(valueElement.value);
+        return option.strikeNum.mul(value);
     };
 
-    const sellClick = () => {
+    const buyClick = async (option: Option<Currency, ERC20>, index: number) => {
+        Big.PE = 40;
         if (!isConnected) {
             connectWallet(true);
-            return;
-        } else {
-            // TODO: call to lib -
+            if (!isConnected) {
+                return;
+            }
         }
+        console.log("Connected, buying");
+        const amount = getEnteredOptionAmount(option, index);
+        const colIn = await globals.xopts.options.estimatePoolBuyPrice(
+            option,
+            new MonetaryAmount(option.collateral, amount, 0)
+        );
+        console.log(
+            "Buying ",
+            amount.toString(),
+            " options for ",
+            colIn.toString(),
+            " collateral"
+        );
+        const notifier = await globals.xoptsRW.options.buy(
+            option,
+            new MonetaryAmount(option.collateral, amount, 0),
+            colIn
+        );
+        notifier.on("error", (err: any) => {
+            console.log("Transaction error!");
+            console.log(err);
+        });
+        notifier.on("confirmation", (ret: any) => {
+            console.log("Transaction success!");
+            console.log(ret);
+        });
+    };
+
+    const sellClick = async (
+        option: Option<Currency, ERC20>,
+        index: number
+    ) => {
+        if (!isConnected) {
+            connectWallet(true);
+            if (!isConnected) {
+                return;
+            }
+        }
+        console.log("Connected, selling");
+        const amount = getEnteredOptionAmount(option, index);
+        const colOut = await globals.xopts.options.estimatePoolSellPrice(
+            option,
+            new MonetaryAmount(option.collateral, amount, 0)
+        );
+        console.log(
+            "Selling ",
+            amount.toString(),
+            " options for ",
+            colOut.toString(),
+            " collateral"
+        );
+        const notifier = await globals.xoptsRW.options.sell(
+            option,
+            new MonetaryAmount(option.collateral, amount, 0),
+            colOut
+        );
+        notifier.on("error", (err: any) => {
+            console.log("Transaction error!");
+            console.log(err);
+        });
+        notifier.on("confirmation", (ret: any) => {
+            console.log("Transaction success!");
+            console.log(ret);
+        });
     };
 
     // const openTradeModal = (event: MouseEvent) => {
@@ -156,7 +224,9 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                     <div className="row table-heading justify-content-right">
                         <div className="title">
                             <b>
-                                {new Date(props.expiry).toDateString().slice(4, 15)}
+                                {new Date(props.expiry)
+                                    .toDateString()
+                                    .slice(4, 15)}
                             </b>
                         </div>
                         <div className="col-6 option-type">
@@ -174,17 +244,21 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                 <th>Strike Price</th>
                                 <th>Liquidity</th>
                                 <th>Last Price</th>
-                                <th>Positions</th>
+                                <th>Position</th>
                                 <th>Trade</th>
                             </tr>
                         </thead>
                         <tbody>
                             {optionsToShow.map((option, index) => {
-                                const positive = Math.random() > 0.5 ? 1 : -1;
-                                const oblig = (Math.floor(Math.random() * 3) / 100) * positive;
+                                const position = option.position.div(
+                                    option.strikeNum
+                                );
 
                                 return (
-                                    <tr id={createId("tr", index, option)} key={index}>
+                                    <tr
+                                        id={createId("tr", index, option)}
+                                        key={index}
+                                    >
                                         <td
                                             id={createId("td1", index, option)}
                                             className="highlight-col"
@@ -195,31 +269,64 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                             id={createId("td2", index, option)}
                                             className={greenCell(option)}
                                         >
-                                            <p id={createId("td2p1", index, option)}>
+                                            <p
+                                                id={createId(
+                                                    "td2p1",
+                                                    index,
+                                                    option
+                                                )}
+                                            >
                                                 {option.liquidity.toFixed(2)}
                                             </p>
-                                            <p id={createId("td2p2", index, option)}>
-                        $ {(option.liquidity * btcPrice).toFixed(2)}
+                                            <p
+                                                id={createId(
+                                                    "td2p2",
+                                                    index,
+                                                    option
+                                                )}
+                                            >
+                                                ${" "}
+                                                {option.liquidity
+                                                    .mul(btcPrice)
+                                                    .toFixed(2)}
                                             </p>
                                         </td>
                                         <td
                                             id={createId("td3", index, option)}
                                             className={greenCell(option)}
                                         >
-                      $ &nbsp;{Math.floor(Math.random() * 10000).toFixed(2)}
+                                            $ &nbsp;
+                                            {option.spotPrice.toFixed(2)}
                                         </td>
                                         <td
                                             id={createId("td4", index, option)}
                                             className={
                                                 greenCell(option) +
-                        (oblig >= 0 ? " green-text" : " red-text")
+                                                (position.gte(0)
+                                                    ? " green-text"
+                                                    : " red-text")
                                             }
                                         >
-                                            <p id={createId("td4p1", index, option)}>
-                                                {oblig.toFixed(2)}
+                                            <p
+                                                id={createId(
+                                                    "td4p1",
+                                                    index,
+                                                    option
+                                                )}
+                                            >
+                                                {position.toFixed(2)}
                                             </p>
-                                            <p id={createId("td4p2", index, option)}>
-                        $ {(oblig * btcPrice).toFixed(2)}
+                                            <p
+                                                id={createId(
+                                                    "td4p2",
+                                                    index,
+                                                    option
+                                                )}
+                                            >
+                                                ${" "}
+                                                {position
+                                                    .mul(btcPrice)
+                                                    .toFixed(2)}
                                             </p>
                                         </td>
                                         <td
@@ -228,15 +335,25 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                         >
                                             <div className="row">
                                                 <div className="col-12 table-input">
-                                                    <div className="quantity-label">Quantity:</div>
+                                                    <div className="quantity-label">
+                                                        Quantity:
+                                                    </div>
                                                     <div className="quantity-wrapper">
                                                         <input
-                                                            id={createId("quantity", index, option)}
+                                                            id={createId(
+                                                                "quantity",
+                                                                index,
+                                                                option
+                                                            )}
                                                             name="quanity"
                                                             className="quantity-input"
                                                             type="number"
                                                             onChange={(val) => {
-                                                                onChange(val, index, option);
+                                                                onChange(
+                                                                    val,
+                                                                    index,
+                                                                    option
+                                                                );
                                                             }}
                                                         />
                                                     </div>
@@ -246,20 +363,38 @@ export default function OptionsTable(props: TablePropsType): ReactElement {
                                             <div className="row">
                                                 <div className="col-6">
                                                     <button
-                                                        id={createId("buy", index, option)}
+                                                        id={createId(
+                                                            "buy",
+                                                            index,
+                                                            option
+                                                        )}
                                                         className="buy-button"
-                                                        onClick={() => buyClick()}
+                                                        onClick={() =>
+                                                            buyClick(
+                                                                option,
+                                                                index
+                                                            )
+                                                        }
                                                     >
-                            Buy
+                                                        Buy
                                                     </button>
                                                 </div>
                                                 <div className="col-6">
                                                     <button
-                                                        id={createId("sell", index, option)}
+                                                        id={createId(
+                                                            "sell",
+                                                            index,
+                                                            option
+                                                        )}
                                                         className="sell-button"
-                                                        onClick={() => sellClick()}
+                                                        onClick={() =>
+                                                            sellClick(
+                                                                option,
+                                                                index
+                                                            )
+                                                        }
                                                     >
-                            Sell
+                                                        Sell
                                                     </button>
                                                 </div>
                                             </div>

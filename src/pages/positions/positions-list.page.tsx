@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addPositionsAction } from "../../common/actions/user.actions";
 import { AppState } from "../../common/types/util.types";
 import Page from "../page/page";
+import globals from "../../common/globals";
 
 type PositionRowProps = {
     key: number;
@@ -27,14 +28,14 @@ function PositionRow(props: PositionRowProps): ReactElement {
 }
 
 export default function PositionsList(): ReactElement {
-    const libLoaded = useSelector((state: AppState) => state.lib.isLoaded);
+    const libLoaded = useSelector((state: AppState) => state.lib.isROConnected);
     const positions = useSelector((state: AppState) => state.positions);
     const userAccount = useSelector((state: AppState) => state.user.account);
     const dispatch = useDispatch();
 
     useEffect(() => {
         if (!libLoaded || !userAccount) return;
-        const postionsActions = window.xopts.positions;
+        const postionsActions = globals.xopts.positions;
         if (!postionsActions) return;
 
         const fetchPositions = async () => {

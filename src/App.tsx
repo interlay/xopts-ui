@@ -4,9 +4,6 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import TopNavigation from "./common/components/top-navigation/top-navigation";
 import startDataPuller from "./common/utils/data-puller";
-import { fireLoading } from "./common/utils/reloadLib";
-import subscribeOnEvents from "./common/utils/subscriber";
-import { USE_MOCK_LIB } from "./config";
 import AccountPage from "./pages/account/account-page";
 import EarnPage from "./pages/earn/earn.page";
 import ExchangePage from "./pages/exchange/exchange.page";
@@ -14,6 +11,9 @@ import HelpPage from "./pages/help/help.page";
 import LandingPage from "./pages/landing/landing.page";
 import PositionsList from "./pages/positions/positions-list.page";
 import TradeOptionsPage from "./pages/trade-options/trade-options.page";
+import { getProvider, loadLib } from "./common/utils/reloadLib";
+import subscribeOnProviderEvents from "./common/utils/subscriber";
+
 import { configureStore } from "./store";
 import "./_general.scss";
 
@@ -21,10 +21,14 @@ const store = configureStore();
 
 function App(): ReactElement {
     startDataPuller(store);
-    subscribeOnEvents(store);
 
     useEffect(() => {
-        fireLoading(store.dispatch, USE_MOCK_LIB); //and forget
+        const fireLoading = async () => {
+            await getProvider();
+            await loadLib(store);
+            subscribeOnProviderEvents(store);
+        };
+        fireLoading();
     }, []);
 
     return (

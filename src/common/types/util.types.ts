@@ -43,9 +43,10 @@ export interface User {
 
 export interface Option<Underlying extends Currency, Collateral extends ERC20>
     extends LibOption<Underlying, Collateral> {
-    spotPrice: number;
-    liquidity: number;
+    spotPrice: Big;
+    liquidity: Big;
     strikeNum: Big;
+    position: Big;
 }
 
 export type ModalDataType = {
@@ -61,9 +62,8 @@ export type UIState = {
 };
 
 export type LibState = {
-    isLoaded: boolean;
-    isMock: boolean;
-    isSigner: boolean;
+    isROConnected: boolean;
+    isRWConnected: boolean;
 };
 
 export type AppState = ReturnType<typeof rootReducer>;
